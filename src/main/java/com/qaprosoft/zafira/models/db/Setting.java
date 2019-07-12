@@ -32,8 +32,6 @@ import java.util.List;
 @JsonInclude(Include.NON_NULL)
 public class Setting extends AbstractEntity {
 
-    private static final long serialVersionUID = -6809215085336377266L;
-
     private String name;
     private String value;
     private boolean isEncrypted;

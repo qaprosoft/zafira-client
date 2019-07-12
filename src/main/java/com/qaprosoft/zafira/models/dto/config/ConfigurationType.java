@@ -29,6 +29,7 @@ import java.util.List;
 public class ConfigurationType implements Serializable {
 
     private static final long serialVersionUID = -5294342759368758407L;
+
     protected List<ArgumentType> arg;
 
     public List<ArgumentType> getArg() {

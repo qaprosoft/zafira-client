@@ -24,8 +24,6 @@ import lombok.Setter;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserPreference extends AbstractEntity {
 
-    private static final long serialVersionUID = 3544699350398796894L;
-
     private Name name;
     private String value;
     private Long userId;

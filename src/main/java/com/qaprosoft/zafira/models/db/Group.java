@@ -28,8 +28,6 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class Group extends AbstractEntity {
 
-    private static final long serialVersionUID = -1122566583572312653L;
-
     private String name;
     private Role role;
     private Boolean invitable;

@@ -24,8 +24,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Permission extends AbstractEntity implements Comparable<Permission> {
 
-    private static final long serialVersionUID = -3347361010220589543L;
-
     private Name name;
     private Block block;
 

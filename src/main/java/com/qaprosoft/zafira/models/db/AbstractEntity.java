@@ -19,7 +19,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -30,11 +29,9 @@ import java.util.Date;
 @Getter
 @Setter
 @NoArgsConstructor
-public abstract class AbstractEntity implements Serializable {
-    private static final long serialVersionUID = 6187567312503626298L;
+public abstract class AbstractEntity {
 
     private Long id;
-    // TODO: 2019-07-11 got rid of @Transient
     private Date modifiedAt;
     private Date createdAt;
 

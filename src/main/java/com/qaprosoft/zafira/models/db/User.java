@@ -34,7 +34,6 @@ import java.util.stream.Collectors;
 @Setter
 @JsonInclude(Include.NON_NULL)
 public class User extends AbstractEntity implements Comparable<User> {
-    private static final long serialVersionUID = 2720141152633805371L;
 
     private String username;
     private String password;

@@ -21,14 +21,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.io.Serializable;
-
 @Getter
 @Setter
 @NoArgsConstructor
 @JsonInclude(Include.NON_NULL)
-public class TenantType implements Serializable {
-    private static final long serialVersionUID = 8220711984153406216L;
+public class TenantType {
 
     private String tenant;
     private String serviceUrl;

@@ -17,29 +17,21 @@ package com.qaprosoft.zafira.models.dto.auth;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @JsonInclude(Include.NON_NULL)
-public class RefreshTokenType implements Serializable {
-    private static final long serialVersionUID = -586102250911687530L;
+public class RefreshTokenType {
 
     @NotNull
     private String refreshToken;
 
-    public RefreshTokenType() {
-    }
-
-    public RefreshTokenType(String refreshToken) {
-        this.refreshToken = refreshToken;
-    }
-
-    public String getRefreshToken() {
-        return refreshToken;
-    }
-
-    public void setRefreshToken(String refreshToken) {
-        this.refreshToken = refreshToken;
-    }
 }

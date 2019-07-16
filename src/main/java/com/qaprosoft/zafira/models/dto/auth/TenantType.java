@@ -17,20 +17,20 @@ package com.qaprosoft.zafira.models.dto.auth;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.io.Serializable;
-
+@Getter
+@Setter
+@NoArgsConstructor
 @JsonInclude(Include.NON_NULL)
-public class TenantType implements Serializable {
-    private static final long serialVersionUID = 8220711984153406216L;
+public class TenantType {
 
     private String tenant;
     private String serviceUrl;
     private boolean multitenant;
     private boolean useArtifactsProxy;
-
-    public TenantType() {
-    }
 
     public TenantType(String tenant) {
         this.tenant = tenant;
@@ -42,35 +42,4 @@ public class TenantType implements Serializable {
         this.useArtifactsProxy = useArtifactsProxy;
     }
 
-    public String getTenant() {
-        return tenant;
-    }
-
-    public void setTenant(String tenant) {
-        this.tenant = tenant;
-    }
-
-    public String getServiceUrl() {
-        return serviceUrl;
-    }
-
-    public void setServiceUrl(String serviceUrl) {
-        this.serviceUrl = serviceUrl;
-    }
-
-    public boolean isMultitenant() {
-        return multitenant;
-    }
-
-    public void setMultitenant(boolean multitenant) {
-        this.multitenant = multitenant;
-    }
-
-    public boolean isUseArtifactsProxy() {
-        return useArtifactsProxy;
-    }
-
-    public void setUseArtifactsProxy(boolean useArtifactsProxy) {
-        this.useArtifactsProxy = useArtifactsProxy;
-    }
 }

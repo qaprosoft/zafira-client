@@ -17,23 +17,22 @@ package com.qaprosoft.zafira.models.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.Objects;
 
+@Getter
+@Setter
+@NoArgsConstructor
 @JsonInclude(Include.NON_NULL)
 public class TestArtifactType extends AbstractType {
-    private static final long serialVersionUID = 555233394837989532L;
 
     private String name;
-
     private String link;
-
     private Long testId;
-
     private Integer expiresIn;
-
-    public TestArtifactType() {
-    }
 
     public TestArtifactType(String name, String link) {
         this.name = name;
@@ -49,43 +48,6 @@ public class TestArtifactType extends AbstractType {
     public TestArtifactType(String name, String link, Integer expiresIn) {
         this.name = name;
         this.link = link;
-        this.expiresIn = expiresIn;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getLink() {
-        return link;
-    }
-
-    public void setLink(String link) {
-        this.link = link;
-    }
-
-    public Long getTestId() {
-        return testId;
-    }
-
-    public void setTestId(Long testId) {
-        this.testId = testId;
-    }
-
-    public Integer getExpiresIn() {
-        return expiresIn;
-    }
-
-    /**
-     * Expiration interval after which test artifact will be removed.
-     * 
-     * @param expiresIn - interval in seconds
-     */
-    public void setExpiresIn(Integer expiresIn) {
         this.expiresIn = expiresIn;
     }
 

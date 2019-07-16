@@ -103,14 +103,14 @@ publishing {
             def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2"
             def snapshotsRepoUrl = "https://ci.qaprosoft.com/nexus/content/repositories/snapshots/"
             credentials {
-                username project.property('publishing.repository.username')
-                password project.property('publishing.repository.password')
+                username = version.endsWith('SNAPSHOT') ? project.property('publishing.snapshotRepository.username') : project.property('publishing.releaseRepository.username')
+                password = version.endsWith('SNAPSHOT') ? project.property('publishing.snapshotRepository.password') : project.property('publishing.releaseRepository.password')
             }
             url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
         }
     }
 }
 
-signing {
-    sign publishing.publications.mavenJava
-}
+//signing {
+//    sign publishing.publications.mavenJava
+//}

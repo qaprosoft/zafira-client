@@ -16,6 +16,7 @@
 package com.qaprosoft.zafira.client.impl;
 
 import com.qaprosoft.zafira.client.Path;
+import com.qaprosoft.zafira.client.STFClient;
 import com.qaprosoft.zafira.models.stf.Devices;
 import com.qaprosoft.zafira.models.stf.RemoteConnectUserDevice;
 import com.qaprosoft.zafira.models.stf.STFDevice;
@@ -24,7 +25,7 @@ import com.qaprosoft.zafira.util.http.HttpClient;
 import java.util.HashMap;
 import java.util.Map;
 
-public class STFClientImpl implements com.qaprosoft.zafira.client.STFClient {
+public class STFClientImpl implements STFClient {
 
     private String serviceURL;
     private String authToken;

@@ -53,7 +53,7 @@ dependencies {
         exclude group: "com.amazonaws", module: "aws-java-sdk-simpleworkflow"
     }
     implementation "com.google.api-client:google-api-client:${googleApiClientVersion}"
-    compile ("com.google.apis:google-api-services-sheets:${googleServiceSheetsVersion}") {
+    implementation ("com.google.apis:google-api-services-sheets:${googleServiceSheetsVersion}") {
         exclude group: "com.google.api-client", module: "google-api-client"
     }
     implementation "javax.validation:validation-api:${javaxVersion}"

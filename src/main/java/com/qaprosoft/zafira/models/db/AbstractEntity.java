@@ -15,7 +15,10 @@
  *******************************************************************************/
 package com.qaprosoft.zafira.models.db;
 
-import java.io.Serializable;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.util.Date;
 
 /**
@@ -23,36 +26,13 @@ import java.util.Date;
  * 
  * @author Alex Khursevich
  */
-public abstract class AbstractEntity implements Serializable {
-    private static final long serialVersionUID = 6187567312503626298L;
+@Getter
+@Setter
+@NoArgsConstructor
+public abstract class AbstractEntity {
 
     private Long id;
-
-    // TODO: 2019-07-11 got rid of @Transient
     private Date modifiedAt;
     private Date createdAt;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Date getModifiedAt() {
-        return modifiedAt;
-    }
-
-    public void setModifiedAt(Date modifiedAt) {
-        this.modifiedAt = modifiedAt;
-    }
-
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
-    }
 }

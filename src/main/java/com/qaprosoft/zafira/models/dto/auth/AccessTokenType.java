@@ -17,27 +17,18 @@ package com.qaprosoft.zafira.models.dto.auth;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.io.Serializable;
-
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @JsonInclude(Include.NON_NULL)
-public class AccessTokenType implements Serializable {
-    private static final long serialVersionUID = 2982073032065087590L;
-
-    public AccessTokenType() {
-    }
-
-    public AccessTokenType(String token) {
-        this.token = token;
-    }
+public class AccessTokenType {
 
     private String token;
 
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
 }

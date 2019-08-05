@@ -15,15 +15,17 @@
  *******************************************************************************/
 package com.qaprosoft.zafira.models.db;
 
-public class Permission extends AbstractEntity implements Comparable<Permission> {
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-    private static final long serialVersionUID = -3347361010220589543L;
+@Getter
+@Setter
+@NoArgsConstructor
+public class Permission extends AbstractEntity implements Comparable<Permission> {
 
     private Name name;
     private Block block;
-
-    public Permission() {
-    }
 
     public Permission(Name name) {
         this.name = name;
@@ -62,22 +64,6 @@ public class Permission extends AbstractEntity implements Comparable<Permission>
         VIEW_LAUNCHERS,
         PAYMENT_METHODS,
         INVOICES
-    }
-
-    public Name getName() {
-        return name;
-    }
-
-    public void setName(Name name) {
-        this.name = name;
-    }
-
-    public Block getBlock() {
-        return block;
-    }
-
-    public void setBlock(Block block) {
-        this.block = block;
     }
 
     @Override

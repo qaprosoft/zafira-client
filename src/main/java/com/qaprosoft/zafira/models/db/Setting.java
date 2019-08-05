@@ -17,15 +17,20 @@ package com.qaprosoft.zafira.models.db;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
+@Getter
+@Setter
+@NoArgsConstructor
 @JsonInclude(Include.NON_NULL)
 public class Setting extends AbstractEntity {
-
-    private static final long serialVersionUID = -6809215085336377266L;
 
     private String name;
     private String value;
@@ -33,6 +38,7 @@ public class Setting extends AbstractEntity {
     private Tool tool;
     private byte[] file;
 
+    @Getter
     public enum Tool {
         RABBITMQ(
                 true,
@@ -96,18 +102,6 @@ public class Setting extends AbstractEntity {
             this.decrypt = decrypt;
         }
 
-        public List<SettingType> getToolSettings() {
-            return toolSettings;
-        }
-
-        public int getPriority() {
-            return priority;
-        }
-
-        public boolean isDecrypt() {
-            return decrypt;
-        }
-
         public static Tool[] getValues() {
             Tool[] result = Tool.values();
             Arrays.sort(result, Comparator.comparing(Tool::getPriority).reversed());
@@ -115,6 +109,8 @@ public class Setting extends AbstractEntity {
         }
     }
 
+    @Getter
+    @AllArgsConstructor
     public enum SettingType {
         GOOGLE_CLIENT_SECRET_ORIGIN,
         GOOGLE_ENABLED,
@@ -174,62 +170,6 @@ public class Setting extends AbstractEntity {
             this(true, encrypted);
         }
 
-        SettingType(Boolean required, Boolean encrypted) {
-            this.required = required;
-            this.encrypted = encrypted;
-        }
-
-        public Boolean isRequired() {
-            return required;
-        }
-
-        public Boolean isEncrypted() {
-            return encrypted;
-        }
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
-
-    public boolean isEncrypted() {
-        return isEncrypted;
-    }
-
-    public void setEncrypted(boolean encrypted) {
-        isEncrypted = encrypted;
-    }
-
-    public Tool getTool() {
-        return tool;
-    }
-
-    public void setTool(Tool tool) {
-        this.tool = tool;
-    }
-
-    public byte[] getFile() {
-        return file;
-    }
-
-    public void setFile(byte[] file) {
-        this.file = file;
-    }
-
-    public boolean isValueForEncrypting() {
-        return this.tool != null && SettingType.valueOf(this.name).isEncrypted();
     }
 
 }

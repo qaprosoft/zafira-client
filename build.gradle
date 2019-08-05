@@ -12,7 +12,7 @@ buildscript {
     }
 }
 
-apply plugin: 'java-library'
+apply plugin: 'java'
 
 sourceCompatibility = '8'
 
@@ -56,7 +56,7 @@ dependencies {
     implementation "org.slf4j:slf4j-api:${sjf4j_version}"
     implementation "org.testng:testng:${testng_version}"
     // making commons-text accessible as a transitive dependency
-    api "org.apache.commons:commons-configuration2:${apache_configuration2_version}"
+    implementation "org.apache.commons:commons-configuration2:${apache_configuration2_version}"
     implementation "com.rabbitmq:amqp-client:${rabbitmq_version}"
     implementation "log4j:log4j:${log4j_version}"
     implementation "com.amazonaws:aws-java-sdk:${aws_version}"

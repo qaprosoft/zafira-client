@@ -36,6 +36,7 @@ ext {
     hibernateValidationVersion = '6.0.17.Final'
     apacheIoVersion = '1.3.2'
     googleHttpClientJackson2Version = '1.31.0'
+    commonsBeanUtilsVersion = '1.9.3'
 }
 
 /* Investiagte that Google and Amazon clients can work without some inner dependencies exclusions */
@@ -61,6 +62,7 @@ dependencies {
     implementation "javax.validation:validation-api:${javaxVersion}"
     implementation "org.hibernate:hibernate-validator:${hibernateValidationVersion}"
     implementation "org.apache.commons:commons-io:${apacheIoVersion}"
+    implementation "commons-beanutils:commons-beanutils:${commonsBeanUtilsVersion}"
 
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
     compileOnly "org.projectlombok:lombok:${lombokVersion}"

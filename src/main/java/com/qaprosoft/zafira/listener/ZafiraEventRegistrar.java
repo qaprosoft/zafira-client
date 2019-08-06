@@ -245,10 +245,13 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
 
             if (startedTest == null) {
                 // new test run registration
-                String testArgs = adapter.getParameters().toString();
+                String testArgs = Arrays.toString(adapter.getParameters());
 
-                String group = adapter.getMethodAdapter().getTestClassName();;
-                group = group.substring(0, group.lastIndexOf("."));
+                String group = null;
+                String fullClassName = adapter.getMethodAdapter().getTestClassName();
+                if (fullClassName.contains(".")) {
+                    group = fullClassName.substring(0, fullClassName.lastIndexOf("."));
+                }
 
                 String[] dependsOnMethods = adapter.getMethodAdapter().getMethodDependsOnMethods();
 

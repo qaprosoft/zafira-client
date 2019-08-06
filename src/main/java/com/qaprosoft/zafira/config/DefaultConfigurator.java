@@ -61,7 +61,7 @@ public class DefaultConfigurator implements IConfigurator {
     @Override
     public String getTestName(TestResultAdapter adapter) {
         ITestResult testResult = (ITestResult) adapter.getTestResult();
-        return testResult.getTestName();
+        return testResult.getName();
     }
 
     @Override

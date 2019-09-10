@@ -179,7 +179,8 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
                 }
                 // Register new test run
 
-                this.run = testRunTypeService.register(suite.getId(), user.getId(), job.getId(), parentJob.getId(),
+                Long parentJobId = parentJob != null ? parentJob.getId() : null;
+                this.run = testRunTypeService.register(suite.getId(), user.getId(), job.getId(), parentJobId,
                         configurator.getConfiguration(), ci, JIRA_SUITE_ID);
             }
 

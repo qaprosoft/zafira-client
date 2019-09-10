@@ -589,4 +589,8 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
         return testCaseTypeService.registerTestCase(suite.getId(), primaryOwner.getId(), testCaseSecondaryOwner, testClass, testMethod);
     }
 
+    public TestRunType getTestRun() {
+        return run;
+    }
+
 }

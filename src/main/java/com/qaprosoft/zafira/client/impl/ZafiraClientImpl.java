@@ -246,6 +246,11 @@ public class ZafiraClientImpl implements ZafiraClient {
     }
 
     @Override
+    public TestRunType registerTestRun(Long testSuiteId, Long userId, String configXML, Long jobId, Long parentJobId, CiConfig ciConfig, String workItem) {
+        return extendedClient.registerTestRun(testSuiteId, userId, configXML, jobId, parentJobId, ciConfig, workItem);
+    }
+
+    @Override
     public TestRunType registerTestRunByHUMAN(Long testSuiteId, Long userId, String configXML, Long jobId, CiConfig ciConfig, Initiator startedBy, String workItem) {
         return extendedClient.registerTestRunByHUMAN(testSuiteId, userId, configXML, jobId, ciConfig, startedBy, workItem);
     }

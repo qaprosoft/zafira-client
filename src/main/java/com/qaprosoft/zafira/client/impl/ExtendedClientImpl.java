@@ -146,6 +146,44 @@ public class ExtendedClientImpl implements ExtendedClient {
     }
 
     @Override
+    public TestRunType registerTestRun(Long testSuiteId, Long userId, String configXML, Long jobId, Long parentJobId, CiConfig ciConfig, String workItem) {
+        TestRunType registeredTestRun;
+        Initiator initiator = findInitiator(ciConfig.getCiBuildCause());
+        TestRunType testRun = new TestRunType(ciConfig.getCiRunId(), testSuiteId, userId, ciConfig.getGitUrl(), ciConfig.getGitBranch(),
+                ciConfig.getGitCommit(), configXML, jobId, parentJobId, ciConfig.getCiParentBuild(),
+                ciConfig.getCiBuild(), initiator, workItem);
+        LOGGER.debug("Test Run details for registration:" + testRun.toString());
+        HttpClient.Response<TestRunType> response = client.startTestRun(testRun);
+        registeredTestRun = response.getObject();
+        if (registeredTestRun == null) {
+            throw new RuntimeException("Unable to register test run '" + testRun.toString() + "' for zafira service: " + client.getServiceUrl());
+        } else {
+            LOGGER.debug("Registered test run details:" + registeredTestRun.toString());
+        }
+        return registeredTestRun;
+    }
+
+    private Initiator findInitiator(CiConfig.BuildCase buildCase) {
+        Initiator initiator;
+        switch (buildCase) {
+            case UPSTREAMTRIGGER:
+                initiator = Initiator.UPSTREAM_JOB;
+                break;
+            case TIMERTRIGGER:
+            case SCMTRIGGER:
+                initiator = Initiator.SCHEDULER;
+                break;
+            case MANUALTRIGGER:
+                initiator = Initiator.HUMAN;
+                break;
+            default:
+                throw new RuntimeException("Unable to register test run for zafira service: " + client.getServiceUrl() +
+                        " due to the misses build cause: '" + buildCase + "'");
+        }
+        return initiator;
+    }
+
+    @Override
     public TestRunType registerTestRunByHUMAN(Long testSuiteId, Long userId, String configXML, Long jobId, CiConfig ciConfig, Initiator startedBy,
                                               String workItem) {
         TestRunType testRun = new TestRunType(ciConfig.getCiRunId(), testSuiteId, userId, ciConfig.getGitUrl(), ciConfig.getGitBranch(),

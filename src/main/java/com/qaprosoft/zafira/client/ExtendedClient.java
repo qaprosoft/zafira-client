@@ -79,7 +79,21 @@ public interface ExtendedClient {
     JobType registerJob(String jobUrl, Long userId);
 
     /**
+     * Registers new test run
+     * @param testSuiteId - test suited id
+     * @param userId - user id
+     * @param configXML - test config XML
+     * @param jobId - job id
+     * @param parentJobId - parent job id
+     * @param ciConfig - ci config
+     * @param workItem - test work item
+     * @return created test run
+     */
+    TestRunType registerTestRun(Long testSuiteId, Long userId, String configXML, Long jobId, Long parentJobId, CiConfig ciConfig, String workItem);
+
+    /**
      * Registers new test run triggered by human.
+     * @deprecated use {@link #registerTestRun} instead
      * @param testSuiteId - test suited id
      * @param userId - user id
      * @param configXML - test config XML
@@ -89,10 +103,12 @@ public interface ExtendedClient {
      * @param workItem - test work item
      * @return created test run
      */
+    @Deprecated
     TestRunType registerTestRunByHUMAN(Long testSuiteId, Long userId, String configXML, Long jobId, CiConfig ciConfig, Initiator startedBy, String workItem);
 
     /**
      * Registers new test run triggered by scheduler.
+     * @deprecated use {@link #registerTestRun} instead
      * @param testSuiteId - test suited id
      * @param configXML - test config XML
      * @param jobId - job id
@@ -101,10 +117,12 @@ public interface ExtendedClient {
      * @param workItem - test work item
      * @return created test run
      */
+    @Deprecated
     TestRunType registerTestRunBySCHEDULER(Long testSuiteId, String configXML, Long jobId, CiConfig ciConfig, Initiator startedBy, String workItem);
 
     /**
      * Registers new test run triggered by upstream job.
+     * @deprecated use {@link #registerTestRun} instead
      * @param testSuiteId - test suited id
      * @param configXML - test config XML
      * @param jobId - job id
@@ -114,6 +132,7 @@ public interface ExtendedClient {
      * @param workItem - test work item
      * @return created test run
      */
+    @Deprecated
     TestRunType registerTestRunUPSTREAM_JOB(Long testSuiteId, String configXML, Long jobId, Long parentJobId, CiConfig ciConfig, Initiator startedBy, String workItem);
 
     /**

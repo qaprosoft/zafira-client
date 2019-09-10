@@ -74,6 +74,11 @@ public class TestRunTypeServiceImpl implements TestRunTypeService {
     }
 
     @Override
+    public TestRunType register(long testSuiteId, long userId, long jobId, long parentJobId, ConfigurationType configuration, CiConfig ciConfig, String jiraSuiteId) {
+        return zafiraClient.registerTestRun(testSuiteId, userId, convertConfigurationToXML(configuration), jobId, parentJobId, ciConfig, jiraSuiteId);
+    }
+
+    @Override
     public TestRunType register(TestRunType testRun, CiConfig.BuildCase buildCase, long suiteId, long jobId, long userId, JobType parentJob,
                                 CiConfig ciConfig, String jiraSuiteId, ConfigurationType configuration) {
         TestRunType result;

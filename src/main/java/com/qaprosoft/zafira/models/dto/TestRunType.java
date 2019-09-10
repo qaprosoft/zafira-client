@@ -54,6 +54,28 @@ public class TestRunType extends AbstractType {
     private boolean reviewed;
 
     public TestRunType(String ciRunId, Long testSuiteId, Long userId, String scmURL, String scmBranch, String scmCommit,
+                       String configXML, Long jobId, Long upstreamJobId, Integer upstreamJobBuildNumber, Integer buildNumber,
+                       Initiator startedBy, String workItem) {
+        this.ciRunId = ciRunId;
+        this.testSuiteId = testSuiteId;
+        this.userId = userId;
+        this.scmURL = scmURL;
+        this.scmBranch = scmBranch;
+        this.scmCommit = scmCommit;
+        this.configXML = configXML;
+        this.jobId = jobId;
+        this.upstreamJobId = upstreamJobId;
+        this.upstreamJobBuildNumber = upstreamJobBuildNumber;
+        this.buildNumber = buildNumber;
+        this.startedBy = startedBy;
+        this.workItem = workItem;
+    }
+
+    /**
+     * @deprecated use {@link #TestRunType(String, Long, Long, String, String, String, String, Long, Long, Integer, Integer, Initiator, String)} instead
+     */
+    @Deprecated
+    public TestRunType(String ciRunId, Long testSuiteId, Long userId, String scmURL, String scmBranch, String scmCommit,
             String configXML, Long jobId, Integer buildNumber, Initiator startedBy, String workItem) {
         this.ciRunId = ciRunId;
         this.testSuiteId = testSuiteId;
@@ -68,9 +90,13 @@ public class TestRunType extends AbstractType {
         this.workItem = workItem;
     }
 
+    /**
+     * @deprecated use {@link #TestRunType(String, Long, Long, String, String, String, String, Long, Long, Integer, Integer, Initiator, String)} instead
+     */
+    @Deprecated
     public TestRunType(String ciRunId, Long testSuiteId, String scmURL, String scmBranch, String scmCommit,
-            String configXML, Long jobId, Long upstreamJobId, Integer upstreamJobBuildNumber, Integer buildNumber,
-            Initiator startedBy, String workItem) {
+                       String configXML, Long jobId, Long upstreamJobId, Integer upstreamJobBuildNumber, Integer buildNumber,
+                       Initiator startedBy, String workItem) {
         this.ciRunId = ciRunId;
         this.testSuiteId = testSuiteId;
         this.scmURL = scmURL;
@@ -85,6 +111,10 @@ public class TestRunType extends AbstractType {
         this.workItem = workItem;
     }
 
+    /**
+     * @deprecated use {@link #TestRunType(String, Long, Long, String, String, String, String, Long, Long, Integer, Integer, Initiator, String)} instead
+     */
+    @Deprecated
     public TestRunType(String ciRunId, Long testSuiteId, String scmURL, String scmBranch, String scmCommit,
             String configXML, Long jobId, Integer buildNumber, Initiator startedBy, String workItem) {
         this.ciRunId = ciRunId;
@@ -99,4 +129,20 @@ public class TestRunType extends AbstractType {
         this.workItem = workItem;
     }
 
+    @Override
+    public String toString() {
+        return "ciRunId: '" + ciRunId + '\'' +
+                ", testSuiteId: " + testSuiteId +
+                ", scmURL: '" + scmURL + '\'' +
+                ", scmBranch: '" + scmBranch + '\'' +
+                ", scmCommit: '" + scmCommit + '\'' +
+                ", configXML: '" + configXML + '\'' +
+                ", jobId: " + jobId +
+                ", upstreamJobId: " + upstreamJobId +
+                ", upstreamJobBuildNumber: " + upstreamJobBuildNumber +
+                ", buildNumber: " + buildNumber +
+                ", startedBy: " + startedBy +
+                ", userId: " + userId +
+                ", workItem: '" + workItem + '\'';
+    }
 }

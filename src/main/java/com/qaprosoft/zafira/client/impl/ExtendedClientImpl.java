@@ -274,16 +274,16 @@ public class ExtendedClientImpl implements ExtendedClient {
     }
 
     @Override
-    public TestType registerTestStart(String name, String group, Status status, String testArgs, Long testRunId, Long testCaseId, int retry,
+    public TestType registerTestStart(String name, String group, Status status, String testArgs, Long testRunId, Long testCaseId, int retryCount,
                                       String configXML, String[] dependsOnMethods, String ciTestId, Set<TagType> tags) {
         // TODO: remove "Set<TagType> tags" param later
         Long startTime = new Date().getTime();
 
         String testDetails = "name: %s, status: %s, testArgs: %s, testRunId: %s, testCaseId: %s, startTime: %s, retry: %d";
 
-        TestType test = new TestType(name, status, testArgs, testRunId, testCaseId, startTime, null, retry, configXML);
+        TestType test = new TestType(name, status, testArgs, testRunId, testCaseId, startTime, null, retryCount, configXML);
         LOGGER.debug("Test details for startup registration:"
-                + String.format(testDetails, name, status, testArgs, testRunId, testCaseId, startTime, retry));
+                + String.format(testDetails, name, status, testArgs, testRunId, testCaseId, startTime, retryCount));
 
         test.setCiTestId(ciTestId);
         test.setTestGroup(group);
@@ -302,11 +302,11 @@ public class ExtendedClientImpl implements ExtendedClient {
         test = response.getObject();
         if (test == null) {
             throw new RuntimeException(
-                    "Unable to register test '" + String.format(testDetails, name, status, testArgs, testRunId, testCaseId, startTime, retry)
+                    "Unable to register test '" + String.format(testDetails, name, status, testArgs, testRunId, testCaseId, startTime, retryCount)
                             + "' startup for zafira service: " + client.getServiceUrl());
         } else {
             LOGGER.debug(
-                    "Registered test startup details:" + String.format(testDetails, name, status, testArgs, testRunId, testCaseId, startTime, retry));
+                    "Registered test startup details:" + String.format(testDetails, name, status, testArgs, testRunId, testCaseId, startTime, retryCount));
         }
         return test;
     }

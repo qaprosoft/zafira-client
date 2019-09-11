@@ -61,8 +61,19 @@ public class TestRunType extends AbstractType {
      * @deprecated use {@link #builder()} instead
      */
     @Deprecated
-    public TestRunType(String ciRunId, Long testSuiteId, Long userId, String scmURL, String scmBranch, String scmCommit,
-            String configXML, Long jobId, Integer buildNumber, Initiator startedBy, String workItem) {
+    public TestRunType(
+            String ciRunId,
+            Long testSuiteId,
+            Long userId,
+            String scmURL,
+            String scmBranch,
+            String scmCommit,
+            String configXML,
+            Long jobId,
+            Integer buildNumber,
+            Initiator startedBy,
+            String workItem
+    ) {
         this.ciRunId = ciRunId;
         this.testSuiteId = testSuiteId;
         this.userId = userId;
@@ -80,9 +91,20 @@ public class TestRunType extends AbstractType {
      * @deprecated use {@link #builder()} instead
      */
     @Deprecated
-    public TestRunType(String ciRunId, Long testSuiteId, String scmURL, String scmBranch, String scmCommit,
-                       String configXML, Long jobId, Long upstreamJobId, Integer upstreamJobBuildNumber, Integer buildNumber,
-                       Initiator startedBy, String workItem) {
+    public TestRunType(
+            String ciRunId,
+            Long testSuiteId,
+            String scmURL,
+            String scmBranch,
+            String scmCommit,
+            String configXML,
+            Long jobId,
+            Long upstreamJobId,
+            Integer upstreamJobBuildNumber,
+            Integer buildNumber,
+            Initiator startedBy,
+            String workItem
+    ) {
         this.ciRunId = ciRunId;
         this.testSuiteId = testSuiteId;
         this.scmURL = scmURL;
@@ -101,8 +123,18 @@ public class TestRunType extends AbstractType {
      * @deprecated use {@link #builder()} instead
      */
     @Deprecated
-    public TestRunType(String ciRunId, Long testSuiteId, String scmURL, String scmBranch, String scmCommit,
-            String configXML, Long jobId, Integer buildNumber, Initiator startedBy, String workItem) {
+    public TestRunType(
+            String ciRunId,
+            Long testSuiteId,
+            String scmURL,
+            String scmBranch,
+            String scmCommit,
+            String configXML,
+            Long jobId,
+            Integer buildNumber,
+            Initiator startedBy,
+            String workItem
+    ) {
         this.ciRunId = ciRunId;
         this.testSuiteId = testSuiteId;
         this.scmURL = scmURL;
@@ -131,4 +163,5 @@ public class TestRunType extends AbstractType {
                 ", userId: " + userId +
                 ", workItem: '" + workItem + '\'';
     }
+
 }

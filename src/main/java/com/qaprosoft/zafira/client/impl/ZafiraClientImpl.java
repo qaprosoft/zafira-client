@@ -271,8 +271,8 @@ public class ZafiraClientImpl implements ZafiraClient {
     }
 
     @Override
-    public TestType registerTestStart(String name, String group, Status status, String testArgs, Long testRunId, Long testCaseId, int retry, String configXML, String[] dependsOnMethods, String ciTestId, Set<TagType> tags) {
-        return extendedClient.registerTestStart(name, group, status, testArgs, testRunId, testCaseId, retry, configXML, dependsOnMethods, ciTestId, tags);
+    public TestType registerTestStart(String name, String group, Status status, String testArgs, Long testRunId, Long testCaseId, int retryCount, String configXML, String[] dependsOnMethods, String ciTestId, Set<TagType> tags) {
+        return extendedClient.registerTestStart(name, group, status, testArgs, testRunId, testCaseId, retryCount, configXML, dependsOnMethods, ciTestId, tags);
     }
 
     @Override

@@ -64,6 +64,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -97,7 +98,7 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
     private JobType parentJob;
     private JobType job;
     private TestSuiteType suite;
-    private TestRunType run;
+    private static TestRunType run;
     private Map<String, TestType> registeredTests = new HashMap<>();
     private Set<String> classesToRerun = new HashSet<>();
 
@@ -590,8 +591,8 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
         return testCaseTypeService.registerTestCase(suite.getId(), primaryOwner.getId(), testCaseSecondaryOwner, testClass, testMethod);
     }
 
-    public TestRunType getTestRun() {
-        return run;
+    public static Optional<TestRunType> getTestRun() {
+        return Optional.ofNullable(run);
     }
 
 }

@@ -149,9 +149,21 @@ public class ExtendedClientImpl implements ExtendedClient {
     public TestRunType registerTestRun(Long testSuiteId, Long userId, String configXML, Long jobId, Long parentJobId, CiConfig ciConfig, String workItem) {
         TestRunType registeredTestRun;
         Initiator initiator = findInitiator(ciConfig.getCiBuildCause());
-        TestRunType testRun = new TestRunType(ciConfig.getCiRunId(), testSuiteId, userId, ciConfig.getGitUrl(), ciConfig.getGitBranch(),
-                ciConfig.getGitCommit(), configXML, jobId, parentJobId, ciConfig.getCiParentBuild(),
-                ciConfig.getCiBuild(), initiator, workItem);
+        TestRunType testRun = TestRunType.builder()
+                                         .ciRunId(ciConfig.getCiRunId())
+                                         .testSuiteId(testSuiteId)
+                                         .userId(userId)
+                                         .scmURL(ciConfig.getGitUrl())
+                                         .scmBranch(ciConfig.getGitBranch())
+                                         .scmCommit(ciConfig.getGitCommit())
+                                         .configXML(configXML)
+                                         .jobId(jobId)
+                                         .upstreamJobId(parentJobId)
+                                         .upstreamJobBuildNumber(ciConfig.getCiParentBuild())
+                                         .buildNumber(ciConfig.getCiBuild())
+                                         .startedBy(initiator)
+                                         .workItem(workItem)
+                                         .build();
         LOGGER.debug("Test Run details for registration:" + testRun.toString());
         HttpClient.Response<TestRunType> response = client.startTestRun(testRun);
         registeredTestRun = response.getObject();

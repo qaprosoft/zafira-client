@@ -19,6 +19,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.qaprosoft.zafira.models.db.Initiator;
 import com.qaprosoft.zafira.models.db.Status;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -27,6 +28,7 @@ import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @JsonInclude(Include.NON_NULL)
 public class TestRunType extends AbstractType {
@@ -53,26 +55,8 @@ public class TestRunType extends AbstractType {
     private boolean blocker;
     private boolean reviewed;
 
-    public TestRunType(String ciRunId, Long testSuiteId, Long userId, String scmURL, String scmBranch, String scmCommit,
-                       String configXML, Long jobId, Long upstreamJobId, Integer upstreamJobBuildNumber, Integer buildNumber,
-                       Initiator startedBy, String workItem) {
-        this.ciRunId = ciRunId;
-        this.testSuiteId = testSuiteId;
-        this.userId = userId;
-        this.scmURL = scmURL;
-        this.scmBranch = scmBranch;
-        this.scmCommit = scmCommit;
-        this.configXML = configXML;
-        this.jobId = jobId;
-        this.upstreamJobId = upstreamJobId;
-        this.upstreamJobBuildNumber = upstreamJobBuildNumber;
-        this.buildNumber = buildNumber;
-        this.startedBy = startedBy;
-        this.workItem = workItem;
-    }
-
     /**
-     * @deprecated use {@link #TestRunType(String, Long, Long, String, String, String, String, Long, Long, Integer, Integer, Initiator, String)} instead
+     * @deprecated use {@link #builder()} instead
      */
     @Deprecated
     public TestRunType(String ciRunId, Long testSuiteId, Long userId, String scmURL, String scmBranch, String scmCommit,
@@ -91,7 +75,7 @@ public class TestRunType extends AbstractType {
     }
 
     /**
-     * @deprecated use {@link #TestRunType(String, Long, Long, String, String, String, String, Long, Long, Integer, Integer, Initiator, String)} instead
+     * @deprecated use {@link #builder()} instead
      */
     @Deprecated
     public TestRunType(String ciRunId, Long testSuiteId, String scmURL, String scmBranch, String scmCommit,
@@ -112,7 +96,7 @@ public class TestRunType extends AbstractType {
     }
 
     /**
-     * @deprecated use {@link #TestRunType(String, Long, Long, String, String, String, String, Long, Long, Integer, Integer, Initiator, String)} instead
+     * @deprecated use {@link #builder()} instead
      */
     @Deprecated
     public TestRunType(String ciRunId, Long testSuiteId, String scmURL, String scmBranch, String scmCommit,

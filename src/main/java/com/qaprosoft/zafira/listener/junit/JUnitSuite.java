@@ -1,10 +1,24 @@
+/*******************************************************************************
+ * Copyright 2013-2019 Qaprosoft (http://www.qaprosoft.com).
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *******************************************************************************/
 package com.qaprosoft.zafira.listener.junit;
 
 import org.junit.internal.builders.AllDefaultPossibilitiesBuilder;
-import org.junit.internal.builders.JUnit4Builder;
 import org.junit.rules.ExternalResource;
 import org.junit.rules.TestRule;
-import org.junit.runner.Runner;
+import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.Suite;
 import org.junit.runners.model.InitializationError;
 
@@ -16,11 +30,18 @@ import java.util.List;
  */
 public class JUnitSuite extends Suite {
 
-    private static ListenerRegistrar listenerRegistrar;
+    private final ZafiraListener zafiraListener;
 
     public JUnitSuite(Class<?> klass) throws InitializationError {
-        super(klass, new CustomAllDefaultPossibilitiesBuilder());
-        listenerRegistrar = new ListenerRegistrar(klass);
+        super(klass, new AllDefaultPossibilitiesBuilder(true));
+        this.zafiraListener = new ZafiraListener();
+    }
+
+    @Override
+    public void run(RunNotifier notifier) {
+        notifier.addListener(zafiraListener);
+        notifier.fireTestRunStarted(getDescription());
+        super.run(notifier);
     }
 
     @Override
@@ -32,51 +53,23 @@ public class JUnitSuite extends Suite {
         return testRules;
     }
 
-    /**
-     * Class overrides {@link AllDefaultPossibilitiesBuilder} behavior to provide custom junit builder with internal listener
-     */
-    private static class CustomAllDefaultPossibilitiesBuilder extends AllDefaultPossibilitiesBuilder {
-
-        CustomAllDefaultPossibilitiesBuilder() {
-            super(true);
-        }
-
-        @Override
-        public JUnit4Builder junit4Builder() {
-            return new CustomJUnit4Builder();
-        }
-    }
-
-    /**
-     * Class overrides {@link JUnit4Builder} to provide internal listener
-     */
-    private static class CustomJUnit4Builder extends JUnit4Builder {
-
-        @Override
-        public Runner runnerForClass(Class<?> testClass) throws Throwable {
-            return super.runnerForClass(testClass);
-//            listenerRegistrar = new ListenerRegistrar(testClass);
-//            return listenerRegistrar;
-        }
-    }
-
-    private static class CustomExternalResource extends ExternalResource {
+    private class CustomExternalResource extends ExternalResource {
 
         private final Suite suite;
 
-        public CustomExternalResource(Suite suite) {
+        CustomExternalResource(Suite suite) {
             this.suite = suite;
         }
 
         @Override
         protected void before() throws Throwable {
-            listenerRegistrar.onSuiteStart(suite);
+            zafiraListener.onSuiteStart(suite);
             super.before();
         }
 
         @Override
         protected void after() {
-            listenerRegistrar.onSuiteFinish(suite);
+            zafiraListener.onSuiteFinish(suite);
             super.after();
         }
 

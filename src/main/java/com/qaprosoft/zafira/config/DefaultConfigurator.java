@@ -20,7 +20,6 @@ import com.qaprosoft.zafira.listener.adapter.TestResultAdapter;
 import com.qaprosoft.zafira.models.dto.TagType;
 import com.qaprosoft.zafira.models.dto.TestArtifactType;
 import com.qaprosoft.zafira.models.dto.config.ConfigurationType;
-import org.testng.ITestResult;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -60,8 +59,7 @@ public class DefaultConfigurator implements IConfigurator {
 
     @Override
     public String getTestName(TestResultAdapter adapter) {
-        ITestResult testResult = (ITestResult) adapter.getTestResult();
-        return testResult.getName();
+        return adapter.getName();
     }
 
     @Override

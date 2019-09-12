@@ -19,8 +19,6 @@ import java.util.Set;
 
 public interface TestResultAdapter {
 
-    Object getTestResult();
-
     String getName();
 
     Object[] getParameters();

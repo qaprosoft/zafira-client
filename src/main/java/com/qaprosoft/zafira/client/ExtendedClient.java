@@ -33,29 +33,18 @@ public interface ExtendedClient {
 
     /**
      * Registers user in Zafira, it may be a new one or existing returned by service.
-     * @param userName - in general LDAP user name
-     * @param email - user email
-     * @param firstName - user first name
-     * @param lastName - user last name
      * @return registered user
      */
     UserType registerUser(String userName, String email, String firstName, String lastName);
 
     /**
      * Registers test case in Zafira, it may be a new one or existing returned by service.
-     * @param suiteId - test suite id
-     * @param primaryOwnerId - primary owner user id
-     * @param secondaryOwnerId - secondary owner user id
-     * @param testClass - test class name
-     * @param testMethod - test method name
      * @return registered test case
      */
     TestCaseType registerTestCase(Long suiteId, Long primaryOwnerId, Long secondaryOwnerId, String testClass, String testMethod);
 
     /**
      * Registers test work items.
-     * @param testId - test id
-     * @param workItems - test work items
      * @return test for which we registers work items
      */
     TestType registerWorkItems(Long testId, List<String> workItems);
@@ -79,41 +68,33 @@ public interface ExtendedClient {
     JobType registerJob(String jobUrl, Long userId);
 
     /**
-     * Registers new test run triggered by human.
-     * @param testSuiteId - test suited id
-     * @param userId - user id
-     * @param configXML - test config XML
-     * @param jobId - job id
-     * @param ciConfig - ci config
-     * @param startedBy - user id who started the suite
-     * @param workItem - test work item
+     * Registers new test run
      * @return created test run
      */
+    TestRunType registerTestRun(Long testSuiteId, Long userId, String configXML, Long jobId, Long parentJobId, CiConfig ciConfig, String workItem);
+
+    /**
+     * Registers new test run triggered by human.
+     * @deprecated use {@link #registerTestRun} instead
+     * @return created test run
+     */
+    @Deprecated
     TestRunType registerTestRunByHUMAN(Long testSuiteId, Long userId, String configXML, Long jobId, CiConfig ciConfig, Initiator startedBy, String workItem);
 
     /**
      * Registers new test run triggered by scheduler.
-     * @param testSuiteId - test suited id
-     * @param configXML - test config XML
-     * @param jobId - job id
-     * @param ciConfig - ci config
-     * @param startedBy - user id who started the suite
-     * @param workItem - test work item
+     * @deprecated use {@link #registerTestRun} instead
      * @return created test run
      */
+    @Deprecated
     TestRunType registerTestRunBySCHEDULER(Long testSuiteId, String configXML, Long jobId, CiConfig ciConfig, Initiator startedBy, String workItem);
 
     /**
      * Registers new test run triggered by upstream job.
-     * @param testSuiteId - test suited id
-     * @param configXML - test config XML
-     * @param jobId - job id
-     * @param parentJobId - parent job id
-     * @param ciConfig - ci config
-     * @param startedBy - user id who started the suite
-     * @param workItem - test work item
+     * @deprecated use {@link #registerTestRun} instead
      * @return created test run
      */
+    @Deprecated
     TestRunType registerTestRunUPSTREAM_JOB(Long testSuiteId, String configXML, Long jobId, Long parentJobId, CiConfig ciConfig, Initiator startedBy, String workItem);
 
     /**
@@ -125,18 +106,9 @@ public interface ExtendedClient {
 
     /**
      * Registers test run in Zafira.
-     * @param name - test name
-     * @param group - test group
-     * @param status - test status
-     * @param testArgs - test args
-     * @param testRunId - test run id
-     * @param testCaseId - test case id
-     * @param retry - retry count
-     * @param dependsOnMethods - list of dependent tests
-     * @param configXML - config XML
      * @return registered test
      */
-    TestType registerTestStart(String name, String group, Status status, String testArgs, Long testRunId, Long testCaseId, int retry,
+    TestType registerTestStart(String name, String group, Status status, String testArgs, Long testRunId, Long testCaseId, int retryCount,
                                String configXML, String[] dependsOnMethods, String ciTestId, Set<TagType> tags);
 
     /**

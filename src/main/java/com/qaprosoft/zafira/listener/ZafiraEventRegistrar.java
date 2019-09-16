@@ -64,6 +64,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -97,7 +98,7 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
     private JobType parentJob;
     private JobType job;
     private TestSuiteType suite;
-    private TestRunType run;
+    private static TestRunType run;
     private Map<String, TestType> registeredTests = new HashMap<>();
     private Set<String> classesToRerun = new HashSet<>();
 
@@ -179,8 +180,9 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
                 }
                 // Register new test run
 
-                this.run = testRunTypeService.register(run, ci.getCiBuildCause(), suite.getId(), job.getId(), user.getId(), parentJob,
-                        ci, JIRA_SUITE_ID, configurator.getConfiguration());
+                Long parentJobId = parentJob != null ? parentJob.getId() : null;
+                this.run = testRunTypeService.register(suite.getId(), user.getId(), job.getId(), parentJobId,
+                        configurator.getConfiguration(), ci, JIRA_SUITE_ID);
             }
 
             if (this.run == null) {
@@ -587,6 +589,10 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
         String testMethod = configurator.getTestMethodName(adapter);
         Long testCaseSecondaryOwner = secondaryOwner != null ? secondaryOwner.getId() : null;
         return testCaseTypeService.registerTestCase(suite.getId(), primaryOwner.getId(), testCaseSecondaryOwner, testClass, testMethod);
+    }
+
+    public static Optional<TestRunType> getTestRun() {
+        return Optional.ofNullable(run);
     }
 
 }

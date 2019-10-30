@@ -26,5 +26,22 @@ import lombok.Setter;
 @AllArgsConstructor
 public class FileUploadType {
 
-    private String type;
+    private Type type;
+
+    public enum Type {
+        USERS("/users"),
+        COMMON("/common"),
+        VIDEOS("/artifacts/videos"),
+        SCREENSHOTS("/artifacts/screenshots");
+
+        private final String path;
+
+        Type(String path) {
+            this.path = path;
+        }
+
+        public String getPath() {
+            return path;
+        }
+    }
 }

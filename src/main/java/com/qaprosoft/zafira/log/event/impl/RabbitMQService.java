@@ -33,8 +33,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
-import static com.qaprosoft.zafira.models.db.Setting.Tool.RABBITMQ;
-
 public class RabbitMQService implements AmqpService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RabbitMQService.class);
@@ -185,7 +183,7 @@ public class RabbitMQService implements AmqpService {
 
     private boolean initAuthProperties() {
         if(client != null) {
-            HttpClient.Response<List<HashMap<String, String>>> rs = client.getToolSettings(RABBITMQ.name(), true);
+            HttpClient.Response<List<HashMap<String, String>>> rs = client.getToolSettings("RABBITMQ", true);
             if (rs.getStatus() == 200) {
                 List<HashMap<String, String>> settings = rs.getObject();
                 if (settings != null) {
@@ -197,22 +195,23 @@ public class RabbitMQService implements AmqpService {
     }
 
     private void initAuthProperty(HashMap<String, String> settings) {
-        Setting.SettingType settingType = Setting.SettingType.valueOf(settings.get("name"));
-        switch (settingType) {
-            case RABBITMQ_HOST:
-                this.host = settings.get("value");
+        String settingName = settings.get("name");
+        String settingValue = settings.get("value");
+        switch (settingName) {
+            case "RABBITMQ_HOST":
+                this.host = settingValue;
                 break;
-            case RABBITMQ_PORT:
-                this.port = Integer.valueOf(settings.get("value"));
+            case "RABBITMQ_PORT":
+                this.port = Integer.parseInt(settingValue);
                 break;
-            case RABBITMQ_USER:
-                this.username = settings.get("value");
+            case "RABBITMQ_USER":
+                this.username = settingValue;
                 break;
-            case RABBITMQ_PASSWORD:
-                this.password = settings.get("value");
+            case "RABBITMQ_PASSWORD":
+                this.password = settingValue;
                 break;
-            case RABBITMQ_ENABLED:
-                this.connected = Boolean.valueOf(settings.get("value"));
+            case "RABBITMQ_ENABLED":
+                this.connected = Boolean.parseBoolean(settingValue);
                 break;
             default:
                 break;

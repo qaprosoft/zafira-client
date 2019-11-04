@@ -15,6 +15,15 @@
  *******************************************************************************/
 package com.qaprosoft.zafira.models.dto.aws;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class FileUploadType {
 
     private Type type;
@@ -34,20 +43,5 @@ public class FileUploadType {
         public String getPath() {
             return path;
         }
-    }
-
-    public FileUploadType() {
-    }
-
-    public FileUploadType(Type type) {
-        this.type = type;
-    }
-
-    public Type getType() {
-        return type;
-    }
-
-    public void setType(Type type) {
-        this.type = type;
     }
 }

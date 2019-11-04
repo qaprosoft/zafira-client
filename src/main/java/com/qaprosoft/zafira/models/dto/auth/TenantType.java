@@ -32,14 +32,4 @@ public class TenantType {
     private boolean multitenant;
     private boolean useArtifactsProxy;
 
-    public TenantType(String tenant) {
-        this.tenant = tenant;
-    }
-
-    public TenantType(String tenant, String serviceUrl, Boolean useArtifactsProxy) {
-        this.tenant = tenant;
-        this.serviceUrl = serviceUrl;
-        this.useArtifactsProxy = useArtifactsProxy;
-    }
-
 }

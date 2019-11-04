@@ -20,8 +20,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -29,28 +27,7 @@ import java.util.stream.Collectors;
 public class Group extends AbstractEntity {
 
     private String name;
-    private Role role;
     private Boolean invitable;
     private List<User> users;
-    private Set<Permission> permissions;
 
-    public Group(String name, Role role, Set<Permission> permissions) {
-        this.name = name;
-        this.role = role;
-        this.permissions = permissions;
-    }
-
-    public enum Role {
-        ROLE_USER,
-        ROLE_ADMIN
-    }
-
-    public Set<String> getPermissionNames() {
-        return this.permissions.stream().map(permission -> permission.getName().name())
-                .collect(Collectors.toSet());
-    }
-
-    public boolean hasPermissions() {
-        return this.permissions != null && this.permissions.size() > 0;
-    }
 }

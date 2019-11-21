@@ -24,14 +24,8 @@ import lombok.Setter;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserPreference extends AbstractEntity {
 
-    private Name name;
+    private String name;
     private String value;
     private Long userId;
-
-    public enum Name {
-        DEFAULT_DASHBOARD,
-        REFRESH_INTERVAL,
-        THEME
-    }
 
 }

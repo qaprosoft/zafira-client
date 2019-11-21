@@ -18,9 +18,6 @@ package com.qaprosoft.zafira.models.dto.user;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.qaprosoft.zafira.models.db.Group.Role;
-import com.qaprosoft.zafira.models.db.Permission;
-import com.qaprosoft.zafira.models.db.User;
 import com.qaprosoft.zafira.models.db.UserPreference;
 import com.qaprosoft.zafira.models.dto.AbstractType;
 import lombok.Getter;
@@ -33,9 +30,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -51,12 +46,8 @@ public class UserType extends AbstractType {
     private String lastName;
     private String password;
     private String photoURL;
-    private List<Role> roles = new ArrayList<>();
-    private Set<Permission> permissions = new HashSet<>();
     private List<UserPreference> preferences = new ArrayList<>();
     private Date lastLogin;
-    private User.Source source;
-    private User.Status status;
 
     public UserType(String username, String email, String firstName, String lastName) {
         this.username = username;

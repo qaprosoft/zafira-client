@@ -45,6 +45,12 @@ public interface TestRunTypeService {
 
     List<TestType> findTestRunResults(long id);
 
+    TestRunType register(Long testSuiteId, Long userId, Long jobId, Long parentJobId, ConfigurationType configuration, CiConfig ciConfig, String jiraSuiteId);
+
+    /**
+     * @deprecated use ${{@link #register(Long, Long, Long, Long, ConfigurationType, CiConfig, String)}} instead
+     */
+    @Deprecated
     TestRunType register(TestRunType testRun, CiConfig.BuildCase buildCase, long suiteId, long jobId, long userId, JobType parentJob,
                          CiConfig ciConfig, String jiraSuiteId, ConfigurationType configuration);
 

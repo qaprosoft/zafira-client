@@ -33,6 +33,7 @@ public class LogAppender extends AppenderSkeleton {
 
     public LogAppender() {
         this.logAppenderService = new LogAppenderServiceImpl();
+        Runtime.getRuntime().addShutdownHook(new Thread(this::onShutdownHook));
     }
 
     /**
@@ -65,11 +66,15 @@ public class LogAppender extends AppenderSkeleton {
         }
     }
 
-    /**
-     * Closes the channel and connection to RabbitMQ when shutting down the appender
-     */
     @Override
     public void close() {
+    }
+
+    /**
+     * Closes the channel and connection to RabbitMQ when shutting down the appender
+     * Use it instead of {@link #close()} `cause it uses GC which is unstable in mandatory cases
+     */
+    private void onShutdownHook() {
         try {
             logAppenderService.onClose();
         } catch (IOException | TimeoutException e) {

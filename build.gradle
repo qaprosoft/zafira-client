@@ -27,7 +27,7 @@ ext {
     testngVersion = '6.14.3'
     junitVersion = '4.12'
     apacheConfiguration2Version = '2.5'
-    apacheCommonsText = '1.6'
+    apacheCommonsText = '1.8'
     rabbitmqVersion = '5.7.2'
     log4jVersion = '1.2.17'
     awsVersion = '1.11.589'

@@ -82,7 +82,6 @@ task javadocJar(type: Jar) {
     archiveClassifier = 'javadoc'
 }
 
-/*
 publishing {
     publications {
         mavenJava(MavenPublication) {
@@ -139,4 +138,3 @@ publishing {
 signing {
     sign publishing.publications.mavenJava
 }
-*/

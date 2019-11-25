@@ -20,7 +20,7 @@ import java.util.UUID;
 public enum CiConfiguration implements Configuration {
 
     CI_RUN_ID("ci_run_id", UUID.randomUUID().toString(), String.class),
-    CI_URL("ci_url", "http://localhost:8080/job/unavailable", String.class),
+    CI_URL("ci_url", "local", String.class),
     CI_BUILD("ci_build", null, Integer.class),
     CI_BUILD_CASE("ci_build_cause", "MANUALTRIGGER", String.class),
     CI_PARENT_URL("ci_parent_url", null, String.class),

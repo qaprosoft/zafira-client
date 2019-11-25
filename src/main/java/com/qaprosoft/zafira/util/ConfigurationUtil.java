@@ -42,7 +42,7 @@ public class ConfigurationUtil {
     public static CiConfig retrieveCiConfig(CombinedConfiguration config) {
         return new CiConfig.Builder()
                 .setCiRunId(config.getString("ci_run_id", UUID.randomUUID().toString()))
-                .setCiUrl(config.getString("ci_url", "local"))
+                .setCiUrl(config.getString("ci_url", "http://localhost:8080/job/local"))
                 .setCiBuild(config.getString("ci_build", null))
                 .setCiBuildCause(config.getString("ci_build_cause", "MANUALTRIGGER"))
                 .setCiParentUrl(config.getString("ci_parent_url", null))

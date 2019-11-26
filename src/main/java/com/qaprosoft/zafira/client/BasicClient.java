@@ -16,6 +16,7 @@
 package com.qaprosoft.zafira.client;
 
 import com.qaprosoft.zafira.client.impl.ZafiraClientImpl;
+import com.qaprosoft.zafira.models.db.WorkItem;
 import com.qaprosoft.zafira.models.dto.JobType;
 import com.qaprosoft.zafira.models.dto.ProjectType;
 import com.qaprosoft.zafira.models.dto.TestArtifactType;
@@ -71,6 +72,8 @@ public interface BasicClient {
     void deleteTest(long id);
 
     HttpClient.Response<TestType> createTestWorkItems(long testId, List<String> workItems);
+
+    HttpClient.Response<WorkItem> createOrUpdateTestWorkItem(long testId, WorkItem workItem);
 
     /**
      * Attaches test artifact like logs or demo URLs.

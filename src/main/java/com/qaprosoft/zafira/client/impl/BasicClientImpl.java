@@ -17,6 +17,7 @@ package com.qaprosoft.zafira.client.impl;
 
 import com.qaprosoft.zafira.client.BasicClient;
 import com.qaprosoft.zafira.client.Path;
+import com.qaprosoft.zafira.models.db.WorkItem;
 import com.qaprosoft.zafira.models.dto.JobType;
 import com.qaprosoft.zafira.models.dto.ProjectType;
 import com.qaprosoft.zafira.models.dto.TestArtifactType;
@@ -61,6 +62,7 @@ public class BasicClientImpl implements BasicClient {
     private static final String ERR_MSG_FINISH_TEST = "Unable to finish test";
     private static final String ERR_MSG_DELETE_TEST = "Unable to delete test";
     private static final String ERR_MSG_CREATE_TEST_WORK_ITEMS = "Unable to create test work items";
+    private static final String ERR_MSG_CREATE_TEST_WORK_ITEM = "Unable to create test work item";
     private static final String ERR_MSG_ADD_TEST_ARTIFACT = "Unable to add test artifact";
     private static final String ERR_MSG_CREATE_TEST_CASE = "Unable to create test case";
     private static final String ERR_MSG_CREATE_TEST_CASES_BATCH = "Unable to create test cases";
@@ -233,6 +235,14 @@ public class BasicClientImpl implements BasicClient {
                          .withAuthorization(authToken, project)
                          .onFailure(ERR_MSG_CREATE_TEST_WORK_ITEMS)
                          .post(TestType.class, workItems);
+    }
+
+    @Override
+    public HttpClient.Response<WorkItem> createOrUpdateTestWorkItem(long testId, WorkItem workItem) {
+        return HttpClient.uri(Path.TEST_WORK_ITEM_PATH, serviceURL, testId)
+                         .withAuthorization(authToken, project)
+                         .onFailure(ERR_MSG_CREATE_TEST_WORK_ITEM)
+                         .post(WorkItem.class, workItem);
     }
 
     @Override

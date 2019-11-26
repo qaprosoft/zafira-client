@@ -23,6 +23,7 @@ import com.qaprosoft.zafira.client.ZafiraClient;
 import com.qaprosoft.zafira.config.CiConfig;
 import com.qaprosoft.zafira.models.db.Initiator;
 import com.qaprosoft.zafira.models.db.Status;
+import com.qaprosoft.zafira.models.db.WorkItem;
 import com.qaprosoft.zafira.models.dto.JobType;
 import com.qaprosoft.zafira.models.dto.ProjectType;
 import com.qaprosoft.zafira.models.dto.TagType;
@@ -151,6 +152,11 @@ public class ZafiraClientImpl implements ZafiraClient {
     }
 
     @Override
+    public HttpClient.Response<WorkItem> createOrUpdateTestWorkItem(long testId, WorkItem workItem) {
+        return basicClient.createOrUpdateTestWorkItem(testId, workItem);
+    }
+
+    @Override
     public void addTestArtifact(TestArtifactType artifact) {
         basicClient.addTestArtifact(artifact);
     }
@@ -233,6 +239,11 @@ public class ZafiraClientImpl implements ZafiraClient {
     @Override
     public TestType registerWorkItems(Long testId, List<String> workItems) {
         return extendedClient.registerWorkItems(testId, workItems);
+    }
+
+    @Override
+    public WorkItem registerWorkItem(Long testId, WorkItem workItem) {
+        return extendedClient.registerWorkItem(testId, workItem);
     }
 
     @Override

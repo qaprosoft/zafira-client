@@ -595,4 +595,8 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
         return Optional.ofNullable(run);
     }
 
+    public static Optional<TestType> getTest() {
+        return Optional.ofNullable(threadTest.get());
+    }
+
 }

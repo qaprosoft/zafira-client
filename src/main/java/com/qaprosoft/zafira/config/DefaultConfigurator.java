@@ -17,7 +17,7 @@ package com.qaprosoft.zafira.config;
 
 import com.qaprosoft.zafira.listener.adapter.SuiteAdapter;
 import com.qaprosoft.zafira.listener.adapter.TestResultAdapter;
-import com.qaprosoft.zafira.models.db.WorkItem;
+import com.qaprosoft.zafira.models.db.workitem.BaseWorkItem;
 import com.qaprosoft.zafira.models.dto.TagType;
 import com.qaprosoft.zafira.models.dto.TestArtifactType;
 import com.qaprosoft.zafira.models.dto.config.ConfigurationType;
@@ -81,7 +81,7 @@ public class DefaultConfigurator implements IConfigurator {
     }
 
     @Override
-    public WorkItem getTestKnownIssue(TestResultAdapter adapter) {
+    public BaseWorkItem getTestKnownIssue(TestResultAdapter adapter) {
         return null;
     }
 

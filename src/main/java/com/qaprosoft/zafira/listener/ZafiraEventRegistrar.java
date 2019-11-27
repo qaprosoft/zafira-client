@@ -40,7 +40,8 @@ import com.qaprosoft.zafira.listener.service.impl.TestSuiteTypeServiceImpl;
 import com.qaprosoft.zafira.listener.service.impl.TestTypeServiceImpl;
 import com.qaprosoft.zafira.listener.service.impl.UserTypeServiceImpl;
 import com.qaprosoft.zafira.models.db.Status;
-import com.qaprosoft.zafira.models.db.WorkItem;
+import com.qaprosoft.zafira.models.db.workitem.BaseWorkItem;
+import com.qaprosoft.zafira.models.db.workitem.WorkItem;
 import com.qaprosoft.zafira.models.dto.JobType;
 import com.qaprosoft.zafira.models.dto.TestCaseType;
 import com.qaprosoft.zafira.models.dto.TestRunType;
@@ -335,7 +336,7 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
             finishTest(adapter, Status.SKIPPED);
 
             // After test finish (required)
-            registerKnownIssue(adapter, test.getId());
+            registerKnownIssue(adapter, test.getId(), test.getTestCaseId());
         } catch (Throwable e) {
             LOGGER.error("Undefined error during test case/method finish!", e);
         }
@@ -532,7 +533,7 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
 
             // After test finish (required)
             TestType test = threadTest.get();
-            registerKnownIssue(adapter, test.getId());
+            registerKnownIssue(adapter, test.getId(), test.getTestCaseId());
         } catch (Throwable e) {
             LOGGER.error("Undefined error during test case/method finish!", e);
         }
@@ -579,9 +580,11 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
         testTypeService.finishTest(finishedTest);
     }
 
-    private void registerKnownIssue(TestResultAdapter adapter, Long testId) {
-        WorkItem workItem = configurator.getTestKnownIssue(adapter);
-        if (workItem != null) {
+    private void registerKnownIssue(TestResultAdapter adapter, Long testId, Long testCaseId) {
+        BaseWorkItem knownIssue = configurator.getTestKnownIssue(adapter);
+        if (knownIssue != null) {
+            WorkItem workItem = new WorkItem(knownIssue.getJiraId(), knownIssue.getDescription(), testCaseId, WorkItem.Type.BUG);
+            workItem.setBlocker(knownIssue.isBlocker());
             testTypeService.registerKnownIssue(testId, workItem);
         }
     }

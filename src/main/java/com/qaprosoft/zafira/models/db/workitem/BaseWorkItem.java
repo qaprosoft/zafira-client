@@ -13,44 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package com.qaprosoft.zafira.models.db;
+package com.qaprosoft.zafira.models.db.workitem;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.qaprosoft.zafira.models.db.AbstractEntity;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@JsonInclude(Include.NON_NULL)
-public class WorkItem extends AbstractEntity {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class BaseWorkItem extends AbstractEntity {
 
     private String jiraId;
     private String description;
     private boolean blocker;
-    private Long testCaseId;
-    private Type type;
 
-    public WorkItem(String jiraId, Long testCaseId, Type type) {
+    public BaseWorkItem(String jiraId) {
         this.jiraId = jiraId;
-        this.testCaseId = testCaseId;
-        this.type = type;
     }
 
-    public WorkItem(String jiraId, String description, Long testCaseId, Type type) {
-        this.jiraId = jiraId;
+    public BaseWorkItem(String jiraId, String description) {
+        this(jiraId);
         this.description = description;
-        this.testCaseId = testCaseId;
-        this.type = type;
     }
 
-    public enum Type {
-        TASK,
-        BUG,
-        COMMENT,
-        EVENT
+    public BaseWorkItem(String jiraId, String description, boolean blocker) {
+        this(jiraId, description);
+        this.blocker = blocker;
     }
-
 }

@@ -17,7 +17,7 @@ package com.qaprosoft.zafira.client.impl;
 
 import com.qaprosoft.zafira.client.BasicClient;
 import com.qaprosoft.zafira.client.Path;
-import com.qaprosoft.zafira.models.db.WorkItem;
+import com.qaprosoft.zafira.models.db.workitem.WorkItem;
 import com.qaprosoft.zafira.models.dto.JobType;
 import com.qaprosoft.zafira.models.dto.ProjectType;
 import com.qaprosoft.zafira.models.dto.TestArtifactType;

@@ -16,7 +16,7 @@
 package com.qaprosoft.zafira.listener.service;
 
 import com.qaprosoft.zafira.models.db.Status;
-import com.qaprosoft.zafira.models.db.WorkItem;
+import com.qaprosoft.zafira.models.db.workitem.WorkItem;
 import com.qaprosoft.zafira.models.dto.TagType;
 import com.qaprosoft.zafira.models.dto.TestType;
 

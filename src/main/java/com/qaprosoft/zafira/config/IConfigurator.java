@@ -17,7 +17,7 @@ package com.qaprosoft.zafira.config;
 
 import com.qaprosoft.zafira.listener.adapter.SuiteAdapter;
 import com.qaprosoft.zafira.listener.adapter.TestResultAdapter;
-import com.qaprosoft.zafira.models.db.WorkItem;
+import com.qaprosoft.zafira.models.db.workitem.BaseWorkItem;
 import com.qaprosoft.zafira.models.dto.TagType;
 import com.qaprosoft.zafira.models.dto.TestArtifactType;
 import com.qaprosoft.zafira.models.dto.config.ConfigurationType;
@@ -53,7 +53,7 @@ public interface IConfigurator {
 
     List<String> getTestWorkItems(TestResultAdapter adapter);
 
-    WorkItem getTestKnownIssue(TestResultAdapter adapter);
+    BaseWorkItem getTestKnownIssue(TestResultAdapter adapter);
 
     int getRunCount(TestResultAdapter adapter);
 

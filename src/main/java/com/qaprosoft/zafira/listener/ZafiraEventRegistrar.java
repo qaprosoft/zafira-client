@@ -40,6 +40,7 @@ import com.qaprosoft.zafira.listener.service.impl.TestSuiteTypeServiceImpl;
 import com.qaprosoft.zafira.listener.service.impl.TestTypeServiceImpl;
 import com.qaprosoft.zafira.listener.service.impl.UserTypeServiceImpl;
 import com.qaprosoft.zafira.models.db.Status;
+import com.qaprosoft.zafira.models.db.WorkItem;
 import com.qaprosoft.zafira.models.dto.JobType;
 import com.qaprosoft.zafira.models.dto.TestCaseType;
 import com.qaprosoft.zafira.models.dto.TestRunType;
@@ -332,6 +333,9 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
             }
 
             finishTest(adapter, Status.SKIPPED);
+
+            // After test finish (required)
+            registerKnownIssue(adapter, test.getId());
         } catch (Throwable e) {
             LOGGER.error("Undefined error during test case/method finish!", e);
         }
@@ -525,6 +529,10 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
 
         try {
             finishTest(adapter, Status.FAILED);
+
+            // After test finish (required)
+            TestType test = threadTest.get();
+            registerKnownIssue(adapter, test.getId());
         } catch (Throwable e) {
             LOGGER.error("Undefined error during test case/method finish!", e);
         }
@@ -569,6 +577,13 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
         String fullStackTrace = getFullStackTrace(adapter);
         TestType finishedTest = populateTestResult(adapter, status, fullStackTrace);
         testTypeService.finishTest(finishedTest);
+    }
+
+    private void registerKnownIssue(TestResultAdapter adapter, Long testId) {
+        WorkItem workItem = configurator.getTestKnownIssue(adapter);
+        if (workItem != null) {
+            testTypeService.registerKnownIssue(testId, workItem);
+        }
     }
 
     private TestCaseType registerTestCase(TestResultAdapter adapter) {

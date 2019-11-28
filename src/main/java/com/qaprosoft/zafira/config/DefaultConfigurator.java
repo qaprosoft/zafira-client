@@ -86,6 +86,10 @@ public class DefaultConfigurator implements IConfigurator {
     }
 
     @Override
+    public void clearTestWorkItemArtifacts() {
+    }
+
+    @Override
     public Map<String, Long> getTestMetrics(TestResultAdapter adapter) {
         return null;
     }

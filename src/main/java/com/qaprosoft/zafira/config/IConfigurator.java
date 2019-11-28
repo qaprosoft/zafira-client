@@ -55,6 +55,8 @@ public interface IConfigurator {
 
     BaseWorkItem getTestKnownIssue(TestResultAdapter adapter);
 
+    void clearTestWorkItemArtifacts();
+
     int getRunCount(TestResultAdapter adapter);
 
     Map<String, Long> getTestMetrics(TestResultAdapter adapter);

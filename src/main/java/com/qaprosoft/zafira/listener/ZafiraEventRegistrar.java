@@ -586,6 +586,7 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
             workItem.setBlocker(knownIssue.isBlocker());
             testTypeService.registerKnownIssue(testId, workItem);
         }
+        configurator.clearTestWorkItemArtifacts();
     }
 
     private TestCaseType registerTestCase(TestResultAdapter adapter) {

@@ -574,7 +574,7 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
         TestType finishedTest = populateTestResult(adapter, status, fullStackTrace);
         testTypeService.finishTest(finishedTest);
 
-        if (Arrays.asList(FAILED, SKIPPED).contains(status)) {
+        if (FAILED.equals(status) || SKIPPED.equals(status)) {
             registerKnownIssue(adapter, finishedTest.getId(), finishedTest.getTestCaseId());
         }
     }

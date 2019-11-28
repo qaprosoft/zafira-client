@@ -72,6 +72,8 @@ import java.util.UUID;
 
 import static com.qaprosoft.zafira.client.ClientDefaults.USER;
 import static com.qaprosoft.zafira.config.CiConfig.BuildCase.UPSTREAMTRIGGER;
+import static com.qaprosoft.zafira.models.db.Status.FAILED;
+import static com.qaprosoft.zafira.models.db.Status.SKIPPED;
 
 /**
  * Registers events to Zafira via adapters
@@ -328,15 +330,12 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
 
                 String[] dependsOnMethods = adapter.getMethodAdapter().getMethodDependsOnMethods();
 
-                test = testTypeService.registerTestStart(testName, group, Status.SKIPPED, testArgs, run.getId(), testCase.getId(),
+                test = testTypeService.registerTestStart(testName, group, SKIPPED, testArgs, run.getId(), testCase.getId(),
                         configurator.getRunCount(adapter), convertToXML(configurator.getConfiguration()), dependsOnMethods, getThreadCiTestId(), configurator.getTestTags(adapter));
                 threadTest.set(test);
             }
 
-            finishTest(adapter, Status.SKIPPED);
-
-            // After test finish (required)
-            registerKnownIssue(adapter, test.getId(), test.getTestCaseId());
+            finishTest(adapter, SKIPPED);
         } catch (Throwable e) {
             LOGGER.error("Undefined error during test case/method finish!", e);
         }
@@ -529,11 +528,7 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
             return;
 
         try {
-            finishTest(adapter, Status.FAILED);
-
-            // After test finish (required)
-            TestType test = threadTest.get();
-            registerKnownIssue(adapter, test.getId(), test.getTestCaseId());
+            finishTest(adapter, FAILED);
         } catch (Throwable e) {
             LOGGER.error("Undefined error during test case/method finish!", e);
         }
@@ -578,6 +573,10 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
         String fullStackTrace = getFullStackTrace(adapter);
         TestType finishedTest = populateTestResult(adapter, status, fullStackTrace);
         testTypeService.finishTest(finishedTest);
+
+        if (Arrays.asList(FAILED, SKIPPED).contains(status)) {
+            registerKnownIssue(adapter, finishedTest.getId(), finishedTest.getTestCaseId());
+        }
     }
 
     private void registerKnownIssue(TestResultAdapter adapter, Long testId, Long testCaseId) {

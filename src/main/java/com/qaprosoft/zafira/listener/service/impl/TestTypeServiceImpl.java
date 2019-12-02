@@ -15,15 +15,15 @@
  *******************************************************************************/
 package com.qaprosoft.zafira.listener.service.impl;
 
+import java.util.List;
+import java.util.Set;
+
 import com.qaprosoft.zafira.client.ZafiraClient;
 import com.qaprosoft.zafira.listener.service.TestTypeService;
 import com.qaprosoft.zafira.models.db.Status;
 import com.qaprosoft.zafira.models.dto.TagType;
 import com.qaprosoft.zafira.models.dto.TestType;
 import com.qaprosoft.zafira.util.http.HttpClient;
-
-import java.util.List;
-import java.util.Set;
 
 public class TestTypeServiceImpl implements TestTypeService {
 

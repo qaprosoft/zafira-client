@@ -15,20 +15,20 @@
  *******************************************************************************/
 package com.qaprosoft.zafira.models.dto;
 
+import javax.validation.constraints.NotNull;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @JsonInclude(Include.NON_NULL)
 public class TestCaseType extends AbstractType {
-    private static final long serialVersionUID = 4361075320159665047L;
     @NotNull
     private String testClass;
     @NotNull

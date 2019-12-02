@@ -15,6 +15,30 @@
  *******************************************************************************/
 package com.qaprosoft.zafira.listener;
 
+import static com.qaprosoft.zafira.client.ClientDefaults.USER;
+import static com.qaprosoft.zafira.config.CiConfig.BuildCase.UPSTREAMTRIGGER;
+
+import java.io.StringWriter;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+
+import org.apache.commons.configuration2.CombinedConfiguration;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.qaprosoft.zafira.client.ZafiraClient;
 import com.qaprosoft.zafira.client.ZafiraSingleton;
 import com.qaprosoft.zafira.config.CiConfig;
@@ -48,28 +72,6 @@ import com.qaprosoft.zafira.models.dto.TestType;
 import com.qaprosoft.zafira.models.dto.config.ConfigurationType;
 import com.qaprosoft.zafira.models.dto.user.UserType;
 import com.qaprosoft.zafira.util.ConfigurationUtil;
-import org.apache.commons.configuration2.CombinedConfiguration;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import java.io.StringWriter;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
-
-import static com.qaprosoft.zafira.client.ClientDefaults.USER;
-import static com.qaprosoft.zafira.config.CiConfig.BuildCase.UPSTREAMTRIGGER;
 
 /**
  * Registers events to Zafira via adapters

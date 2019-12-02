@@ -15,15 +15,15 @@
  *******************************************************************************/
 package com.qaprosoft.zafira.config;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import com.qaprosoft.zafira.listener.adapter.SuiteAdapter;
 import com.qaprosoft.zafira.listener.adapter.TestResultAdapter;
 import com.qaprosoft.zafira.models.dto.TagType;
 import com.qaprosoft.zafira.models.dto.TestArtifactType;
 import com.qaprosoft.zafira.models.dto.config.ConfigurationType;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Interface provided to perform better integration with Zafira reporting tool.

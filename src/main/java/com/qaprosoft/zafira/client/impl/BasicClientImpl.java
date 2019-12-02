@@ -15,6 +15,17 @@
  *******************************************************************************/
 package com.qaprosoft.zafira.client.impl;
 
+import static com.qaprosoft.zafira.client.ClientDefaults.PROJECT;
+import static com.qaprosoft.zafira.client.ClientDefaults.USER;
+import static com.qaprosoft.zafira.util.AsyncUtil.get;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.qaprosoft.zafira.client.BasicClient;
 import com.qaprosoft.zafira.client.Path;
 import com.qaprosoft.zafira.models.dto.JobType;
@@ -31,17 +42,8 @@ import com.qaprosoft.zafira.models.dto.auth.RefreshTokenType;
 import com.qaprosoft.zafira.models.dto.auth.TenantType;
 import com.qaprosoft.zafira.models.dto.user.UserType;
 import com.qaprosoft.zafira.util.http.HttpClient;
-import org.apache.commons.lang3.StringUtils;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-
-import static com.qaprosoft.zafira.client.ClientDefaults.PROJECT;
-import static com.qaprosoft.zafira.client.ClientDefaults.USER;
-import static com.qaprosoft.zafira.util.AsyncUtil.get;
-
+@SuppressWarnings("rawtypes")
 public class BasicClientImpl implements BasicClient {
 
     private static final String ERR_MSG_PING = "Unable to send ping";
@@ -88,7 +90,7 @@ public class BasicClientImpl implements BasicClient {
 
     @Override
     public boolean isAvailable() {
-        HttpClient.Response response = HttpClient.uri(Path.STATUS_PATH, serviceURL)
+		HttpClient.Response response = HttpClient.uri(Path.STATUS_PATH, serviceURL)
                                                  .onFailure(ERR_MSG_PING)
                                                  .get(String.class);
         return response.getStatus() == 200;

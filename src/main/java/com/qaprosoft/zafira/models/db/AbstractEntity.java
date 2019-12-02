@@ -15,11 +15,11 @@
  *******************************************************************************/
 package com.qaprosoft.zafira.models.db;
 
+import java.util.Date;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.Date;
 
 /**
  * AbstractEntity - base for all domains.

@@ -15,10 +15,13 @@
  *******************************************************************************/
 package com.qaprosoft.zafira.listener.adapter.impl;
 
-import com.qaprosoft.zafira.listener.adapter.MethodAdapter;
-import com.qaprosoft.zafira.listener.adapter.SuiteAdapter;
-import com.qaprosoft.zafira.listener.adapter.TestResultAdapter;
-import com.qaprosoft.zafira.listener.adapter.TestResultStatus;
+import static com.qaprosoft.zafira.listener.adapter.TestResultStatus.UNKNOWN;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.testng.ITestNGMethod;
 import org.testng.ITestResult;
 import org.testng.SkipException;
@@ -29,12 +32,10 @@ import org.testng.internal.TestResult;
 import org.testng.xml.XmlClass;
 import org.testng.xml.XmlSuite;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import static com.qaprosoft.zafira.listener.adapter.TestResultStatus.UNKNOWN;
+import com.qaprosoft.zafira.listener.adapter.MethodAdapter;
+import com.qaprosoft.zafira.listener.adapter.SuiteAdapter;
+import com.qaprosoft.zafira.listener.adapter.TestResultAdapter;
+import com.qaprosoft.zafira.listener.adapter.TestResultStatus;
 
 public class TestResultAdapterImpl implements TestResultAdapter {
 

@@ -15,6 +15,12 @@
  *******************************************************************************/
 package com.qaprosoft.zafira.client.impl;
 
+import java.io.File;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
 import com.google.api.services.sheets.v4.Sheets;
 import com.qaprosoft.zafira.client.BasicClient;
 import com.qaprosoft.zafira.client.ExtendedClient;
@@ -36,12 +42,6 @@ import com.qaprosoft.zafira.models.dto.auth.AuthTokenType;
 import com.qaprosoft.zafira.models.dto.auth.TenantType;
 import com.qaprosoft.zafira.models.dto.user.UserType;
 import com.qaprosoft.zafira.util.http.HttpClient;
-
-import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
 public class ZafiraClientImpl implements ZafiraClient {
 

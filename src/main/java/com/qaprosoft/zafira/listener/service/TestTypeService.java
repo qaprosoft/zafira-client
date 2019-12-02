@@ -15,12 +15,12 @@
  *******************************************************************************/
 package com.qaprosoft.zafira.listener.service;
 
+import java.util.List;
+import java.util.Set;
+
 import com.qaprosoft.zafira.models.db.Status;
 import com.qaprosoft.zafira.models.dto.TagType;
 import com.qaprosoft.zafira.models.dto.TestType;
-
-import java.util.List;
-import java.util.Set;
 
 public interface TestTypeService {
 

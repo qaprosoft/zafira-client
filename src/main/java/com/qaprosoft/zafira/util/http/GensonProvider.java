@@ -15,10 +15,10 @@
  *******************************************************************************/
 package com.qaprosoft.zafira.util.http;
 
-import com.owlike.genson.Genson;
-
 import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Provider;
+
+import com.owlike.genson.Genson;
 
 /**
  * GensonProvider - allows to deserialize timestamp to Date.

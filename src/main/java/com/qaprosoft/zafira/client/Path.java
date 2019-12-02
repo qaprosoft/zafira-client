@@ -41,13 +41,7 @@ public enum Path {
     AMAZON_SESSION_CREDENTIALS_PATH("/api/settings/amazon/creds"),
     GOOGLE_SESSION_CREDENTIALS_PATH("/api/settings/google/creds"),
     TENANT_TYPE_PATH("/api/auth/tenant"),
-    PROJECTS_PATH("/api/projects/%s"),
-
-    DEVICES_PATH("/api/v1/devices"),
-    DEVICES_ITEM_PATH("/api/v1/devices/%s"),
-    USER_DEVICES_PATH("/api/v1/user/devices"),
-    USER_DEVICES_BY_ID_PATH("/api/v1/user/devices/%s"),
-    USER_DEVICES_REMOTE_CONNECT_PATH("/api/v1/user/devices/%s/remoteConnect");
+    PROJECTS_PATH("/api/projects/%s");;
     
     private final String relativePath;
 

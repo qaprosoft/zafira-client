@@ -20,6 +20,7 @@ import com.qaprosoft.zafira.client.ExtendedClient;
 import com.qaprosoft.zafira.config.CiConfig;
 import com.qaprosoft.zafira.models.db.Initiator;
 import com.qaprosoft.zafira.models.db.Status;
+import com.qaprosoft.zafira.models.db.workitem.WorkItem;
 import com.qaprosoft.zafira.models.dto.JobType;
 import com.qaprosoft.zafira.models.dto.TagType;
 import com.qaprosoft.zafira.models.dto.TestCaseType;
@@ -97,6 +98,16 @@ public class ExtendedClientImpl implements ExtendedClient {
             test = response.getObject();
         }
         return test;
+    }
+
+    @Override
+    public WorkItem registerWorkItem(Long testId, WorkItem workItem) {
+        WorkItem result = null;
+        if (workItem != null) {
+            HttpClient.Response<WorkItem> response = client.createOrUpdateTestWorkItem(testId, workItem);
+            result = response.getObject();
+        }
+        return result;
     }
 
     @Override

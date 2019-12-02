@@ -18,6 +18,7 @@ package com.qaprosoft.zafira.listener.service.impl;
 import com.qaprosoft.zafira.client.ZafiraClient;
 import com.qaprosoft.zafira.listener.service.TestTypeService;
 import com.qaprosoft.zafira.models.db.Status;
+import com.qaprosoft.zafira.models.db.workitem.WorkItem;
 import com.qaprosoft.zafira.models.dto.TagType;
 import com.qaprosoft.zafira.models.dto.TestType;
 import com.qaprosoft.zafira.util.http.HttpClient;
@@ -49,6 +50,15 @@ public class TestTypeServiceImpl implements TestTypeService {
     @Override
     public TestType registerWorkItems(long testId, List<String> workItems) {
         return zafiraClient.registerWorkItems(testId, workItems);
+    }
+
+    @Override
+    public WorkItem registerKnownIssue(long testId, WorkItem knownIssue) {
+        HttpClient.Response<WorkItem> result = zafiraClient.createOrUpdateTestWorkItem(testId, knownIssue);
+        if (result.getStatus() != 200 && result.getObject() == null) {
+            throw new RuntimeException("Unable to register known issue " + knownIssue.getJiraId() + " for zafira service: " + zafiraClient.getServiceUrl());
+        }
+        return result.getObject();
     }
 
     @Override

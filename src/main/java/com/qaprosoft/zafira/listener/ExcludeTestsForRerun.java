@@ -15,18 +15,6 @@
  *******************************************************************************/
 package com.qaprosoft.zafira.listener;
 
-import com.qaprosoft.zafira.config.IConfigurator;
-import com.qaprosoft.zafira.listener.adapter.MethodAdapter;
-import com.qaprosoft.zafira.listener.adapter.SuiteAdapter;
-import com.qaprosoft.zafira.listener.adapter.TestAnnotationAdapter;
-import com.qaprosoft.zafira.listener.adapter.TestResultAdapter;
-import com.qaprosoft.zafira.listener.adapter.impl.TestResultAdapterImpl;
-import com.qaprosoft.zafira.models.dto.TestType;
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -36,6 +24,19 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.qaprosoft.zafira.config.IConfigurator;
+import com.qaprosoft.zafira.listener.adapter.MethodAdapter;
+import com.qaprosoft.zafira.listener.adapter.SuiteAdapter;
+import com.qaprosoft.zafira.listener.adapter.TestAnnotationAdapter;
+import com.qaprosoft.zafira.listener.adapter.TestResultAdapter;
+import com.qaprosoft.zafira.listener.adapter.impl.TestResultAdapterImpl;
+import com.qaprosoft.zafira.models.dto.TestType;
 
 // todo investigate real business and refactor it
 public class ExcludeTestsForRerun {

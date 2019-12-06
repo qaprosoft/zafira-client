@@ -15,6 +15,22 @@
  *******************************************************************************/
 package com.qaprosoft.zafira.client.impl;
 
+import static com.qaprosoft.zafira.util.AsyncUtil.get;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+
+import javax.ws.rs.core.MediaType;
+
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicSessionCredentials;
 import com.amazonaws.internal.SdkBufferedInputStream;
@@ -35,20 +51,6 @@ import com.qaprosoft.zafira.client.Path;
 import com.qaprosoft.zafira.models.dto.auth.TenantType;
 import com.qaprosoft.zafira.models.dto.aws.SessionCredentials;
 import com.qaprosoft.zafira.util.http.HttpClient;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.ws.rs.core.MediaType;
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-
-import static com.qaprosoft.zafira.util.AsyncUtil.get;
 
 public class IntegrationClientImpl implements IntegrationClient {
 

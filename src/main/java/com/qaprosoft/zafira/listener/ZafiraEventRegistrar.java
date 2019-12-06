@@ -15,6 +15,32 @@
  *******************************************************************************/
 package com.qaprosoft.zafira.listener;
 
+import static com.qaprosoft.zafira.client.ClientDefaults.USER;
+import static com.qaprosoft.zafira.config.CiConfig.BuildCase.UPSTREAMTRIGGER;
+import static com.qaprosoft.zafira.models.db.Status.FAILED;
+import static com.qaprosoft.zafira.models.db.Status.SKIPPED;
+
+import java.io.StringWriter;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+
+import org.apache.commons.configuration2.CombinedConfiguration;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.qaprosoft.zafira.client.ZafiraClient;
 import com.qaprosoft.zafira.client.ZafiraSingleton;
 import com.qaprosoft.zafira.config.CiConfig;
@@ -50,30 +76,6 @@ import com.qaprosoft.zafira.models.dto.TestType;
 import com.qaprosoft.zafira.models.dto.config.ConfigurationType;
 import com.qaprosoft.zafira.models.dto.user.UserType;
 import com.qaprosoft.zafira.util.ConfigurationUtil;
-import org.apache.commons.configuration2.CombinedConfiguration;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import java.io.StringWriter;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
-
-import static com.qaprosoft.zafira.client.ClientDefaults.USER;
-import static com.qaprosoft.zafira.config.CiConfig.BuildCase.UPSTREAMTRIGGER;
-import static com.qaprosoft.zafira.models.db.Status.FAILED;
-import static com.qaprosoft.zafira.models.db.Status.SKIPPED;
 
 /**
  * Registers events to Zafira via adapters
@@ -158,10 +160,10 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
 
             // Searching for existing test run with same CI run id in case of rerun
             if (!StringUtils.isEmpty(ci.getCiRunId())) {
-                this.run = testRunTypeService.findTestRunByCiRunId(ci.getCiRunId());
+                run = testRunTypeService.findTestRunByCiRunId(ci.getCiRunId());
             }
 
-            if (this.run != null) {
+            if (run != null) {
                 // Already discovered run with the same CI_RUN_ID, it is re-run functionality!
                 run = testRunTypeService.rerun(run, ci.getCiBuild(), suite.getId(), configurator.getConfiguration());
 
@@ -185,17 +187,17 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
                 // Register new test run
 
                 Long parentJobId = parentJob != null ? parentJob.getId() : null;
-                this.run = testRunTypeService.register(suite.getId(), user.getId(), job.getId(), parentJobId,
+                run = testRunTypeService.register(suite.getId(), user.getId(), job.getId(), parentJobId,
                         configurator.getConfiguration(), ci, JIRA_SUITE_ID);
             }
 
-            if (this.run == null) {
+            if (run == null) {
                 throw new RuntimeException("Unable to register test run for zafira service: " + ZAFIRA_URL);
             } else {
-                ConfigurationUtil.addSystemConfiguration(ZAFIRA_RUN_ID_PARAM, String.valueOf(this.run.getId()));
+                ConfigurationUtil.addSystemConfiguration(ZAFIRA_RUN_ID_PARAM, String.valueOf(run.getId()));
             }
 
-            Runtime.getRuntime().addShutdownHook(new TestRunShutdownHook(testRunTypeService, this.run));
+            Runtime.getRuntime().addShutdownHook(new TestRunShutdownHook(testRunTypeService, run));
         } catch (Throwable e) {
             ZAFIRA_ENABLED = false;
             LOGGER.error("Undefined error during test run registration!", e);

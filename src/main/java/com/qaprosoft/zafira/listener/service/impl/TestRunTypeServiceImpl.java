@@ -15,6 +15,16 @@
  *******************************************************************************/
 package com.qaprosoft.zafira.listener.service.impl;
 
+import java.io.StringWriter;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.qaprosoft.zafira.client.ZafiraClient;
 import com.qaprosoft.zafira.config.CiConfig;
 import com.qaprosoft.zafira.listener.service.TestRunTypeService;
@@ -24,14 +34,6 @@ import com.qaprosoft.zafira.models.dto.TestRunType;
 import com.qaprosoft.zafira.models.dto.TestType;
 import com.qaprosoft.zafira.models.dto.config.ConfigurationType;
 import com.qaprosoft.zafira.util.http.HttpClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
-import java.io.StringWriter;
-import java.util.Arrays;
-import java.util.List;
 
 public class TestRunTypeServiceImpl implements TestRunTypeService {
 

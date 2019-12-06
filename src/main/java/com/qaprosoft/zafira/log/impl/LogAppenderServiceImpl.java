@@ -15,16 +15,7 @@
  *******************************************************************************/
 package com.qaprosoft.zafira.log.impl;
 
-import com.qaprosoft.zafira.client.ZafiraSingleton;
-import com.qaprosoft.zafira.log.BaseAppenderTask;
-import com.qaprosoft.zafira.log.LogAppenderService;
-import com.qaprosoft.zafira.log.event.AmqpService;
-import com.qaprosoft.zafira.log.event.EventPublisher;
-import com.qaprosoft.zafira.log.event.impl.RabbitMQService;
-import com.qaprosoft.zafira.util.ConfigurationUtil;
-import org.apache.commons.configuration2.CombinedConfiguration;
-import org.apache.commons.configuration2.ImmutableConfiguration;
-import org.apache.commons.lang3.StringUtils;
+import static com.rabbitmq.client.impl.recovery.RecordedQueue.EMPTY_STRING;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -32,7 +23,17 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeoutException;
 
-import static com.rabbitmq.client.impl.recovery.RecordedQueue.EMPTY_STRING;
+import org.apache.commons.configuration2.CombinedConfiguration;
+import org.apache.commons.configuration2.ImmutableConfiguration;
+import org.apache.commons.lang3.StringUtils;
+
+import com.qaprosoft.zafira.client.ZafiraSingleton;
+import com.qaprosoft.zafira.log.BaseAppenderTask;
+import com.qaprosoft.zafira.log.LogAppenderService;
+import com.qaprosoft.zafira.log.event.AmqpService;
+import com.qaprosoft.zafira.log.event.EventPublisher;
+import com.qaprosoft.zafira.log.event.impl.RabbitMQService;
+import com.qaprosoft.zafira.util.ConfigurationUtil;
 
 /**
  * @author akhursevich

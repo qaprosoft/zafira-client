@@ -15,6 +15,9 @@
  *******************************************************************************/
 package com.qaprosoft.zafira.client;
 
+import java.util.HashMap;
+import java.util.List;
+
 import com.qaprosoft.zafira.client.impl.ZafiraClientImpl;
 import com.qaprosoft.zafira.models.db.workitem.WorkItem;
 import com.qaprosoft.zafira.models.dto.JobType;
@@ -29,9 +32,6 @@ import com.qaprosoft.zafira.models.dto.auth.AuthTokenType;
 import com.qaprosoft.zafira.models.dto.auth.TenantType;
 import com.qaprosoft.zafira.models.dto.user.UserType;
 import com.qaprosoft.zafira.util.http.HttpClient;
-
-import java.util.HashMap;
-import java.util.List;
 
 public interface BasicClient {
 

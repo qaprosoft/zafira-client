@@ -15,15 +15,16 @@
  *******************************************************************************/
 package com.qaprosoft.zafira.client;
 
+import java.util.concurrent.CompletableFuture;
+
+import org.apache.commons.configuration2.CombinedConfiguration;
+
 import com.qaprosoft.zafira.client.impl.ZafiraClientImpl;
 import com.qaprosoft.zafira.listener.domain.ZafiraConfiguration;
 import com.qaprosoft.zafira.models.dto.auth.AuthTokenType;
 import com.qaprosoft.zafira.util.AsyncUtil;
 import com.qaprosoft.zafira.util.ConfigurationUtil;
 import com.qaprosoft.zafira.util.http.HttpClient;
-import org.apache.commons.configuration2.CombinedConfiguration;
-
-import java.util.concurrent.CompletableFuture;
 
 /**
  * ZafiraSingleton - singleton wrapper around {@link ZafiraClientImpl}.

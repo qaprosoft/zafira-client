@@ -15,14 +15,15 @@
  *******************************************************************************/
 package com.qaprosoft.zafira.listener.adapter.impl;
 
-import com.qaprosoft.zafira.listener.adapter.MethodAdapter;
-import com.qaprosoft.zafira.listener.adapter.SuiteAdapter;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.apache.commons.lang3.ArrayUtils;
 import org.testng.ISuite;
 import org.testng.ITestNGMethod;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import com.qaprosoft.zafira.listener.adapter.MethodAdapter;
+import com.qaprosoft.zafira.listener.adapter.SuiteAdapter;
 
 public class SuiteAdapterImpl implements SuiteAdapter {
 

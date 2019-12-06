@@ -15,10 +15,11 @@
  *******************************************************************************/
 package com.qaprosoft.zafira.listener.service.impl;
 
+import org.apache.commons.io.FilenameUtils;
+
 import com.qaprosoft.zafira.client.ZafiraClient;
 import com.qaprosoft.zafira.listener.service.TestSuiteTypeService;
 import com.qaprosoft.zafira.models.dto.TestSuiteType;
-import org.apache.commons.io.FilenameUtils;
 
 public class TestSuiteTypeServiceImpl implements TestSuiteTypeService {
 

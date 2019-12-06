@@ -16,6 +16,7 @@
 package com.qaprosoft.zafira.models.db;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+
 import lombok.Getter;
 import lombok.Setter;
 

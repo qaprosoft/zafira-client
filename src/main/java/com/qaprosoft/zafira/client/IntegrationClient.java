@@ -16,9 +16,6 @@
 package com.qaprosoft.zafira.client;
 
 import java.io.File;
-import java.util.Optional;
-
-import com.google.api.services.sheets.v4.Sheets;
 
 public interface IntegrationClient {
 
@@ -31,7 +28,5 @@ public interface IntegrationClient {
      * @throws Exception throws when there are any issues with a Amazon S3 connection
      */
     String uploadFile(File file, Integer expiresIn, String keyPrefix) throws Exception;
-
-    Optional<Sheets> getSpreadsheetService();
 
 }

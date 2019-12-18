@@ -15,7 +15,10 @@
  *******************************************************************************/
 package com.qaprosoft.zafira.util;
 
-import com.qaprosoft.zafira.config.CiConfig;
+import static com.qaprosoft.zafira.client.ClientDefaults.ZAFIRA_PROPERTIES_FILE;
+
+import java.util.UUID;
+
 import org.apache.commons.configuration2.CombinedConfiguration;
 import org.apache.commons.configuration2.FileBasedConfiguration;
 import org.apache.commons.configuration2.PropertiesConfiguration;
@@ -27,9 +30,7 @@ import org.apache.commons.configuration2.tree.MergeCombiner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.UUID;
-
-import static com.qaprosoft.zafira.client.ClientDefaults.ZAFIRA_PROPERTIES_FILE;
+import com.qaprosoft.zafira.config.CiConfig;
 
 public class ConfigurationUtil {
 
@@ -42,7 +43,7 @@ public class ConfigurationUtil {
     public static CiConfig retrieveCiConfig(CombinedConfiguration config) {
         return new CiConfig.Builder()
                 .setCiRunId(config.getString("ci_run_id", UUID.randomUUID().toString()))
-                .setCiUrl(config.getString("ci_url", "http://localhost:8080/job/unavailable"))
+                .setCiUrl(config.getString("ci_url", "http://localhost:8080/job/local"))
                 .setCiBuild(config.getString("ci_build", null))
                 .setCiBuildCause(config.getString("ci_build_cause", "MANUALTRIGGER"))
                 .setCiParentUrl(config.getString("ci_parent_url", null))

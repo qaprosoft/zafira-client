@@ -15,12 +15,13 @@
  *******************************************************************************/
 package com.qaprosoft.zafira.log.log4j;
 
+import org.apache.log4j.Layout;
+import org.apache.log4j.spi.LoggingEvent;
+
 import com.qaprosoft.zafira.listener.ZafiraEventRegistrar;
 import com.qaprosoft.zafira.log.BaseAppenderTask;
 import com.qaprosoft.zafira.log.domain.MetaInfoMessage;
 import com.qaprosoft.zafira.log.log4j.level.MetaInfoLevel;
-import org.apache.log4j.Layout;
-import org.apache.log4j.spi.LoggingEvent;
 
 public class AppenderTask extends BaseAppenderTask<LoggingEvent> {
 

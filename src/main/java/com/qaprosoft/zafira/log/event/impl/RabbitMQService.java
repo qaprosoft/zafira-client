@@ -15,23 +15,23 @@
  *******************************************************************************/
 package com.qaprosoft.zafira.log.event.impl;
 
-import com.qaprosoft.zafira.client.BasicClient;
-import com.qaprosoft.zafira.log.event.AmqpService;
-import com.qaprosoft.zafira.log.event.EventPublisher;
-import com.qaprosoft.zafira.models.db.Setting;
-import com.qaprosoft.zafira.util.http.HttpClient;
-import com.rabbitmq.client.AMQP;
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.qaprosoft.zafira.client.BasicClient;
+import com.qaprosoft.zafira.log.event.AmqpService;
+import com.qaprosoft.zafira.log.event.EventPublisher;
+import com.qaprosoft.zafira.util.http.HttpClient;
+import com.rabbitmq.client.AMQP;
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
 
 public class RabbitMQService implements AmqpService {
 

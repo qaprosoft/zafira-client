@@ -15,11 +15,22 @@
  *******************************************************************************/
 package com.qaprosoft.zafira.client.impl;
 
+import static com.qaprosoft.zafira.client.ClientDefaults.USER;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.qaprosoft.zafira.client.BasicClient;
 import com.qaprosoft.zafira.client.ExtendedClient;
 import com.qaprosoft.zafira.config.CiConfig;
 import com.qaprosoft.zafira.models.db.Initiator;
 import com.qaprosoft.zafira.models.db.Status;
+import com.qaprosoft.zafira.models.db.workitem.WorkItem;
 import com.qaprosoft.zafira.models.dto.JobType;
 import com.qaprosoft.zafira.models.dto.TagType;
 import com.qaprosoft.zafira.models.dto.TestCaseType;
@@ -28,15 +39,6 @@ import com.qaprosoft.zafira.models.dto.TestSuiteType;
 import com.qaprosoft.zafira.models.dto.TestType;
 import com.qaprosoft.zafira.models.dto.user.UserType;
 import com.qaprosoft.zafira.util.http.HttpClient;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-
-import static com.qaprosoft.zafira.client.ClientDefaults.USER;
 
 public class ExtendedClientImpl implements ExtendedClient {
 
@@ -97,6 +99,16 @@ public class ExtendedClientImpl implements ExtendedClient {
             test = response.getObject();
         }
         return test;
+    }
+
+    @Override
+    public WorkItem registerWorkItem(Long testId, WorkItem workItem) {
+        WorkItem result = null;
+        if (workItem != null) {
+            HttpClient.Response<WorkItem> response = client.createOrUpdateTestWorkItem(testId, workItem);
+            result = response.getObject();
+        }
+        return result;
     }
 
     @Override

@@ -15,6 +15,12 @@
  *******************************************************************************/
 package com.qaprosoft.zafira.client.impl;
 
+import java.io.File;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
 import com.google.api.services.sheets.v4.Sheets;
 import com.qaprosoft.zafira.client.BasicClient;
 import com.qaprosoft.zafira.client.ExtendedClient;
@@ -23,6 +29,7 @@ import com.qaprosoft.zafira.client.ZafiraClient;
 import com.qaprosoft.zafira.config.CiConfig;
 import com.qaprosoft.zafira.models.db.Initiator;
 import com.qaprosoft.zafira.models.db.Status;
+import com.qaprosoft.zafira.models.db.workitem.WorkItem;
 import com.qaprosoft.zafira.models.dto.JobType;
 import com.qaprosoft.zafira.models.dto.ProjectType;
 import com.qaprosoft.zafira.models.dto.TagType;
@@ -36,12 +43,6 @@ import com.qaprosoft.zafira.models.dto.auth.AuthTokenType;
 import com.qaprosoft.zafira.models.dto.auth.TenantType;
 import com.qaprosoft.zafira.models.dto.user.UserType;
 import com.qaprosoft.zafira.util.http.HttpClient;
-
-import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
 public class ZafiraClientImpl implements ZafiraClient {
 
@@ -151,6 +152,11 @@ public class ZafiraClientImpl implements ZafiraClient {
     }
 
     @Override
+    public HttpClient.Response<WorkItem> createOrUpdateTestWorkItem(long testId, WorkItem workItem) {
+        return basicClient.createOrUpdateTestWorkItem(testId, workItem);
+    }
+
+    @Override
     public void addTestArtifact(TestArtifactType artifact) {
         basicClient.addTestArtifact(artifact);
     }
@@ -233,6 +239,11 @@ public class ZafiraClientImpl implements ZafiraClient {
     @Override
     public TestType registerWorkItems(Long testId, List<String> workItems) {
         return extendedClient.registerWorkItems(testId, workItems);
+    }
+
+    @Override
+    public WorkItem registerWorkItem(Long testId, WorkItem workItem) {
+        return extendedClient.registerWorkItem(testId, workItem);
     }
 
     @Override

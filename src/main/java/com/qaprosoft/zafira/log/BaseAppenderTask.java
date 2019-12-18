@@ -15,9 +15,9 @@
  *******************************************************************************/
 package com.qaprosoft.zafira.log;
 
-import com.qaprosoft.zafira.log.event.EventPublisher;
-
 import java.util.concurrent.Callable;
+
+import com.qaprosoft.zafira.log.event.EventPublisher;
 
 /**
  * Simple Callable class that publishes messages to RabbitMQ server

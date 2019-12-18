@@ -13,42 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
+package com.qaprosoft.zafira.models.db.workitem;
 
-package com.qaprosoft.zafira.models.stf;
-
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class Phone {
+@JsonInclude(Include.NON_NULL)
+public class WorkItem extends BaseWorkItem {
 
-    private Object iccid;
-    private String imei;
-    private String network;
-    private Object phoneNumber;
-    @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<>();
+    private Long testCaseId;
+    private Type type;
 
-
-    @JsonAnyGetter
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
+    public WorkItem(String jiraId, Long testCaseId, Type type) {
+        super(jiraId);
+        this.testCaseId = testCaseId;
+        this.type = type;
     }
 
-    @JsonAnySetter
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
+    public WorkItem(String jiraId, String description, Long testCaseId, Type type) {
+        super(jiraId, description);
+        this.testCaseId = testCaseId;
+        this.type = type;
+    }
+
+    public enum Type {
+        TASK,
+        BUG,
+        COMMENT,
+        EVENT
     }
 
 }

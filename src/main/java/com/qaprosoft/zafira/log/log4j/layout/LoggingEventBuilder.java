@@ -15,16 +15,17 @@
  *******************************************************************************/
 package com.qaprosoft.zafira.log.log4j.layout;
 
-import com.qaprosoft.zafira.log.domain.MetaInfoMessage;
+import static com.qaprosoft.zafira.log.log4j.level.MetaInfoLevel.META_INFO;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.ThrowableInformation;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.qaprosoft.zafira.log.log4j.level.MetaInfoLevel.META_INFO;
+import com.qaprosoft.zafira.log.domain.MetaInfoMessage;
 
 class LoggingEventBuilder {
 

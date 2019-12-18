@@ -15,10 +15,10 @@
  *******************************************************************************/
 package com.qaprosoft.zafira.client;
 
-import com.google.api.services.sheets.v4.Sheets;
-
 import java.io.File;
 import java.util.Optional;
+
+import com.google.api.services.sheets.v4.Sheets;
 
 public interface IntegrationClient {
 

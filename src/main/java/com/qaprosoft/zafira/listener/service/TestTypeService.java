@@ -15,12 +15,13 @@
  *******************************************************************************/
 package com.qaprosoft.zafira.listener.service;
 
-import com.qaprosoft.zafira.models.db.Status;
-import com.qaprosoft.zafira.models.dto.TagType;
-import com.qaprosoft.zafira.models.dto.TestType;
-
 import java.util.List;
 import java.util.Set;
+
+import com.qaprosoft.zafira.models.db.Status;
+import com.qaprosoft.zafira.models.db.workitem.WorkItem;
+import com.qaprosoft.zafira.models.dto.TagType;
+import com.qaprosoft.zafira.models.dto.TestType;
 
 public interface TestTypeService {
 
@@ -30,6 +31,8 @@ public interface TestTypeService {
                                String xmlConfiguration, String[] dependsOnMethods, String testCiId, Set<TagType> tags);
 
     TestType registerWorkItems(long testId, List<String> workItems);
+
+    WorkItem registerKnownIssue(long testId, WorkItem knownIssue);
 
     TestType finishTest(TestType test);
 

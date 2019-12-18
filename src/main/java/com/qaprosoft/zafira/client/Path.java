@@ -28,6 +28,7 @@ public enum Path {
     TEST_FINISH_PATH("/api/tests/%d/finish"),
     TEST_BY_ID_PATH("/api/tests/%d"),
     TEST_WORK_ITEMS_PATH("/api/tests/%d/workitems"),
+    TEST_WORK_ITEM_PATH("/api/tests/%d/workitem"),
     TEST_ARTIFACTS_PATH("/api/tests/%d/artifacts"),
     TEST_SUITES_PATH("/api/tests/suites"),
     TEST_CASES_PATH("/api/tests/cases"),
@@ -41,13 +42,7 @@ public enum Path {
     AMAZON_SESSION_CREDENTIALS_PATH("/api/settings/amazon/creds"),
     GOOGLE_SESSION_CREDENTIALS_PATH("/api/settings/google/creds"),
     TENANT_TYPE_PATH("/api/auth/tenant"),
-    PROJECTS_PATH("/api/projects/%s"),
-
-    DEVICES_PATH("/api/v1/devices"),
-    DEVICES_ITEM_PATH("/api/v1/devices/%s"),
-    USER_DEVICES_PATH("/api/v1/user/devices"),
-    USER_DEVICES_BY_ID_PATH("/api/v1/user/devices/%s"),
-    USER_DEVICES_REMOTE_CONNECT_PATH("/api/v1/user/devices/%s/remoteConnect");
+    PROJECTS_PATH("/api/projects/%s");;
     
     private final String relativePath;
 

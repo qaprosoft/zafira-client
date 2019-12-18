@@ -15,10 +15,11 @@
  *******************************************************************************/
 package com.qaprosoft.zafira.listener.adapter.impl;
 
-import com.qaprosoft.zafira.listener.adapter.TestAnnotationAdapter;
+import java.lang.annotation.Annotation;
+
 import org.testng.annotations.Test;
 
-import java.lang.annotation.Annotation;
+import com.qaprosoft.zafira.listener.adapter.TestAnnotationAdapter;
 
 public class TestAnnotationAdapterImpl implements TestAnnotationAdapter {
 

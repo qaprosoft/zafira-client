@@ -15,12 +15,6 @@
  *******************************************************************************/
 package com.qaprosoft.zafira.listener;
 
-import com.qaprosoft.zafira.listener.adapter.MethodAdapter;
-import com.qaprosoft.zafira.listener.adapter.SuiteAdapter;
-import com.qaprosoft.zafira.listener.adapter.TestResultAdapter;
-import com.qaprosoft.zafira.listener.adapter.impl.MethodAdapterImpl;
-import com.qaprosoft.zafira.listener.adapter.impl.SuiteAdapterImpl;
-import com.qaprosoft.zafira.listener.adapter.impl.TestResultAdapterImpl;
 import org.testng.IHookCallBack;
 import org.testng.IHookable;
 import org.testng.IInvokedMethod;
@@ -30,6 +24,13 @@ import org.testng.ISuiteListener;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
+
+import com.qaprosoft.zafira.listener.adapter.MethodAdapter;
+import com.qaprosoft.zafira.listener.adapter.SuiteAdapter;
+import com.qaprosoft.zafira.listener.adapter.TestResultAdapter;
+import com.qaprosoft.zafira.listener.adapter.impl.MethodAdapterImpl;
+import com.qaprosoft.zafira.listener.adapter.impl.SuiteAdapterImpl;
+import com.qaprosoft.zafira.listener.adapter.impl.TestResultAdapterImpl;
 
 /**
  * TestNG listener that provides integration with Zafira reporting web-service.

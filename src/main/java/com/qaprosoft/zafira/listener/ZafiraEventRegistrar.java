@@ -15,6 +15,32 @@
  *******************************************************************************/
 package com.qaprosoft.zafira.listener;
 
+import static com.qaprosoft.zafira.client.ClientDefaults.USER;
+import static com.qaprosoft.zafira.config.CiConfig.BuildCase.UPSTREAMTRIGGER;
+import static com.qaprosoft.zafira.models.db.Status.FAILED;
+import static com.qaprosoft.zafira.models.db.Status.SKIPPED;
+
+import java.io.StringWriter;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+
+import org.apache.commons.configuration2.CombinedConfiguration;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.qaprosoft.zafira.client.ZafiraClient;
 import com.qaprosoft.zafira.client.ZafiraSingleton;
 import com.qaprosoft.zafira.config.CiConfig;
@@ -40,6 +66,8 @@ import com.qaprosoft.zafira.listener.service.impl.TestSuiteTypeServiceImpl;
 import com.qaprosoft.zafira.listener.service.impl.TestTypeServiceImpl;
 import com.qaprosoft.zafira.listener.service.impl.UserTypeServiceImpl;
 import com.qaprosoft.zafira.models.db.Status;
+import com.qaprosoft.zafira.models.db.workitem.BaseWorkItem;
+import com.qaprosoft.zafira.models.db.workitem.WorkItem;
 import com.qaprosoft.zafira.models.dto.JobType;
 import com.qaprosoft.zafira.models.dto.TestCaseType;
 import com.qaprosoft.zafira.models.dto.TestRunType;
@@ -48,28 +76,6 @@ import com.qaprosoft.zafira.models.dto.TestType;
 import com.qaprosoft.zafira.models.dto.config.ConfigurationType;
 import com.qaprosoft.zafira.models.dto.user.UserType;
 import com.qaprosoft.zafira.util.ConfigurationUtil;
-import org.apache.commons.configuration2.CombinedConfiguration;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import java.io.StringWriter;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
-
-import static com.qaprosoft.zafira.client.ClientDefaults.USER;
-import static com.qaprosoft.zafira.config.CiConfig.BuildCase.UPSTREAMTRIGGER;
 
 /**
  * Registers events to Zafira via adapters
@@ -154,10 +160,10 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
 
             // Searching for existing test run with same CI run id in case of rerun
             if (!StringUtils.isEmpty(ci.getCiRunId())) {
-                this.run = testRunTypeService.findTestRunByCiRunId(ci.getCiRunId());
+                run = testRunTypeService.findTestRunByCiRunId(ci.getCiRunId());
             }
 
-            if (this.run != null) {
+            if (run != null) {
                 // Already discovered run with the same CI_RUN_ID, it is re-run functionality!
                 run = testRunTypeService.rerun(run, ci.getCiBuild(), suite.getId(), configurator.getConfiguration());
 
@@ -181,17 +187,17 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
                 // Register new test run
 
                 Long parentJobId = parentJob != null ? parentJob.getId() : null;
-                this.run = testRunTypeService.register(suite.getId(), user.getId(), job.getId(), parentJobId,
+                run = testRunTypeService.register(suite.getId(), user.getId(), job.getId(), parentJobId,
                         configurator.getConfiguration(), ci, JIRA_SUITE_ID);
             }
 
-            if (this.run == null) {
+            if (run == null) {
                 throw new RuntimeException("Unable to register test run for zafira service: " + ZAFIRA_URL);
             } else {
-                ConfigurationUtil.addSystemConfiguration(ZAFIRA_RUN_ID_PARAM, String.valueOf(this.run.getId()));
+                ConfigurationUtil.addSystemConfiguration(ZAFIRA_RUN_ID_PARAM, String.valueOf(run.getId()));
             }
 
-            Runtime.getRuntime().addShutdownHook(new TestRunShutdownHook(testRunTypeService, this.run));
+            Runtime.getRuntime().addShutdownHook(new TestRunShutdownHook(testRunTypeService, run));
         } catch (Throwable e) {
             ZAFIRA_ENABLED = false;
             LOGGER.error("Undefined error during test run registration!", e);
@@ -326,12 +332,12 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
 
                 String[] dependsOnMethods = adapter.getMethodAdapter().getMethodDependsOnMethods();
 
-                test = testTypeService.registerTestStart(testName, group, Status.SKIPPED, testArgs, run.getId(), testCase.getId(),
+                test = testTypeService.registerTestStart(testName, group, SKIPPED, testArgs, run.getId(), testCase.getId(),
                         configurator.getRunCount(adapter), convertToXML(configurator.getConfiguration()), dependsOnMethods, getThreadCiTestId(), configurator.getTestTags(adapter));
                 threadTest.set(test);
             }
 
-            finishTest(adapter, Status.SKIPPED);
+            finishTest(adapter, SKIPPED);
         } catch (Throwable e) {
             LOGGER.error("Undefined error during test case/method finish!", e);
         }
@@ -524,7 +530,7 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
             return;
 
         try {
-            finishTest(adapter, Status.FAILED);
+            finishTest(adapter, FAILED);
         } catch (Throwable e) {
             LOGGER.error("Undefined error during test case/method finish!", e);
         }
@@ -569,6 +575,20 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
         String fullStackTrace = getFullStackTrace(adapter);
         TestType finishedTest = populateTestResult(adapter, status, fullStackTrace);
         testTypeService.finishTest(finishedTest);
+
+        if (FAILED.equals(status) || SKIPPED.equals(status)) {
+            registerKnownIssue(adapter, finishedTest.getId(), finishedTest.getTestCaseId());
+        }
+    }
+
+    private void registerKnownIssue(TestResultAdapter adapter, Long testId, Long testCaseId) {
+        BaseWorkItem knownIssue = configurator.getTestKnownIssue(adapter);
+        if (knownIssue != null) {
+            WorkItem workItem = new WorkItem(knownIssue.getJiraId(), knownIssue.getDescription(), testCaseId, WorkItem.Type.BUG);
+            workItem.setBlocker(knownIssue.isBlocker());
+            testTypeService.registerKnownIssue(testId, workItem);
+        }
+        configurator.clearTestWorkItemArtifacts();
     }
 
     private TestCaseType registerTestCase(TestResultAdapter adapter) {
@@ -593,6 +613,10 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
 
     public static Optional<TestRunType> getTestRun() {
         return Optional.ofNullable(run);
+    }
+
+    public static Optional<TestType> getTest() {
+        return Optional.ofNullable(threadTest.get());
     }
 
 }

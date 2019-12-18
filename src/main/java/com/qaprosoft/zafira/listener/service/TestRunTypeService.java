@@ -15,13 +15,13 @@
  *******************************************************************************/
 package com.qaprosoft.zafira.listener.service;
 
+import java.util.List;
+
 import com.qaprosoft.zafira.config.CiConfig;
 import com.qaprosoft.zafira.models.dto.JobType;
 import com.qaprosoft.zafira.models.dto.TestRunType;
 import com.qaprosoft.zafira.models.dto.TestType;
 import com.qaprosoft.zafira.models.dto.config.ConfigurationType;
-
-import java.util.List;
 
 public interface TestRunTypeService {
 

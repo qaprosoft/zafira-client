@@ -15,15 +15,16 @@
  *******************************************************************************/
 package com.qaprosoft.zafira.log.log4j;
 
-import com.qaprosoft.zafira.log.BaseAppenderTask;
-import com.qaprosoft.zafira.log.LogAppenderService;
-import com.qaprosoft.zafira.log.impl.LogAppenderServiceImpl;
+import java.io.IOException;
+import java.util.concurrent.TimeoutException;
+
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.spi.ErrorCode;
 import org.apache.log4j.spi.LoggingEvent;
 
-import java.io.IOException;
-import java.util.concurrent.TimeoutException;
+import com.qaprosoft.zafira.log.BaseAppenderTask;
+import com.qaprosoft.zafira.log.LogAppenderService;
+import com.qaprosoft.zafira.log.impl.LogAppenderServiceImpl;
 
 public class LogAppender extends AppenderSkeleton {
 

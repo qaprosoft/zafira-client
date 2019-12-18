@@ -13,44 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package com.qaprosoft.zafira.models.stf;
+package com.qaprosoft.zafira.models.db.workitem;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.qaprosoft.zafira.models.db.AbstractEntity;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Network {
+public class BaseWorkItem extends AbstractEntity {
 
-    private Boolean connected;
-    private Boolean failover;
-    private Boolean manual;
-    private String operator;
-    private Boolean roaming;
-    private String state;
-    private String subtype;
-    private String type;
-    @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<>();
+    private String jiraId;
+    private String description;
+    private boolean blocker;
 
-    @JsonAnyGetter
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
+    public BaseWorkItem(String jiraId) {
+        this.jiraId = jiraId;
     }
 
-    @JsonAnySetter
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
+    public BaseWorkItem(String jiraId, String description) {
+        this(jiraId);
+        this.description = description;
     }
 
+    public BaseWorkItem(String jiraId, String description, boolean blocker) {
+        this(jiraId, description);
+        this.blocker = blocker;
+    }
 }

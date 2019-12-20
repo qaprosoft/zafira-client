@@ -60,6 +60,12 @@ public class TestResultAdapterImpl implements TestResultAdapter {
     }
 
     @Override
+    public Object getTestResult() {
+        testResultNotNull();
+        return testResult;
+    }
+
+    @Override
     public String getName() {
         testResultNotNull();
         return testResult.getName();

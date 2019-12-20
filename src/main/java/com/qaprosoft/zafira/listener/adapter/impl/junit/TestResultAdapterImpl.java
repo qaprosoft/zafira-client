@@ -58,6 +58,11 @@ public class TestResultAdapterImpl implements TestResultAdapter {
         }
     }
 
+    @Override
+    public Object getTestResult() {
+        return resultDescription;
+    }
+
     // TODO: 9/12/19 move to info adapter, create it
     @Override
     public String getName() {

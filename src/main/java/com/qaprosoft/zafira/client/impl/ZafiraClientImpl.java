@@ -18,10 +18,8 @@ package com.qaprosoft.zafira.client.impl;
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
-import com.google.api.services.sheets.v4.Sheets;
 import com.qaprosoft.zafira.client.BasicClient;
 import com.qaprosoft.zafira.client.ExtendedClient;
 import com.qaprosoft.zafira.client.IntegrationClient;
@@ -294,11 +292,6 @@ public class ZafiraClientImpl implements ZafiraClient {
     @Override
     public String uploadFile(File file, Integer expiresIn, String keyPrefix) throws Exception {
         return integrationClient.uploadFile(file, expiresIn, keyPrefix);
-    }
-
-    @Override
-    public Optional<Sheets> getSpreadsheetService() {
-        return integrationClient.getSpreadsheetService();
     }
 
 }

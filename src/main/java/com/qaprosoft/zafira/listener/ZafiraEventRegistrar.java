@@ -239,6 +239,7 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
                     throw adapter.getSkipExceptionInstance("ALREADY_PASSED: " + testName);
                 }
 
+                startedTest.setTestCaseId(testCase.getId());
                 startedTest.setFinishTime(null);
                 startedTest.setStartTime(new Date().getTime());
                 startedTest.setCiTestId(getThreadCiTestId());

@@ -19,11 +19,7 @@ import static com.qaprosoft.zafira.util.AsyncUtil.get;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.Optional;
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-
-import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -41,10 +37,6 @@ import com.amazonaws.services.s3.internal.Mimetypes;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.sheets.v4.Sheets;
 import com.qaprosoft.zafira.client.BasicClient;
 import com.qaprosoft.zafira.client.IntegrationClient;
 import com.qaprosoft.zafira.client.Path;
@@ -57,12 +49,10 @@ public class IntegrationClientImpl implements IntegrationClient {
     private static final Logger LOGGER = LoggerFactory.getLogger(IntegrationClientImpl.class);
 
     private static final String ERR_MSG_GET_AWS_CREDENTIALS = "Unable to get AWS session credentials";
-    private static final String ERR_MSG_GET_GOOGLE_CREDENTIALS = "Unable to get Google session credentials";
 
     private final BasicClient client;
 
     private CompletableFuture<AmazonS3> amazonClient;
-    private CompletableFuture<Sheets> sheets;
     private SessionCredentials amazonS3SessionCredentials;
 
     public IntegrationClientImpl(BasicClient client) {
@@ -134,13 +124,6 @@ public class IntegrationClientImpl implements IntegrationClient {
         return amazonClient;
     }
 
-    @Override
-    public Optional<Sheets> getSpreadsheetService() {
-        if (!client.isAvailable())
-            LOGGER.error("Spreadsheet`s operations are unavailable until connection with Zafira is established!");
-        return Optional.ofNullable(getSheets());
-    }
-
     /**
      * Gets Amazon S3 temporary credentials
      *
@@ -153,45 +136,8 @@ public class IntegrationClientImpl implements IntegrationClient {
                          .get(SessionCredentials.class);
     }
 
-    private CompletableFuture<Sheets> initGoogleClient() {
-        this.sheets = CompletableFuture.supplyAsync(() -> {
-            Sheets sheets = null;
-            String accessToken = getGoogleSessionCredentials().getObject();
-            if (accessToken != null) {
-                try {
-                    GoogleCredential googleCredential = new GoogleCredential().setAccessToken(accessToken);
-                    sheets = new Sheets.Builder(GoogleNetHttpTransport.newTrustedTransport(), JacksonFactory.getDefaultInstance(), googleCredential)
-                            .setApplicationName(UUID.randomUUID().toString())
-                            .build();
-                } catch (Exception e) {
-                    LOGGER.error("Google integration is invalid", e);
-                }
-            }
-            return sheets;
-        });
-        return sheets;
-    }
-
-    /**
-     * Gets Google temporary credentials
-     *
-     * @return Google temporary credentials
-     */
-    private HttpClient.Response<String> getGoogleSessionCredentials() {
-        return HttpClient.uri(Path.GOOGLE_SESSION_CREDENTIALS_PATH, client.getServiceUrl())
-                         .withAuthorization(client.getAuthToken())
-                         .type(MediaType.TEXT_PLAIN)
-                         .accept(MediaType.TEXT_PLAIN)
-                         .onFailure(ERR_MSG_GET_GOOGLE_CREDENTIALS)
-                         .get(String.class);
-    }
-
     private AmazonS3 getAmazonClient() {
         return get(this.amazonClient, this::initAmazonS3Client);
-    }
-
-    private Sheets getSheets() {
-        return get(this.sheets, this::initGoogleClient);
     }
 
 }

@@ -124,7 +124,7 @@ public class TestResultAdapterImpl implements TestResultAdapter {
 
     @Override
     public RuntimeException getSkipExceptionInstance(String message) {
-        return new SkipException(message);
+        return new RuntimeException(message);
     }
 
     @Override

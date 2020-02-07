@@ -298,6 +298,12 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
 
     @Override
     public void onTestFailure(TestResultAdapter adapter) {
+        // Test is skipped as ALREADY_PASSED
+        if (adapter.getThrowable() != null && adapter.getThrowable().getMessage() != null
+                && adapter.getThrowable().getMessage().startsWith("ALREADY_PASSED")) {
+            return;
+        }
+
         processResultOnTestFailure(adapter);
     }
 
@@ -305,11 +311,6 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
     public void onTestSkipped(TestResultAdapter adapter) {
         if (!ZAFIRA_ENABLED)
             return;
-        // Test is skipped as ALREADY_PASSED
-        if (adapter.getThrowable() != null && adapter.getThrowable().getMessage() != null
-                && adapter.getThrowable().getMessage().startsWith("ALREADY_PASSED")) {
-            return;
-        }
 
         try {
             // Test skipped manually from test body

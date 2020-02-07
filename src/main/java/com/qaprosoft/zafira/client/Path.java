@@ -40,7 +40,6 @@ public enum Path {
     TEST_RUN_BY_ID_PATH("/api/tests/runs/%d"),
     SETTINGS_TOOL_PATH("/api/settings/tool/%s"),
     AMAZON_SESSION_CREDENTIALS_PATH("/api/settings/amazon/creds"),
-    GOOGLE_SESSION_CREDENTIALS_PATH("/api/settings/google/creds"),
     TENANT_TYPE_PATH("/api/auth/tenant"),
     PROJECTS_PATH("/api/projects/%s");;
     

@@ -85,7 +85,7 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
     private static final Logger LOGGER = LoggerFactory.getLogger(ZafiraEventRegistrar.class);
 
     private final static String SKIP_CFG_EXC_MSG = "Skipping configuration method since test class doesn't contain test methods to rerun";
-    private final static String INVALID_PROJECT_ERR_MSG = "Cannot register test run. You must to specify project with name '%s' in your application.";
+    private final static String INVALID_PROJECT_ERR_MSG = "Cannot register test run. You must specify project with name '%s' in your application.";
 
     private static final String ZAFIRA_RUN_ID_PARAM = "zafira_run_id";
 
@@ -141,8 +141,8 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
             String project = (String) ZafiraConfiguration.PROJECT.get(adapter);
             project = !StringUtils.isEmpty(project) ? project : ZAFIRA_PROJECT;
 
-            String foundProject = projectTypeService.initProject(project);
-            if (foundProject == null) {
+            String existingProject = projectTypeService.initProject(project);
+            if (existingProject == null) {
                 ZAFIRA_ENABLED = false;
                 LOGGER.error(String.format(INVALID_PROJECT_ERR_MSG, project));
                 return;

@@ -190,7 +190,7 @@ public class ZafiraClientImpl implements ZafiraClient {
     }
 
     @Override
-    public BasicClient initProject(String project) {
+    public String initProject(String project) {
         return basicClient.initProject(project);
     }
 

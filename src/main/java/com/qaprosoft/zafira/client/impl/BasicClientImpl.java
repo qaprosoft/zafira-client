@@ -79,7 +79,7 @@ public class BasicClientImpl implements BasicClient {
     private final String serviceURL;
 
     private String authToken;
-    private String project = PROJECT;
+    private String project;
 
     public BasicClientImpl(String serviceURL) {
         this.serviceURL = serviceURL;
@@ -322,14 +322,14 @@ public class BasicClientImpl implements BasicClient {
     }
 
     @Override
-    public BasicClient initProject(String project) {
+    public String initProject(String project) {
         if (!StringUtils.isEmpty(project)) {
             HttpClient.Response<ProjectType> rs = getProjectByName(project);
             if (rs.getStatus() == 200) {
                 this.project = rs.getObject().getName();
             }
         }
-        return this;
+        return this.project;
     }
 
     @Override

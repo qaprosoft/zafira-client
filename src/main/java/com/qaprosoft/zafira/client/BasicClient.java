@@ -108,7 +108,7 @@ public interface BasicClient {
      * @param project name
      * @return instance of {@link ZafiraClientImpl}
      */
-    BasicClient initProject(String project);
+    String initProject(String project);
 
     HttpClient.Response<List<HashMap<String, String>>> getToolSettings(String tool, boolean decrypt);
 

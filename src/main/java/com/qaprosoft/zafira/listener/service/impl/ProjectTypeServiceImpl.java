@@ -27,8 +27,8 @@ public class ProjectTypeServiceImpl implements ProjectTypeService {
     }
 
     @Override
-    public void initProject(String projectName) {
-        zafiraClient.initProject(projectName);
+    public String initProject(String projectName) {
+        return zafiraClient.initProject(projectName);
     }
 
 }

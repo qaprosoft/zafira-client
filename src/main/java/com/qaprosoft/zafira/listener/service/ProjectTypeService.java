@@ -17,6 +17,6 @@ package com.qaprosoft.zafira.listener.service;
 
 public interface ProjectTypeService {
 
-    void initProject(String projectName);
+    String initProject(String projectName);
 
 }

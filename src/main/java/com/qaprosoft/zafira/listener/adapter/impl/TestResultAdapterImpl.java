@@ -17,7 +17,6 @@ package com.qaprosoft.zafira.listener.adapter.impl;
 
 import static com.qaprosoft.zafira.listener.adapter.TestResultStatus.UNKNOWN;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -25,12 +24,8 @@ import java.util.stream.Collectors;
 import org.testng.ITestNGMethod;
 import org.testng.ITestResult;
 import org.testng.SkipException;
-import org.testng.SuiteRunner;
-import org.testng.TestRunner;
-import org.testng.internal.Configuration;
 import org.testng.internal.TestResult;
 import org.testng.xml.XmlClass;
-import org.testng.xml.XmlSuite;
 
 import com.qaprosoft.zafira.listener.adapter.MethodAdapter;
 import com.qaprosoft.zafira.listener.adapter.SuiteAdapter;
@@ -51,10 +46,7 @@ public class TestResultAdapterImpl implements TestResultAdapter {
         ITestResult instance = null;
         if (adapter != null) {
             ITestNGMethod method = (ITestNGMethod) adapter.getMethod();
-            SuiteRunner suiteRunner = new SuiteRunner(new Configuration(), new XmlSuite(), "");
-            TestRunner testRunner = new TestRunner(new Configuration(), suiteRunner,
-                    method.getXmlTest(), false, null, new ArrayList<>());
-            instance = new TestResult(method.getTestClass(), method.getInstance(), method, null, 0, 0, testRunner);
+            instance = TestResult.newTestResultFor(method);
         }
         this.testResult = instance;
     }

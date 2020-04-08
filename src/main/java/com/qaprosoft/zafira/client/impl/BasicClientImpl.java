@@ -369,7 +369,7 @@ public class BasicClientImpl implements BasicClient {
     public String getAuthToken() {
         return authToken;
     }
-    
+
     private CompletableFuture<TenantType> initTenant() {
         this.tenantType = CompletableFuture.supplyAsync(() -> getTenant().getObject());
         return tenantType;

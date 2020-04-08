@@ -89,6 +89,9 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
 
     private static final String ZAFIRA_RUN_ID_PARAM = "zafira_run_id";
 
+    private static final String ALREADY_PASSED = "ALREADY_PASSED";
+    private static final String ALREADY_FAILED_BY_KNOWN_BUG = "ALREADY_FAILED_BY_KNOWN_BUG";
+
     private boolean ZAFIRA_ENABLED;
     private String ZAFIRA_URL;
     private String ZAFIRA_PROJECT;
@@ -240,7 +243,7 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
             TestCaseType testCase = registerTestCase(adapter);
             
             if(testsWithKnownIssues.contains(testName)) {
-            	throw adapter.getSkipExceptionInstance("ALREADY_FAILED_BY_KNOWN_BUG: " + testName);
+            	throw adapter.getSkipExceptionInstance(ALREADY_FAILED_BY_KNOWN_BUG + ": " + testName);
             }
 
             // Search already registered test!
@@ -249,7 +252,7 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
 
                 // Skip already passed tests if rerun failures enabled
                 if (ZAFIRA_RERUN_FAILURES && !startedTest.isNeedRerun()) {
-                    throw adapter.getSkipExceptionInstance("ALREADY_PASSED: " + testName);
+                    throw adapter.getSkipExceptionInstance(ALREADY_PASSED + ": " + testName);
                 }
 
                 startedTest.setTestCaseId(testCase.getId());
@@ -320,13 +323,13 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
             return;
         // Test is skipped as ALREADY_PASSED
         if (adapter.getThrowable() != null && adapter.getThrowable().getMessage() != null
-                && adapter.getThrowable().getMessage().startsWith("ALREADY_PASSED")) {
+                && adapter.getThrowable().getMessage().startsWith(ALREADY_PASSED)) {
             return;
         }
 
         // Test is skipped as ALREADY_FAILED_BY_KNOWN_BUG
         if (adapter.getThrowable() != null && adapter.getThrowable().getMessage() != null
-                && adapter.getThrowable().getMessage().startsWith("ALREADY_FAILED_BY_KNOWN_BUG")) {
+                && adapter.getThrowable().getMessage().startsWith(ALREADY_FAILED_BY_KNOWN_BUG)) {
             return;
         }
 

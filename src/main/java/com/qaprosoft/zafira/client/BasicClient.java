@@ -74,6 +74,8 @@ public interface BasicClient {
     HttpClient.Response<TestType> createTestWorkItems(long testId, List<String> workItems);
 
     HttpClient.Response<WorkItem> createOrUpdateTestWorkItem(long testId, WorkItem workItem);
+    
+    HttpClient.Response<WorkItem[]> getTestWorkItems(long testId, WorkItem.Type type);
 
     /**
      * Attaches test artifact like logs or demo URLs.

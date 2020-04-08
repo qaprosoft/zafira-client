@@ -29,6 +29,7 @@ public enum Path {
     TEST_BY_ID_PATH("/api/tests/%d"),
     TEST_WORK_ITEMS_PATH("/api/tests/%d/workitems"),
     TEST_WORK_ITEM_PATH("/api/tests/%d/workitem"),
+    TEST_WORK_ITEM_BY_TYPE_PATH("/api/tests/%d/workitem/%s"),
     TEST_ARTIFACTS_PATH("/api/tests/%d/artifacts"),
     TEST_SUITES_PATH("/api/tests/suites"),
     TEST_CASES_PATH("/api/tests/cases"),

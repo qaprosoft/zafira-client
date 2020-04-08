@@ -33,6 +33,8 @@ public interface TestTypeService {
     TestType registerWorkItems(long testId, List<String> workItems);
 
     WorkItem registerKnownIssue(long testId, WorkItem knownIssue);
+    
+    List<WorkItem> getKnownIssues(long testId);
 
     TestType finishTest(TestType test);
 

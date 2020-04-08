@@ -65,6 +65,7 @@ public class BasicClientImpl implements BasicClient {
     private static final String ERR_MSG_DELETE_TEST = "Unable to delete test";
     private static final String ERR_MSG_CREATE_TEST_WORK_ITEMS = "Unable to create test work items";
     private static final String ERR_MSG_CREATE_TEST_WORK_ITEM = "Unable to create test work item";
+    private static final String ERR_MSG_GET_TEST_WORK_ITEMS = "Unable to get test work items";
     private static final String ERR_MSG_ADD_TEST_ARTIFACT = "Unable to add test artifact";
     private static final String ERR_MSG_CREATE_TEST_CASE = "Unable to create test case";
     private static final String ERR_MSG_CREATE_TEST_CASES_BATCH = "Unable to create test cases";
@@ -248,6 +249,14 @@ public class BasicClientImpl implements BasicClient {
     }
 
     @Override
+    public HttpClient.Response<WorkItem[]> getTestWorkItems(long testId, WorkItem.Type type) {
+        return HttpClient.uri(Path.TEST_WORK_ITEM_BY_TYPE_PATH, serviceURL, testId, type.toString())
+                         .withAuthorization(authToken, project)
+                         .onFailure(ERR_MSG_GET_TEST_WORK_ITEMS)
+                         .get(WorkItem[].class);
+    }
+    
+    @Override
     public void addTestArtifact(TestArtifactType artifact) {
         HttpClient.uri(Path.TEST_ARTIFACTS_PATH, serviceURL, artifact.getTestId())
                   .withAuthorization(authToken, project)
@@ -360,7 +369,7 @@ public class BasicClientImpl implements BasicClient {
     public String getAuthToken() {
         return authToken;
     }
-
+    
     private CompletableFuture<TenantType> initTenant() {
         this.tenantType = CompletableFuture.supplyAsync(() -> getTenant().getObject());
         return tenantType;

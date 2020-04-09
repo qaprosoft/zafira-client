@@ -15,6 +15,7 @@
  *******************************************************************************/
 package com.qaprosoft.zafira.listener.service.impl;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -50,6 +51,12 @@ public class TestTypeServiceImpl implements TestTypeService {
     @Override
     public TestType registerWorkItems(long testId, List<String> workItems) {
         return zafiraClient.registerWorkItems(testId, workItems);
+    }
+
+    @Override
+    public List<WorkItem> getKnownIssues(long testId) {
+        HttpClient.Response<WorkItem[]> result = zafiraClient.getTestWorkItems(testId, WorkItem.Type.BUG);
+        return Arrays.asList(result.getObject());
     }
 
     @Override

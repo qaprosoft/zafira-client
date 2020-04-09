@@ -89,6 +89,9 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
 
     private static final String ZAFIRA_RUN_ID_PARAM = "zafira_run_id";
 
+    private static final String ALREADY_PASSED = "ALREADY_PASSED";
+    private static final String ALREADY_FAILED_BY_KNOWN_BUG = "ALREADY_FAILED_BY_KNOWN_BUG";
+
     private boolean ZAFIRA_ENABLED;
     private String ZAFIRA_URL;
     private String ZAFIRA_PROJECT;
@@ -108,6 +111,8 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
     private static TestRunType run;
     private Map<String, TestType> registeredTests = new HashMap<>();
     private Set<String> classesToRerun = new HashSet<>();
+    
+    private Set<String> testsWithKnownIssues = new HashSet<>();
 
     private static ThreadLocal<String> threadCiTestId = new ThreadLocal<>();
     private static ThreadLocal<TestType> threadTest = new ThreadLocal<>();
@@ -236,6 +241,10 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
             String testName = configurator.getTestName(adapter);
 
             TestCaseType testCase = registerTestCase(adapter);
+            
+            if(testsWithKnownIssues.contains(testName)) {
+            	throw adapter.getSkipExceptionInstance(ALREADY_FAILED_BY_KNOWN_BUG + ": " + testName);
+            }
 
             // Search already registered test!
             if (registeredTests.containsKey(testName)) {
@@ -243,7 +252,7 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
 
                 // Skip already passed tests if rerun failures enabled
                 if (ZAFIRA_RERUN_FAILURES && !startedTest.isNeedRerun()) {
-                    throw adapter.getSkipExceptionInstance("ALREADY_PASSED: " + testName);
+                    throw adapter.getSkipExceptionInstance(ALREADY_PASSED + ": " + testName);
                 }
 
                 startedTest.setTestCaseId(testCase.getId());
@@ -314,7 +323,13 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
             return;
         // Test is skipped as ALREADY_PASSED
         if (adapter.getThrowable() != null && adapter.getThrowable().getMessage() != null
-                && adapter.getThrowable().getMessage().startsWith("ALREADY_PASSED")) {
+                && adapter.getThrowable().getMessage().startsWith(ALREADY_PASSED)) {
+            return;
+        }
+
+        // Test is skipped as ALREADY_FAILED_BY_KNOWN_BUG
+        if (adapter.getThrowable() != null && adapter.getThrowable().getMessage() != null
+                && adapter.getThrowable().getMessage().startsWith(ALREADY_FAILED_BY_KNOWN_BUG)) {
             return;
         }
 
@@ -585,6 +600,10 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
         testTypeService.finishTest(finishedTest);
 
         if (FAILED.equals(status) || SKIPPED.equals(status)) {
+            List<WorkItem> knownIssues = testTypeService.getKnownIssues(finishedTest.getId());
+            if (!knownIssues.isEmpty()) {
+                testsWithKnownIssues.add(finishedTest.getName());
+            }
             registerKnownIssue(adapter, finishedTest.getId(), finishedTest.getTestCaseId());
         }
     }

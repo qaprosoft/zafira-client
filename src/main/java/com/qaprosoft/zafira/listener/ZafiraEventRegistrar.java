@@ -597,11 +597,11 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
     private void finishTest(TestResultAdapter adapter, Status status) throws JAXBException {
         String fullStackTrace = getFullStackTrace(adapter);
         TestType finishedTest = populateTestResult(adapter, status, fullStackTrace);
-        testTypeService.finishTest(finishedTest);
+        finishedTest = testTypeService.finishTest(finishedTest);
 
         if (FAILED.equals(status) || SKIPPED.equals(status)) {
-            List<WorkItem> knownIssues = testTypeService.getKnownIssues(finishedTest.getId());
-            if (!knownIssues.isEmpty()) {
+            if (finishedTest.isKnownIssue()) {
+                LOGGER.info(String.format("Test '%s' failed due to known issue", finishedTest.getName()));
                 testsWithKnownIssues.add(finishedTest.getName());
             }
             registerKnownIssue(adapter, finishedTest.getId(), finishedTest.getTestCaseId());

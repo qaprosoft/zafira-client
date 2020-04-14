@@ -20,6 +20,7 @@ import static com.qaprosoft.zafira.log.log4j.level.MetaInfoLevel.META_INFO;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.ThrowableInformation;
 import org.codehaus.jettison.json.JSONException;
@@ -44,25 +45,30 @@ class LoggingEventBuilder {
         ThrowableInformation throwableInformation = event.getThrowableInformation();
         if (throwableInformation != null) {
             Throwable t = throwableInformation.getThrowable();
-            JSONObject throwable = new JSONObject();
-
-            throwable.put("message", t.getMessage());
-            throwable.put("className", t.getClass().getCanonicalName());
-            List<JSONObject> traceObjects = new ArrayList<>();
-            for (StackTraceElement ste : t.getStackTrace()) {
-                JSONObject element = new JSONObject();
-                element.put("class", ste.getClassName());
-                element.put("method", ste.getMethodName());
-                element.put("line", ste.getLineNumber());
-                element.put("file", ste.getFileName());
-                traceObjects.add(element);
-            }
-
-            object.put("stackTrace", traceObjects);
-            object.put("throwable", throwable);
+            writeThrowable(t);
         }
         return this;
     }
+
+    private void writeThrowable(Throwable t) throws JSONException {
+        JSONObject throwable = new JSONObject();
+
+        throwable.put("message", t.getMessage());
+        throwable.put("className", t.getClass().getCanonicalName());
+        List<JSONObject> traceObjects = new ArrayList<>();
+        for (StackTraceElement ste : t.getStackTrace()) {
+            JSONObject element = new JSONObject();
+            element.put("class", ste.getClassName());
+            element.put("method", ste.getMethodName());
+            element.put("line", ste.getLineNumber());
+            element.put("file", ste.getFileName());
+            traceObjects.add(element);
+        }
+
+        object.put("stackTrace", traceObjects);
+        object.put("throwable", throwable);
+    }
+
 
     /**
      * Converts basic LoggingEvent properties to JSON object
@@ -70,18 +76,32 @@ class LoggingEventBuilder {
      * @throws JSONException - unable to parse json
      */
     LoggingEventBuilder writeBasic(LoggingEvent event) throws JSONException {
-        object.put("threadName", event.getThreadName());
-        object.put("level", event.getLevel().toString());
+        writeBasic(
+                event.getThreadName(),
+                event.getLevel(),
+                event.getMessage(),
+                event.getLoggerName()
+        );
+        return this;
+    }
+
+    LoggingEventBuilder writeDirect(MetaInfoMessage message) throws JSONException {
+        writeBasic(null, META_INFO, message, null);
+        return this;
+    }
+
+    void writeBasic(String threadName, Level level, Object message, String loggerName) throws JSONException {
+        object.put("threadName", threadName);
+        object.put("level", level.toString());
         object.put("timestamp", System.currentTimeMillis());
-        if (event.getLevel().equals(META_INFO)) {
-            MetaInfoMessage metaInfoMessage = (MetaInfoMessage) event.getMessage();
+        if (META_INFO.equals(level)) {
+            MetaInfoMessage metaInfoMessage = (MetaInfoMessage) message;
             object.put("message", metaInfoMessage.getMessage());
             object.put("headers", new JSONObject(metaInfoMessage.getHeaders()));
         } else {
-            object.put("message", event.getMessage());
+            object.put("message", message);
         }
-        object.put("logger", event.getLoggerName());
-        return this;
+        object.put("logger", loggerName);
     }
 
     /**

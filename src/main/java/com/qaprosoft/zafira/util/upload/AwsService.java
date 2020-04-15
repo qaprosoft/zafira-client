@@ -15,6 +15,7 @@ import com.qaprosoft.zafira.client.ZafiraClient;
 import com.qaprosoft.zafira.client.ZafiraSingleton;
 import com.qaprosoft.zafira.models.dto.auth.TenantType;
 import com.qaprosoft.zafira.models.dto.aws.SessionCredentials;
+import com.qaprosoft.zafira.util.AsyncUtil;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -27,18 +28,20 @@ import java.util.concurrent.CompletableFuture;
 
 import static com.qaprosoft.zafira.util.AsyncUtil.get;
 
-class AwsService {
+final class AwsService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AwsService.class);
 
     private static final ZafiraClient zafiraClient;
-    private static final BasicClient client;
+    private static BasicClient client;
     private static CompletableFuture<AmazonS3> amazonClient;
     private static SessionCredentials amazonS3SessionCredentials;
 
     static {
         zafiraClient = ZafiraSingleton.INSTANCE.getClient();
-        client = zafiraClient.getClient();
+        if (ZafiraSingleton.INSTANCE.isRunning()) {
+            client = zafiraClient.getClient();
+        }
     }
 
     private AwsService() {
@@ -54,32 +57,34 @@ class AwsService {
      */
     static String uploadFile(File file, Integer expiresIn, String keyPrefix) throws Exception {
         String filePath = null;
-        TenantType tenantType = client.getTenantType();
-        if (getAmazonClient() != null && tenantType != null && !StringUtils.isBlank(tenantType.getTenant())) {
-            String fileName = RandomStringUtils.randomAlphanumeric(20) + "." + FilenameUtils.getExtension(file.getName());
-            String relativeKey = keyPrefix + fileName;
-            String key = tenantType.getTenant() + relativeKey;
+        if (isEnabled()) {
+            TenantType tenantType = client.getTenantType();
+            if (tenantType != null && !StringUtils.isBlank(tenantType.getTenant())) {
+                String fileName = RandomStringUtils.randomAlphanumeric(20) + "." + FilenameUtils.getExtension(file.getName());
+                String relativeKey = keyPrefix + fileName;
+                String key = tenantType.getTenant() + relativeKey;
 
-            try (SdkBufferedInputStream stream = new SdkBufferedInputStream(new FileInputStream(file), (int) (file.length() + 100))) {
-                String type = Mimetypes.getInstance().getMimetype(file.getName());
+                try (SdkBufferedInputStream stream = new SdkBufferedInputStream(new FileInputStream(file), (int) (file.length() + 100))) {
+                    String type = Mimetypes.getInstance().getMimetype(file.getName());
 
-                ObjectMetadata metadata = new ObjectMetadata();
-                metadata.setContentType(type);
-                metadata.setContentLength(file.length());
+                    ObjectMetadata metadata = new ObjectMetadata();
+                    metadata.setContentType(type);
+                    metadata.setContentLength(file.length());
 
-                PutObjectRequest putRequest = new PutObjectRequest(amazonS3SessionCredentials.getBucket(), key, stream, metadata);
-                getAmazonClient().putObject(putRequest);
-                CannedAccessControlList controlList = tenantType.isUseArtifactsProxy() ? CannedAccessControlList.Private
-                        : CannedAccessControlList.PublicRead;
-                getAmazonClient().setObjectAcl(amazonS3SessionCredentials.getBucket(), key, controlList);
+                    PutObjectRequest putRequest = new PutObjectRequest(amazonS3SessionCredentials.getBucket(), key, stream, metadata);
+                    getAmazonClient().putObject(putRequest);
+                    CannedAccessControlList controlList = tenantType.isUseArtifactsProxy() ? CannedAccessControlList.Private
+                            : CannedAccessControlList.PublicRead;
+                    getAmazonClient().setObjectAcl(amazonS3SessionCredentials.getBucket(), key, controlList);
 
-                filePath = tenantType.isUseArtifactsProxy() ? client.getRealServiceUrl() + relativeKey : getFilePath(key);
+                    filePath = tenantType.isUseArtifactsProxy() ? client.getRealServiceUrl() + relativeKey : getFilePath(key);
 
-            } catch (Exception e) {
-                LOGGER.error("Can't save file to Amazon S3", e);
+                } catch (Exception e) {
+                    LOGGER.error("Can't save file to Amazon S3", e);
+                }
+            } else {
+                throw new Exception("Can't save file to Amazon S3. Verify your credentials or bucket name");
             }
-        } else {
-            throw new Exception("Can't save file to Amazon S3. Verify your credentials or bucket name");
         }
 
         return filePath;
@@ -94,21 +99,23 @@ class AwsService {
      */
     private static CompletableFuture<AmazonS3> initAmazonS3Client() {
         amazonClient = CompletableFuture.supplyAsync(() -> {
-            amazonS3SessionCredentials = zafiraClient.getAmazonSessionCredentials().getObject();
             AmazonS3 client = null;
-            if (amazonS3SessionCredentials != null) {
-                try {
-                    client = AmazonS3ClientBuilder.standard()
-                                                  .withCredentials(
-                                                          new AWSStaticCredentialsProvider(new BasicSessionCredentials(amazonS3SessionCredentials.getAccessKeyId(),
-                                                                  amazonS3SessionCredentials.getSecretAccessKey(), amazonS3SessionCredentials.getSessionToken())))
-                                                  .withRegion(Regions.fromName(amazonS3SessionCredentials.getRegion())).build();
-                    if (!client.doesBucketExistV2(amazonS3SessionCredentials.getBucket())) {
-                        throw new Exception(
-                                String.format("Amazon S3 bucket with name '%s' doesn't exist.", amazonS3SessionCredentials.getBucket()));
+            if (ZafiraSingleton.INSTANCE.isRunning()) {
+                amazonS3SessionCredentials = zafiraClient.getAmazonSessionCredentials().getObject();
+                if (amazonS3SessionCredentials != null) {
+                    try {
+                        client = AmazonS3ClientBuilder.standard()
+                                                      .withCredentials(
+                                                              new AWSStaticCredentialsProvider(new BasicSessionCredentials(amazonS3SessionCredentials.getAccessKeyId(),
+                                                                      amazonS3SessionCredentials.getSecretAccessKey(), amazonS3SessionCredentials.getSessionToken())))
+                                                      .withRegion(Regions.fromName(amazonS3SessionCredentials.getRegion())).build();
+                        if (!client.doesBucketExistV2(amazonS3SessionCredentials.getBucket())) {
+                            throw new Exception(
+                                    String.format("Amazon S3 bucket with name '%s' doesn't exist.", amazonS3SessionCredentials.getBucket()));
+                        }
+                    } catch (Exception e) {
+                        LOGGER.error("Amazon integration is invalid. Verify your credentials or region.", e);
                     }
-                } catch (Exception e) {
-                    LOGGER.error("Amazon integration is invalid. Verify your credentials or region.", e);
                 }
             }
             return client;
@@ -116,8 +123,15 @@ class AwsService {
         return amazonClient;
     }
 
+    public static boolean isEnabled() {
+        return getAmazonClient() != null;
+    }
+
     private static AmazonS3 getAmazonClient() {
-        return get(amazonClient, AwsService::initAmazonS3Client);
+        if (amazonClient == null) {
+            return get(amazonClient, AwsService::initAmazonS3Client);
+        }
+        return AsyncUtil.getAsync(amazonClient);
     }
 
 }

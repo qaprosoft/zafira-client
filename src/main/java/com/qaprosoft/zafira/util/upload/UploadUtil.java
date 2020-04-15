@@ -49,57 +49,62 @@ public class UploadUtil {
     }
 
     public static void uploadScreenshot(File screenshot, File screenshotThumbnail, String name, boolean asArtifact) {
-        lazyInit();
+        if (AwsService.isEnabled()) {
+            lazyInit();
 
-        final String correlationId = UUID.randomUUID().toString();
-        final String ciTestId = ZafiraEventRegistrar.getThreadCiTestId();
-        final FileUploadType.Type type = FileUploadType.Type.SCREENSHOTS;
+            final String correlationId = UUID.randomUUID().toString();
+            final String ciTestId = ZafiraEventRegistrar.getThreadCiTestId();
+            final FileUploadType.Type type = FileUploadType.Type.SCREENSHOTS;
 
-        MetaInfoMessage beforeScreenshotUploadMessage = new MetaInfoMessage().addHeader(HEADER_PATH, null)
-                                                                             .addHeader(HEADER_CORRELATION_ID, correlationId);
+            MetaInfoMessage beforeScreenshotUploadMessage = new MetaInfoMessage().addHeader(HEADER_PATH, null)
+                                                                                 .addHeader(HEADER_CORRELATION_ID, correlationId);
 
-        appender.append(beforeScreenshotUploadMessage);
+            appender.append(beforeScreenshotUploadMessage);
 
-        MetaInfoMessage beforeThumbnailUploadMessage = new MetaInfoMessage().addHeader(HEADER_THUMB_PATH, null)
-                                                                            .addHeader(HEADER_CORRELATION_ID, correlationId);
-
-        appender.append(beforeThumbnailUploadMessage);
-
-        Optional<CompletableFuture<String>> screenshotUrlFuture = upload(screenshot, type, url -> {
-            MetaInfoMessage afterScreenshotUploadMessage = new MetaInfoMessage().addHeader(HEADER_PATH, url)
-                                                                                .addHeader(HEADER_CI_TEST_ID, ciTestId)
+            MetaInfoMessage beforeThumbnailUploadMessage = new MetaInfoMessage().addHeader(HEADER_THUMB_PATH, null)
                                                                                 .addHeader(HEADER_CORRELATION_ID, correlationId);
 
-            appender.append(afterScreenshotUploadMessage);
-        });
+            appender.append(beforeThumbnailUploadMessage);
 
-        Optional<CompletableFuture<String>> thumbnailUrlFuture = upload(screenshotThumbnail, type, url -> {
-            MetaInfoMessage afterThumbnailUploadMessage = new MetaInfoMessage().addHeader(HEADER_THUMB_PATH, url)
-                                                                               .addHeader(HEADER_CI_TEST_ID, ciTestId)
-                                                                               .addHeader(HEADER_CORRELATION_ID, correlationId);
+            Optional<CompletableFuture<String>> screenshotUrlFuture = upload(screenshot, type, url -> {
+                MetaInfoMessage afterScreenshotUploadMessage = new MetaInfoMessage().addHeader(HEADER_PATH, url)
+                                                                                    .addHeader(HEADER_CI_TEST_ID, ciTestId)
+                                                                                    .addHeader(HEADER_CORRELATION_ID, correlationId);
 
-            appender.append(afterThumbnailUploadMessage);
-        });
+                appender.append(afterScreenshotUploadMessage);
+            });
 
-        screenshotUrlFuture.ifPresent(suf -> thumbnailUrlFuture.ifPresent(tuf -> {
-            if (asArtifact) {
-                AsyncOperationHolder.addArtifact(suf, name, expirationInSeconds);
-                AsyncOperationHolder.addArtifact(tuf, name, expirationInSeconds);
-            } else {
-                AsyncOperationHolder.addOperation(suf);
-                AsyncOperationHolder.addOperation(tuf);
-            }
-        }));
+            Optional<CompletableFuture<String>> thumbnailUrlFuture = upload(screenshotThumbnail, type, url -> {
+                MetaInfoMessage afterThumbnailUploadMessage = new MetaInfoMessage().addHeader(HEADER_THUMB_PATH, url)
+                                                                                   .addHeader(HEADER_CI_TEST_ID, ciTestId)
+                                                                                   .addHeader(HEADER_CORRELATION_ID, correlationId);
+
+                appender.append(afterThumbnailUploadMessage);
+            });
+
+            screenshotUrlFuture.ifPresent(suf -> thumbnailUrlFuture.ifPresent(tuf -> {
+                if (asArtifact) {
+                    AsyncOperationHolder.addArtifact(suf, name, expirationInSeconds);
+                    AsyncOperationHolder.addArtifact(tuf, name, expirationInSeconds);
+                } else {
+                    AsyncOperationHolder.addOperation(suf);
+                    AsyncOperationHolder.addOperation(tuf);
+                }
+            }));
+        }
     }
 
     public static void uploadArtifact(File file, String name, Integer expiresIn) {
-        lazyInit();
+        if (AwsService.isEnabled()) {
+            lazyInit();
 
-        final FileUploadType.Type type = FileUploadType.Type.COMMON;
+            final FileUploadType.Type type = FileUploadType.Type.COMMON;
 
-        Optional<CompletableFuture<String>> maybeArtifactUrlFuture = upload(file, type, s -> {});
+            Optional<CompletableFuture<String>> maybeArtifactUrlFuture = upload(file, type, s -> {
+            });
 
-        maybeArtifactUrlFuture.ifPresent(artifactUrlFuture -> AsyncOperationHolder.addArtifact(artifactUrlFuture, name, expiresIn));
+            maybeArtifactUrlFuture.ifPresent(artifactUrlFuture -> AsyncOperationHolder.addArtifact(artifactUrlFuture, name, expiresIn));
+        }
     }
 
     private static Optional<CompletableFuture<String>> upload(File file, FileUploadType.Type type, Consumer<String> urlConsumer) {

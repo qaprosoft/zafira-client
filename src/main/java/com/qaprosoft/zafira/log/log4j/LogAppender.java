@@ -33,7 +33,7 @@ public class LogAppender extends AppenderSkeleton {
     private int history = 1000;
 
     public LogAppender() {
-        this.logAppenderService = new LogAppenderServiceImpl();
+        this.logAppenderService = LogAppenderServiceImpl.getInstance();
         Runtime.getRuntime().addShutdownHook(new Thread(this::onShutdownHook));
     }
 

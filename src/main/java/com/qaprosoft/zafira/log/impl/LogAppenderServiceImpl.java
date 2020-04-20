@@ -43,6 +43,8 @@ public class LogAppenderServiceImpl implements LogAppenderService {
     private static final ZafiraSingleton ZAFIRA_INSTANCE = ZafiraSingleton.INSTANCE;
     private static final ExecutorService threadPool = Executors.newCachedThreadPool();
 
+    private static LogAppenderServiceImpl INSTANCE;
+
     private final AmqpService amqpService;
 
     private EventPublisher eventPublisher;
@@ -51,7 +53,7 @@ public class LogAppenderServiceImpl implements LogAppenderService {
     private String routingKey;
     private boolean zafiraConnected;
 
-    public LogAppenderServiceImpl() {
+    private LogAppenderServiceImpl() {
         this.amqpService = new RabbitMQService(ZAFIRA_INSTANCE.getClient());
         this.routingKey = EMPTY_STRING;
     }
@@ -84,6 +86,13 @@ public class LogAppenderServiceImpl implements LogAppenderService {
         if(amqpService != null) {
             amqpService.releaseConnection();
         }
+    }
+
+    public static synchronized LogAppenderServiceImpl getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new LogAppenderServiceImpl();
+        }
+        return INSTANCE;
     }
 
     /**

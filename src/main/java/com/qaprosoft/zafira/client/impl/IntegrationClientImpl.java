@@ -15,113 +15,20 @@
  *******************************************************************************/
 package com.qaprosoft.zafira.client.impl;
 
-import static com.qaprosoft.zafira.util.AsyncUtil.get;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.concurrent.CompletableFuture;
-
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicSessionCredentials;
-import com.amazonaws.internal.SdkBufferedInputStream;
-import com.amazonaws.regions.Regions;
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import com.amazonaws.services.s3.internal.Mimetypes;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.qaprosoft.zafira.client.BasicClient;
 import com.qaprosoft.zafira.client.IntegrationClient;
 import com.qaprosoft.zafira.client.Path;
-import com.qaprosoft.zafira.models.dto.auth.TenantType;
 import com.qaprosoft.zafira.models.dto.aws.SessionCredentials;
 import com.qaprosoft.zafira.util.http.HttpClient;
 
 public class IntegrationClientImpl implements IntegrationClient {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(IntegrationClientImpl.class);
-
     private static final String ERR_MSG_GET_AWS_CREDENTIALS = "Unable to get AWS session credentials";
 
     private final BasicClient client;
 
-    private CompletableFuture<AmazonS3> amazonClient;
-    private SessionCredentials amazonS3SessionCredentials;
-
     public IntegrationClientImpl(BasicClient client) {
         this.client = client;
-    }
-
-    @Override
-    public String uploadFile(File file, Integer expiresIn, String keyPrefix) throws Exception {
-        String filePath = null;
-        TenantType tenantType = client.getTenantType();
-        if (getAmazonClient() != null && tenantType != null && !StringUtils.isBlank(tenantType.getTenant())) {
-            String fileName = RandomStringUtils.randomAlphanumeric(20) + "." + FilenameUtils.getExtension(file.getName());
-            String relativeKey = keyPrefix + fileName;
-            String key = tenantType.getTenant() + relativeKey;
-
-            try (SdkBufferedInputStream stream = new SdkBufferedInputStream(new FileInputStream(file), (int) (file.length() + 100))) {
-                String type = Mimetypes.getInstance().getMimetype(file.getName());
-
-                ObjectMetadata metadata = new ObjectMetadata();
-                metadata.setContentType(type);
-                metadata.setContentLength(file.length());
-
-                PutObjectRequest putRequest = new PutObjectRequest(this.amazonS3SessionCredentials.getBucket(), key, stream, metadata);
-                getAmazonClient().putObject(putRequest);
-                CannedAccessControlList controlList = tenantType.isUseArtifactsProxy() ? CannedAccessControlList.Private
-                        : CannedAccessControlList.PublicRead;
-                getAmazonClient().setObjectAcl(this.amazonS3SessionCredentials.getBucket(), key, controlList);
-
-                filePath = tenantType.isUseArtifactsProxy() ? client.getRealServiceUrl() + relativeKey : getFilePath(key);
-
-            } catch (Exception e) {
-                LOGGER.error("Can't save file to Amazon S3", e);
-            }
-        } else {
-            throw new Exception("Can't save file to Amazon S3. Verify your credentials or bucket name");
-        }
-
-        return filePath;
-    }
-
-    private String getFilePath(String key) {
-        return getAmazonClient().getUrl(this.amazonS3SessionCredentials.getBucket(), key).toString();
-    }
-
-    /**
-     * Registers Amazon S3 client
-     */
-    private CompletableFuture<AmazonS3> initAmazonS3Client() {
-        this.amazonClient = CompletableFuture.supplyAsync(() -> {
-            this.amazonS3SessionCredentials = getAmazonSessionCredentials().getObject();
-            AmazonS3 client = null;
-            if (this.amazonS3SessionCredentials != null) {
-                try {
-                    client = AmazonS3ClientBuilder.standard()
-                                                  .withCredentials(
-                                                          new AWSStaticCredentialsProvider(new BasicSessionCredentials(this.amazonS3SessionCredentials.getAccessKeyId(),
-                                                                  this.amazonS3SessionCredentials.getSecretAccessKey(), this.amazonS3SessionCredentials.getSessionToken())))
-                                                  .withRegion(Regions.fromName(this.amazonS3SessionCredentials.getRegion())).build();
-                    if (!client.doesBucketExistV2(this.amazonS3SessionCredentials.getBucket())) {
-                        throw new Exception(
-                                String.format("Amazon S3 bucket with name '%s' doesn't exist.", this.amazonS3SessionCredentials.getBucket()));
-                    }
-                } catch (Exception e) {
-                    LOGGER.error("Amazon integration is invalid. Verify your credentials or region.", e);
-                }
-            }
-            return client;
-        });
-        return amazonClient;
     }
 
     /**
@@ -129,15 +36,11 @@ public class IntegrationClientImpl implements IntegrationClient {
      *
      * @return Amazon S3 temporary credentials
      */
-    private HttpClient.Response<SessionCredentials> getAmazonSessionCredentials() {
+    public HttpClient.Response<SessionCredentials> getAmazonSessionCredentials() {
         return HttpClient.uri(Path.AMAZON_SESSION_CREDENTIALS_PATH, client.getServiceUrl())
                          .withAuthorization(client.getAuthToken())
                          .onFailure(ERR_MSG_GET_AWS_CREDENTIALS)
                          .get(SessionCredentials.class);
-    }
-
-    private AmazonS3 getAmazonClient() {
-        return get(this.amazonClient, this::initAmazonS3Client);
     }
 
 }

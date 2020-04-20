@@ -15,18 +15,15 @@
  *******************************************************************************/
 package com.qaprosoft.zafira.client;
 
-import java.io.File;
+import com.qaprosoft.zafira.models.dto.aws.SessionCredentials;
+import com.qaprosoft.zafira.util.http.HttpClient;
 
 public interface IntegrationClient {
 
     /**
-     * Uploads file to Amazon S3 used integration data from server
-     * @param file - any file to upload
-     * @param expiresIn - in seconds to generate presigned URL
-     * @param keyPrefix - bucket folder name where file will be stored
-     * @return url of the file in string format
-     * @throws Exception throws when there are any issues with a Amazon S3 connection
+     * Gets temporary amazon credentials
+     * @return http response that contains creadentials
      */
-    String uploadFile(File file, Integer expiresIn, String keyPrefix) throws Exception;
+    HttpClient.Response<SessionCredentials> getAmazonSessionCredentials();
 
 }

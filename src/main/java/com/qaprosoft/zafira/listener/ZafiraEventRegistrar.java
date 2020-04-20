@@ -36,6 +36,8 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
+import com.qaprosoft.zafira.models.dto.TestArtifactType;
+import com.qaprosoft.zafira.util.async.AsyncOperationHolder;
 import org.apache.commons.configuration2.CombinedConfiguration;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -226,6 +228,8 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
             testRunTypeService.registerTestRunResults(run, configurator.getConfiguration());
         } catch (Throwable e) {
             LOGGER.error("Unable to finish test run correctly", e);
+        } finally {
+            AsyncOperationHolder.waitUntilAllComplete();
         }
     }
 
@@ -573,7 +577,10 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
 
         test.setTestMetrics(configurator.getTestMetrics(adapter));
         test.setConfigXML(convertToXML(configurator.getConfiguration()));
-        test.setArtifacts(configurator.getArtifacts(adapter));
+
+        Set<TestArtifactType> testArtifacts = configurator.getArtifacts(adapter);
+        testArtifacts.addAll(AsyncOperationHolder.getTestArtifacts());
+        test.setArtifacts(testArtifacts);
         configurator.clearArtifacts();
 
         test.setTags(configurator.getTestTags(adapter));

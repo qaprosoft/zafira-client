@@ -73,7 +73,7 @@ public class ConfigurationUtil {
             LOGGER.error(message, e);
         }
         configuration = config;
-        return config;
+        return configuration;
     }
 
     public static void addSystemConfiguration(String key, String value) {

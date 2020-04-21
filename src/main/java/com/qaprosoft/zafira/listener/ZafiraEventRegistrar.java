@@ -36,6 +36,8 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
+import com.qaprosoft.zafira.models.dto.TestArtifactType;
+import com.qaprosoft.zafira.util.async.AsyncOperationHolder;
 import org.apache.commons.configuration2.CombinedConfiguration;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -89,6 +91,9 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
 
     private static final String ZAFIRA_RUN_ID_PARAM = "zafira_run_id";
 
+    private static final String ALREADY_PASSED = "ALREADY_PASSED";
+    private static final String ALREADY_FAILED_BY_KNOWN_BUG = "ALREADY_FAILED_BY_KNOWN_BUG";
+
     private boolean ZAFIRA_ENABLED;
     private String ZAFIRA_URL;
     private String ZAFIRA_PROJECT;
@@ -108,6 +113,8 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
     private static TestRunType run;
     private Map<String, TestType> registeredTests = new HashMap<>();
     private Set<String> classesToRerun = new HashSet<>();
+    
+    private Set<String> testsWithKnownIssues = new HashSet<>();
 
     private static ThreadLocal<String> threadCiTestId = new ThreadLocal<>();
     private static ThreadLocal<TestType> threadTest = new ThreadLocal<>();
@@ -221,6 +228,8 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
             testRunTypeService.registerTestRunResults(run, configurator.getConfiguration());
         } catch (Throwable e) {
             LOGGER.error("Unable to finish test run correctly", e);
+        } finally {
+            AsyncOperationHolder.waitUntilAllComplete();
         }
     }
 
@@ -236,6 +245,10 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
             String testName = configurator.getTestName(adapter);
 
             TestCaseType testCase = registerTestCase(adapter);
+            
+            if(testsWithKnownIssues.contains(testName)) {
+            	throw adapter.getSkipExceptionInstance(ALREADY_FAILED_BY_KNOWN_BUG + ": " + testName);
+            }
 
             // Search already registered test!
             if (registeredTests.containsKey(testName)) {
@@ -243,7 +256,7 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
 
                 // Skip already passed tests if rerun failures enabled
                 if (ZAFIRA_RERUN_FAILURES && !startedTest.isNeedRerun()) {
-                    throw adapter.getSkipExceptionInstance("ALREADY_PASSED: " + testName);
+                    throw adapter.getSkipExceptionInstance(ALREADY_PASSED + ": " + testName);
                 }
 
                 startedTest.setTestCaseId(testCase.getId());
@@ -314,7 +327,13 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
             return;
         // Test is skipped as ALREADY_PASSED
         if (adapter.getThrowable() != null && adapter.getThrowable().getMessage() != null
-                && adapter.getThrowable().getMessage().startsWith("ALREADY_PASSED")) {
+                && adapter.getThrowable().getMessage().startsWith(ALREADY_PASSED)) {
+            return;
+        }
+
+        // Test is skipped as ALREADY_FAILED_BY_KNOWN_BUG
+        if (adapter.getThrowable() != null && adapter.getThrowable().getMessage() != null
+                && adapter.getThrowable().getMessage().startsWith(ALREADY_FAILED_BY_KNOWN_BUG)) {
             return;
         }
 
@@ -558,7 +577,10 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
 
         test.setTestMetrics(configurator.getTestMetrics(adapter));
         test.setConfigXML(convertToXML(configurator.getConfiguration()));
-        test.setArtifacts(configurator.getArtifacts(adapter));
+
+        Set<TestArtifactType> testArtifacts = configurator.getArtifacts(adapter);
+        testArtifacts.addAll(AsyncOperationHolder.getTestArtifacts());
+        test.setArtifacts(testArtifacts);
         configurator.clearArtifacts();
 
         test.setTags(configurator.getTestTags(adapter));
@@ -582,9 +604,13 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
     private void finishTest(TestResultAdapter adapter, Status status) throws JAXBException {
         String fullStackTrace = getFullStackTrace(adapter);
         TestType finishedTest = populateTestResult(adapter, status, fullStackTrace);
-        testTypeService.finishTest(finishedTest);
+        finishedTest = testTypeService.finishTest(finishedTest);
 
         if (FAILED.equals(status) || SKIPPED.equals(status)) {
+            if (finishedTest.isKnownIssue()) {
+                LOGGER.info(String.format("Test '%s' failed due to known issue", finishedTest.getName()));
+                testsWithKnownIssues.add(finishedTest.getName());
+            }
             registerKnownIssue(adapter, finishedTest.getId(), finishedTest.getTestCaseId());
         }
     }

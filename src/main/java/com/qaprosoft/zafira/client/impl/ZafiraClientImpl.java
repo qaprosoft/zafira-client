@@ -15,7 +15,6 @@
  *******************************************************************************/
 package com.qaprosoft.zafira.client.impl;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -39,6 +38,7 @@ import com.qaprosoft.zafira.models.dto.TestType;
 import com.qaprosoft.zafira.models.dto.auth.AccessTokenType;
 import com.qaprosoft.zafira.models.dto.auth.AuthTokenType;
 import com.qaprosoft.zafira.models.dto.auth.TenantType;
+import com.qaprosoft.zafira.models.dto.aws.SessionCredentials;
 import com.qaprosoft.zafira.models.dto.user.UserType;
 import com.qaprosoft.zafira.util.http.HttpClient;
 
@@ -152,6 +152,11 @@ public class ZafiraClientImpl implements ZafiraClient {
     @Override
     public HttpClient.Response<WorkItem> createOrUpdateTestWorkItem(long testId, WorkItem workItem) {
         return basicClient.createOrUpdateTestWorkItem(testId, workItem);
+    }
+    
+    @Override
+    public HttpClient.Response<WorkItem[]> getTestWorkItems(long testId, WorkItem.Type type) {
+        return basicClient.getTestWorkItems(testId, type);
     }
 
     @Override
@@ -290,8 +295,12 @@ public class ZafiraClientImpl implements ZafiraClient {
     }
 
     @Override
-    public String uploadFile(File file, Integer expiresIn, String keyPrefix) throws Exception {
-        return integrationClient.uploadFile(file, expiresIn, keyPrefix);
+    public HttpClient.Response<SessionCredentials> getAmazonSessionCredentials() {
+        return integrationClient.getAmazonSessionCredentials();
     }
 
+    @Override
+    public BasicClient getClient() {
+        return basicClient;
+    }
 }

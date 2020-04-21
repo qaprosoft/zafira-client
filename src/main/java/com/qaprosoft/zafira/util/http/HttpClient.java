@@ -127,7 +127,8 @@ public class HttpClient {
                 ClientResponse response = methodBuilder.apply(builder);
                 int status = response.getStatus();
                 rs.setStatus(status);
-                if (responseClass != null && !responseClass.isAssignableFrom(Void.class) && status == 200) {
+                boolean deserializeResponseBody = responseClass != null && response.hasEntity() && !responseClass.isAssignableFrom(Void.class) && status == 200;
+                if (deserializeResponseBody) {
                     rs.setObject(response.getEntity(responseClass));
                 }
             } catch (Exception e) {

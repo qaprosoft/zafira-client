@@ -34,7 +34,7 @@ interface Configuration<T> {
     }
 
     default T get(org.apache.commons.configuration2.Configuration config, SuiteAdapter adapter) {
-        return canOverride() && get(adapter) != null ? get(adapter) : get(config);
+        return canOverride() && adapter != null && get(adapter) != null ? get(adapter) : get(config);
     }
 
 }

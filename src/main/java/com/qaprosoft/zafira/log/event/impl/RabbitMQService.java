@@ -77,12 +77,16 @@ public class RabbitMQService implements AmqpService {
 
     @Override
     public void releaseConnection() throws IOException, TimeoutException {
-        if (channel != null && channel.isOpen()) {
-            channel.close();
-        }
+        try {
+            if (channel != null && channel.isOpen()) {
+                channel.close();
+            }
 
-        if (connection != null && connection.isOpen()) {
-            this.connection.close();
+            if (connection != null && connection.isOpen()) {
+                this.connection.close();
+            }
+        } catch (Exception e) {
+            LOGGER.error("Cannot close RabbitMQ connection");
         }
     }
 

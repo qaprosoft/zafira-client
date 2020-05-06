@@ -2,9 +2,11 @@ package com.qaprosoft.zafira.listener;
 
 import com.qaprosoft.zafira.listener.adapter.MethodAdapter;
 import com.qaprosoft.zafira.listener.adapter.SuiteAdapter;
+import com.qaprosoft.zafira.listener.adapter.TestContextAdapter;
 import com.qaprosoft.zafira.listener.adapter.TestResultAdapter;
 import com.qaprosoft.zafira.listener.adapter.impl.MethodAdapterImpl;
 import com.qaprosoft.zafira.listener.adapter.impl.SuiteAdapterImpl;
+import com.qaprosoft.zafira.listener.adapter.impl.TestContextAdapterImpl;
 import com.qaprosoft.zafira.listener.adapter.impl.TestResultAdapterImpl;
 import org.testng.IHookCallBack;
 import org.testng.IHookable;
@@ -73,7 +75,8 @@ public class ZebrunnerListener implements ISuiteListener, ITestListener, IHookab
 
     @Override
     public void onStart(ITestContext context) {
-        // Do nothing
+        TestContextAdapter adapter = new TestContextAdapterImpl(context);
+        listener.onRunStart(adapter);
     }
 
     @Override

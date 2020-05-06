@@ -36,6 +36,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
+import com.qaprosoft.zafira.listener.adapter.TestContextAdapter;
 import com.qaprosoft.zafira.models.dto.TestArtifactType;
 import com.qaprosoft.zafira.util.async.AsyncOperationHolder;
 import org.apache.commons.configuration2.CombinedConfiguration;
@@ -180,18 +181,6 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
             if (run != null) {
                 // Already discovered run with the same CI_RUN_ID, it is re-run functionality!
                 run = testRunTypeService.rerun(run, ci.getCiBuild(), suite.getId(), configurator.getConfiguration());
-
-                List<TestType> testRunResults = testRunTypeService.findTestRunResults(run.getId());
-                for (TestType test : testRunResults) {
-                    registeredTests.put(test.getName(), test);
-                    if (test.isNeedRerun()) {
-                        classesToRerun.add(test.getTestClass());
-                    }
-                }
-
-                if (ZAFIRA_RERUN_FAILURES) {
-                    ExcludeTestsForRerun.excludeTestsForRerun(adapter, testRunResults, configurator);
-                }
             } else {
                 if (ZAFIRA_RERUN_FAILURES) {
                     LOGGER.error("Unable to find data in Zafira Reporting Service with CI_RUN_ID: '" + ci.getCiRunId() + "'.\n"
@@ -230,6 +219,23 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
             LOGGER.error("Unable to finish test run correctly", e);
         } finally {
             AsyncOperationHolder.waitUntilAllComplete();
+        }
+    }
+
+    @Override
+    public void onRunStart(TestContextAdapter adapter) {
+        if (run != null) {
+            List<TestType> testRunResults = testRunTypeService.findTestRunResults(run.getId());
+            for (TestType test : testRunResults) {
+                registeredTests.put(test.getName(), test);
+                if (test.isNeedRerun()) {
+                    classesToRerun.add(test.getTestClass());
+                }
+            }
+
+            if (ZAFIRA_RERUN_FAILURES) {
+                ExcludeTestsForRerun.excludeTestsForRerun(adapter, testRunResults, configurator);
+            }
         }
     }
 

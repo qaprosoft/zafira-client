@@ -21,10 +21,8 @@ import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.testng.ITestNGMethod;
 import org.testng.ITestResult;
 import org.testng.SkipException;
-import org.testng.internal.TestResult;
 import org.testng.xml.XmlClass;
 
 import com.qaprosoft.zafira.listener.adapter.MethodAdapter;
@@ -40,15 +38,6 @@ public class TestResultAdapterImpl implements TestResultAdapter {
 
     public TestResultAdapterImpl(ITestResult testResult) {
         this.testResult = testResult;
-    }
-
-    public TestResultAdapterImpl(MethodAdapter adapter) {
-        ITestResult instance = null;
-        if (adapter != null) {
-            ITestNGMethod method = (ITestNGMethod) adapter.getMethod();
-            instance = TestResult.newTestResultFor(method);
-        }
-        this.testResult = instance;
     }
 
     @Override

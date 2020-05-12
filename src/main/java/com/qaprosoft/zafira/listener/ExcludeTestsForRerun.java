@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.qaprosoft.zafira.listener.adapter.TestContextAdapter;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -35,7 +36,6 @@ import com.qaprosoft.zafira.listener.adapter.MethodAdapter;
 import com.qaprosoft.zafira.listener.adapter.SuiteAdapter;
 import com.qaprosoft.zafira.listener.adapter.TestAnnotationAdapter;
 import com.qaprosoft.zafira.listener.adapter.TestResultAdapter;
-import com.qaprosoft.zafira.listener.adapter.impl.TestResultAdapterImpl;
 import com.qaprosoft.zafira.models.dto.TestType;
 
 // todo investigate real business and refactor it
@@ -46,7 +46,8 @@ public class ExcludeTestsForRerun {
     private final static String DO_NOT_RUN_TEST_NAMES = "doNotRunTestNames";
     private final static String ENABLED = "enabled";
 
-    public static void excludeTestsForRerun(SuiteAdapter adapter, List<TestType> testRunResults, IConfigurator configurator) {
+    public static void excludeTestsForRerun(TestContextAdapter adapter, List<TestType> testRunResults, IConfigurator configurator) {
+        SuiteAdapter suiteAdapter = adapter.getSuiteAdapter();
         List<String> testNamesNoRerun = new ArrayList<>();
         Set<String> classesToRerun = new HashSet<>();
         for (TestType test : testRunResults) {
@@ -57,11 +58,11 @@ public class ExcludeTestsForRerun {
             }
         }
         String[] testNamesNoRerunArr = testNamesNoRerun.toArray(new String[testNamesNoRerun.size()]);
-        String[] allDependentMethods = adapter.getSuiteDependsOnMethods();
+        String[] allDependentMethods = suiteAdapter.getSuiteDependsOnMethods();
         boolean isAnythingMarked = true;
         while (isAnythingMarked) {
             isAnythingMarked = false;
-            for (MethodAdapter methodAdapter : adapter.getMethodAdapters()) {
+            for (MethodAdapter methodAdapter : suiteAdapter.getMethodAdapters()) {
                 Annotation[] annotations = methodAdapter.getMethodAnnotations();
                 boolean isTest = false;
                 boolean shouldUpdateDataProvider = false;
@@ -81,7 +82,7 @@ public class ExcludeTestsForRerun {
                             }
                         } else {
                             if (!ArrayUtils.contains(allDependentMethods, methodAdapter.getRealClassName() + "." + methodAdapter.getMethodName())) {
-                                boolean testNeedRerun = isTestNeedRerun(methodAdapter, testNamesNoRerun, configurator);
+                                boolean testNeedRerun = isTestNeedRerun(adapter, methodAdapter, testNamesNoRerun, configurator);
                                 if (!testNeedRerun && isTestEnabled(testAnnotationAdapter)) {
                                     skipDependentMethods(allDependentMethods, a, methodAdapter);
                                     isAnythingMarked = true;
@@ -153,9 +154,10 @@ public class ExcludeTestsForRerun {
         return allDependentMethods;
     }
 
-    private static boolean isTestNeedRerun(MethodAdapter adapter, List<String> testNamesNoRerun, IConfigurator configurator) {
-        TestResultAdapter testResultAdapter = new TestResultAdapterImpl(adapter);
-        return !testNamesNoRerun.contains(configurator.getTestName(testResultAdapter));
+    private static boolean isTestNeedRerun(TestContextAdapter testContextAdapter, MethodAdapter methodAdapter, List<String> testNamesNoRerun, IConfigurator configurator) {
+        TestResultAdapter testResultAdapter = testContextAdapter.getTestResultAdapter(methodAdapter);
+        String testName = configurator.getTestName(testResultAdapter);
+        return !testNamesNoRerun.contains(testName);
     }
 
 }

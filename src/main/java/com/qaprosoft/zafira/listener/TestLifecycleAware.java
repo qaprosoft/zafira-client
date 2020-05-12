@@ -17,6 +17,7 @@ package com.qaprosoft.zafira.listener;
 
 import com.qaprosoft.zafira.listener.adapter.MethodAdapter;
 import com.qaprosoft.zafira.listener.adapter.SuiteAdapter;
+import com.qaprosoft.zafira.listener.adapter.TestContextAdapter;
 import com.qaprosoft.zafira.listener.adapter.TestResultAdapter;
 
 /**
@@ -27,6 +28,8 @@ public interface TestLifecycleAware {
     void onSuiteStart(SuiteAdapter adapter);
 
     void onSuiteFinish();
+
+    void onRunStart(TestContextAdapter adapter);
 
     void onTestStart(TestResultAdapter resultAdapter);
 

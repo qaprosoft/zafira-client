@@ -43,8 +43,8 @@ public enum Path {
     AMAZON_SESSION_CREDENTIALS_PATH("/api/settings/amazon/creds"),
     PROJECTS_PATH("/api/projects/%s"),
 
-    LOGS_PATH("/v1/test-runs/{testRunId}/logs"),
-    SCREENSHOTS_PATH("/v1/test-runs/{testRunId}/tests/{testId}/screenshots");
+    LOGS_PATH("/v1/test-runs/%d/logs"),
+    SCREENSHOTS_PATH("/v1/test-runs/%d/tests/%d/screenshots");
 
     private final String relativePath;
 

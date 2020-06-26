@@ -50,7 +50,9 @@ public class UploadUtil {
      * generated automatically
      *
      * @param screenshot screenshot bytes
+     * @param name artifact name
      * @param capturedAtMillis unix timestamp representing a moment in time when screenshot got captured in milliseconds
+     * @param asArtifact indicates that uploaded screenshot will be attached to test as artifact
      */
     public static void uploadScreenshot(byte[] screenshot, String name, Long capturedAtMillis, boolean asArtifact) {
         if (ZafiraSingleton.INSTANCE.isRunning()) {
@@ -62,7 +64,8 @@ public class UploadUtil {
                             Long testRunId = testRunType.getId();
                             Long testId = testType.getId();
                             HttpClient.Response<UploadResult> response = API_CLIENT.sendScreenshot(screenshot, testRunId, testId, capturedAt);
-                            if (response.getStatus() == 200) {
+                            boolean successStatus = String.valueOf(response.getStatus()).matches("(2..)");
+                            if (asArtifact && successStatus) {
                                 UploadResult result = response.getObject();
                                 TestArtifactHolder.add(new TestArtifactType(name, result.getKey(), testId, expirationInSeconds));
                             }

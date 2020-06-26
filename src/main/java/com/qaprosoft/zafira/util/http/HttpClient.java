@@ -130,7 +130,8 @@ public class HttpClient {
                 ClientResponse response = methodBuilder.apply(builder);
                 int status = response.getStatus();
                 rs.setStatus(status);
-                boolean deserializeResponseBody = responseClass != null && response.hasEntity() && !responseClass.isAssignableFrom(Void.class) && status == 200;
+                boolean successStatus = String.valueOf(response.getStatus()).matches("(2..)");
+                boolean deserializeResponseBody = responseClass != null && response.hasEntity() && !responseClass.isAssignableFrom(Void.class) && successStatus;
                 if (deserializeResponseBody) {
                     rs.setObject(response.getEntity(responseClass));
                 }

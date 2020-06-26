@@ -15,6 +15,18 @@
  *******************************************************************************/
 package com.qaprosoft.zafira.listener;
 
+import com.qaprosoft.zafira.config.IConfigurator;
+import com.qaprosoft.zafira.listener.adapter.MethodAdapter;
+import com.qaprosoft.zafira.listener.adapter.SuiteAdapter;
+import com.qaprosoft.zafira.listener.adapter.TestAnnotationAdapter;
+import com.qaprosoft.zafira.listener.adapter.TestContextAdapter;
+import com.qaprosoft.zafira.listener.adapter.TestResultAdapter;
+import com.qaprosoft.zafira.models.dto.TestType;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -24,19 +36,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import com.qaprosoft.zafira.listener.adapter.TestContextAdapter;
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.qaprosoft.zafira.config.IConfigurator;
-import com.qaprosoft.zafira.listener.adapter.MethodAdapter;
-import com.qaprosoft.zafira.listener.adapter.SuiteAdapter;
-import com.qaprosoft.zafira.listener.adapter.TestAnnotationAdapter;
-import com.qaprosoft.zafira.listener.adapter.TestResultAdapter;
-import com.qaprosoft.zafira.models.dto.TestType;
 
 // todo investigate real business and refactor it
 public class ExcludeTestsForRerun {
@@ -57,7 +56,7 @@ public class ExcludeTestsForRerun {
                 classesToRerun.add(test.getTestClass());
             }
         }
-        String[] testNamesNoRerunArr = testNamesNoRerun.toArray(new String[testNamesNoRerun.size()]);
+        String[] testNamesNoRerunArr = testNamesNoRerun.toArray(new String[0]);
         String[] allDependentMethods = suiteAdapter.getSuiteDependsOnMethods();
         boolean isAnythingMarked = true;
         while (isAnythingMarked) {

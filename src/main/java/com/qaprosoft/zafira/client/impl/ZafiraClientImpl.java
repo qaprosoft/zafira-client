@@ -15,15 +15,12 @@
  *******************************************************************************/
 package com.qaprosoft.zafira.client.impl;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
-
 import com.qaprosoft.zafira.client.BasicClient;
 import com.qaprosoft.zafira.client.ExtendedClient;
 import com.qaprosoft.zafira.client.IntegrationClient;
 import com.qaprosoft.zafira.client.ZafiraClient;
 import com.qaprosoft.zafira.config.CiConfig;
+import com.qaprosoft.zafira.log.Log;
 import com.qaprosoft.zafira.models.db.Initiator;
 import com.qaprosoft.zafira.models.db.Status;
 import com.qaprosoft.zafira.models.db.workitem.WorkItem;
@@ -35,12 +32,17 @@ import com.qaprosoft.zafira.models.dto.TestCaseType;
 import com.qaprosoft.zafira.models.dto.TestRunType;
 import com.qaprosoft.zafira.models.dto.TestSuiteType;
 import com.qaprosoft.zafira.models.dto.TestType;
+import com.qaprosoft.zafira.models.dto.UploadResult;
 import com.qaprosoft.zafira.models.dto.auth.AccessTokenType;
 import com.qaprosoft.zafira.models.dto.auth.AuthTokenType;
 import com.qaprosoft.zafira.models.dto.auth.TenantType;
 import com.qaprosoft.zafira.models.dto.aws.SessionCredentials;
 import com.qaprosoft.zafira.models.dto.user.UserType;
 import com.qaprosoft.zafira.util.http.HttpClient;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 public class ZafiraClientImpl implements ZafiraClient {
 
@@ -50,8 +52,8 @@ public class ZafiraClientImpl implements ZafiraClient {
 
     public ZafiraClientImpl(String serviceUrl) {
         this.basicClient = new BasicClientImpl(serviceUrl);
-        this.extendedClient = new ExtendedClientImpl(this.basicClient);
         this.integrationClient = new IntegrationClientImpl(this.basicClient);
+        this.extendedClient = new ExtendedClientImpl(this.basicClient);
     }
 
     @Override
@@ -200,13 +202,18 @@ public class ZafiraClientImpl implements ZafiraClient {
     }
 
     @Override
-    public HttpClient.Response<List<HashMap<String, String>>> getToolSettings(String tool, boolean decrypt) {
-        return basicClient.getToolSettings(tool, decrypt);
+    public UserType getUserOrAnonymousIfNotFound(String username) {
+        return basicClient.getUserOrAnonymousIfNotFound(username);
     }
 
     @Override
-    public UserType getUserOrAnonymousIfNotFound(String username) {
-        return basicClient.getUserOrAnonymousIfNotFound(username);
+    public void sendLogs(Collection<Log> logs, Long testRunId) {
+        basicClient.sendLogs(logs, testRunId);
+    }
+
+    @Override
+    public HttpClient.Response<UploadResult> sendScreenshot(byte[] screenshot, Long testRunId, Long testId, Long capturedAt) {
+        return basicClient.sendScreenshot(screenshot, testRunId, testId, capturedAt);
     }
 
     @Override

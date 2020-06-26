@@ -34,14 +34,14 @@ public enum CiConfiguration implements Configuration {
 
     private final String configName;
     private final Object defaultValue;
-    private final Class configurationClass;
+    private final Class<?> configurationClass;
     private final boolean canOverride;
 
-    CiConfiguration(String configName, Object defaultValue, Class configurationClass) {
+    CiConfiguration(String configName, Object defaultValue, Class<?> configurationClass) {
         this(configName, defaultValue, configurationClass, false);
     }
 
-    CiConfiguration(String configName, Object defaultValue, Class configurationClass, boolean canOverride) {
+    CiConfiguration(String configName, Object defaultValue, Class<?> configurationClass, boolean canOverride) {
         this.configName = configName;
         this.defaultValue = defaultValue;
         this.configurationClass = configurationClass;
@@ -65,7 +65,7 @@ public enum CiConfiguration implements Configuration {
     }
 
     @Override
-    public Class getConfigClass() {
+    public Class<?> getConfigClass() {
         return configurationClass;
     }
 

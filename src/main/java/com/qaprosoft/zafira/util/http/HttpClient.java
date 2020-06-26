@@ -15,22 +15,20 @@
  *******************************************************************************/
 package com.qaprosoft.zafira.util.http;
 
-import java.util.Map;
-import java.util.function.Function;
-
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.qaprosoft.zafira.client.Path;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
+import java.util.Map;
+import java.util.function.Function;
 
 public class HttpClient {
 
@@ -39,7 +37,7 @@ public class HttpClient {
     private static final Integer CONNECT_TIMEOUT = 60000;
     private static final Integer READ_TIMEOUT = 60000;
 
-    private static Client client;
+    private static final Client client;
 
     static {
         client = Client.create(new DefaultClientConfig(GensonProvider.class));
@@ -69,7 +67,7 @@ public class HttpClient {
 
     public static class Executor {
 
-        private WebResource.Builder builder;
+        private final WebResource.Builder builder;
         private String errorMessage;
 
         public Executor(WebResource webResource) {
@@ -119,6 +117,11 @@ public class HttpClient {
             if (!StringUtils.isEmpty(project)) {
                 builder.header("Project", project);
             }
+        }
+
+        public Executor header(String name, String value) {
+            builder.header(name, value);
+            return this;
         }
 
         private <R> Response<R> execute(Class<R> responseClass, Function<WebResource.Builder, ClientResponse> methodBuilder) {

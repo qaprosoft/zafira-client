@@ -15,10 +15,8 @@
  *******************************************************************************/
 package com.qaprosoft.zafira.client;
 
-import java.util.HashMap;
-import java.util.List;
-
 import com.qaprosoft.zafira.client.impl.ZafiraClientImpl;
+import com.qaprosoft.zafira.log.Log;
 import com.qaprosoft.zafira.models.db.workitem.WorkItem;
 import com.qaprosoft.zafira.models.dto.JobType;
 import com.qaprosoft.zafira.models.dto.ProjectType;
@@ -27,11 +25,15 @@ import com.qaprosoft.zafira.models.dto.TestCaseType;
 import com.qaprosoft.zafira.models.dto.TestRunType;
 import com.qaprosoft.zafira.models.dto.TestSuiteType;
 import com.qaprosoft.zafira.models.dto.TestType;
+import com.qaprosoft.zafira.models.dto.UploadResult;
 import com.qaprosoft.zafira.models.dto.auth.AccessTokenType;
 import com.qaprosoft.zafira.models.dto.auth.AuthTokenType;
 import com.qaprosoft.zafira.models.dto.auth.TenantType;
 import com.qaprosoft.zafira.models.dto.user.UserType;
 import com.qaprosoft.zafira.util.http.HttpClient;
+
+import java.util.Collection;
+import java.util.List;
 
 public interface BasicClient {
 
@@ -112,14 +114,16 @@ public interface BasicClient {
      */
     String initProject(String project);
 
-    HttpClient.Response<List<HashMap<String, String>>> getToolSettings(String tool, boolean decrypt);
-
     /**
      * Returns user by username or anonymous if not found.
      * @param username to find user
      * @return user from DB
      */
     UserType getUserOrAnonymousIfNotFound(String username);
+
+    void sendLogs(Collection<Log> logs, Long testRunId);
+
+    HttpClient.Response<UploadResult> sendScreenshot(byte[] screenshot, Long testRunId, Long testId, Long capturedAt);
 
     String getServiceUrl();
 

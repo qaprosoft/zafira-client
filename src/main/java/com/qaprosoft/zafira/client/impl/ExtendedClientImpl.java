@@ -27,7 +27,6 @@ import com.qaprosoft.zafira.models.dto.TestCaseType;
 import com.qaprosoft.zafira.models.dto.TestRunType;
 import com.qaprosoft.zafira.models.dto.TestSuiteType;
 import com.qaprosoft.zafira.models.dto.TestType;
-import com.qaprosoft.zafira.models.dto.user.UserType;
 import com.qaprosoft.zafira.util.http.HttpClient;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -37,8 +36,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import static com.qaprosoft.zafira.client.ClientDefaults.USER;
-
 public class ExtendedClientImpl implements ExtendedClient {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ExtendedClientImpl.class);
@@ -47,29 +44,6 @@ public class ExtendedClientImpl implements ExtendedClient {
 
     public ExtendedClientImpl(BasicClient client) {
         this.client = client;
-    }
-
-    @Override
-    public UserType registerUser(String userName, String email, String firstName, String lastName) {
-        if (StringUtils.isEmpty(userName) || userName.equals("$BUILD_USER_ID")) {
-            userName = USER;
-        }
-        userName = userName.toLowerCase();
-
-        String userDetails = "userName: %s, email: %s, firstName: %s, lastName: %s";
-        LOGGER.debug("User details for registration:" + String.format(userDetails, userName, email, firstName, lastName));
-
-        UserType user = new UserType(userName, email, firstName, lastName);
-        HttpClient.Response<UserType> response = client.createUser(user);
-        user = response.getObject();
-
-        if (user == null) {
-            throw new RuntimeException("Unable to register user '" + userName + "' for zafira service: " + client.getServiceUrl());
-        } else {
-            LOGGER.debug("Registered user details:"
-                    + String.format(userDetails, user.getUsername(), user.getEmail(), user.getFirstName(), user.getLastName()));
-        }
-        return user;
     }
 
     @Override

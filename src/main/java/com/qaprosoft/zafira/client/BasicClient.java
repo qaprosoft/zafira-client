@@ -27,7 +27,7 @@ import com.qaprosoft.zafira.models.dto.TestSuiteType;
 import com.qaprosoft.zafira.models.dto.TestType;
 import com.qaprosoft.zafira.models.dto.UploadResult;
 import com.qaprosoft.zafira.models.dto.auth.AuthTokenType;
-import com.qaprosoft.zafira.models.dto.user.UserType;
+import com.qaprosoft.zafira.models.dto.UserType;
 import com.qaprosoft.zafira.util.http.HttpClient;
 
 import java.util.Collection;
@@ -42,8 +42,6 @@ public interface BasicClient {
     HttpClient.Response<UserType> getUserProfile();
 
     HttpClient.Response<UserType> getUserProfile(String username);
-
-    HttpClient.Response<UserType> createUser(UserType user);
 
     HttpClient.Response<AuthTokenType> refreshToken(String token);
 

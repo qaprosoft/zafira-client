@@ -29,7 +29,7 @@ import com.qaprosoft.zafira.models.dto.TestType;
 import com.qaprosoft.zafira.models.dto.UploadResult;
 import com.qaprosoft.zafira.models.dto.auth.AuthTokenType;
 import com.qaprosoft.zafira.models.dto.auth.RefreshTokenType;
-import com.qaprosoft.zafira.models.dto.user.UserType;
+import com.qaprosoft.zafira.models.dto.UserType;
 import com.qaprosoft.zafira.util.http.HttpClient;
 import org.apache.commons.lang3.StringUtils;
 
@@ -109,14 +109,6 @@ public class BasicClientImpl implements BasicClient {
                          .withAuthorization(authToken, project)
                          .onFailure(ERR_MSG_AUTHORIZE_USER)
                          .get(UserType.class);
-    }
-
-    @Override
-    public synchronized HttpClient.Response<UserType> createUser(UserType user) {
-        return HttpClient.uri(Path.USERS_PATH, serviceURL)
-                         .withAuthorization(authToken, project)
-                         .onFailure(ERR_MSG_CREATE_USER)
-                         .put(UserType.class, user);
     }
 
     @Override

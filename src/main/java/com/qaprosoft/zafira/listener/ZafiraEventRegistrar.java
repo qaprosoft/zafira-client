@@ -50,7 +50,7 @@ import com.qaprosoft.zafira.models.dto.TestRunType;
 import com.qaprosoft.zafira.models.dto.TestSuiteType;
 import com.qaprosoft.zafira.models.dto.TestType;
 import com.qaprosoft.zafira.models.dto.config.ConfigurationType;
-import com.qaprosoft.zafira.models.dto.user.UserType;
+import com.qaprosoft.zafira.models.dto.UserType;
 import com.qaprosoft.zafira.util.ConfigurationUtil;
 import com.qaprosoft.zafira.util.TestArtifactHolder;
 import com.qaprosoft.zafira.util.async.AsyncOperationHolder;

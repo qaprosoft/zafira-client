@@ -13,14 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package com.qaprosoft.zafira.listener.service;
+package com.qaprosoft.zafira.models.dto;
 
-import com.qaprosoft.zafira.models.dto.UserType;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-public interface UserTypeService {
+@Getter
+@Setter
+@NoArgsConstructor
+@JsonInclude(Include.NON_NULL)
+public class UserType extends AbstractType {
 
-    UserType getUserProfile();
-
-    UserType getUserOrAnonymousIfNotFound(String owner);
+    private String username;
 
 }

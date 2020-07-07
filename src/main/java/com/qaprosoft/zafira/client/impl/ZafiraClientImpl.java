@@ -35,7 +35,7 @@ import com.qaprosoft.zafira.models.dto.TestType;
 import com.qaprosoft.zafira.models.dto.UploadResult;
 import com.qaprosoft.zafira.models.dto.auth.AuthTokenType;
 import com.qaprosoft.zafira.models.dto.aws.SessionCredentials;
-import com.qaprosoft.zafira.models.dto.user.UserType;
+import com.qaprosoft.zafira.models.dto.UserType;
 import com.qaprosoft.zafira.util.http.HttpClient;
 
 import java.util.Collection;
@@ -72,11 +72,6 @@ public class ZafiraClientImpl implements ZafiraClient {
     @Override
     public HttpClient.Response<UserType> getUserProfile(String username) {
         return basicClient.getUserProfile(username);
-    }
-
-    @Override
-    public HttpClient.Response<UserType> createUser(UserType user) {
-        return basicClient.createUser(user);
     }
 
     @Override
@@ -212,11 +207,6 @@ public class ZafiraClientImpl implements ZafiraClient {
     @Override
     public String getAuthToken() {
         return basicClient.getAuthToken();
-    }
-
-    @Override
-    public UserType registerUser(String userName, String email, String firstName, String lastName) {
-        return extendedClient.registerUser(userName, email, firstName, lastName);
     }
 
     @Override

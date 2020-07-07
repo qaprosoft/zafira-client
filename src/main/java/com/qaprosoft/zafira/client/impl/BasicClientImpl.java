@@ -15,19 +15,9 @@
  *******************************************************************************/
 package com.qaprosoft.zafira.client.impl;
 
-import static com.qaprosoft.zafira.client.ClientDefaults.PROJECT;
-import static com.qaprosoft.zafira.client.ClientDefaults.USER;
-import static com.qaprosoft.zafira.util.AsyncUtil.get;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.qaprosoft.zafira.client.BasicClient;
 import com.qaprosoft.zafira.client.Path;
+import com.qaprosoft.zafira.log.Log;
 import com.qaprosoft.zafira.models.db.workitem.WorkItem;
 import com.qaprosoft.zafira.models.dto.JobType;
 import com.qaprosoft.zafira.models.dto.ProjectType;
@@ -36,15 +26,23 @@ import com.qaprosoft.zafira.models.dto.TestCaseType;
 import com.qaprosoft.zafira.models.dto.TestRunType;
 import com.qaprosoft.zafira.models.dto.TestSuiteType;
 import com.qaprosoft.zafira.models.dto.TestType;
-import com.qaprosoft.zafira.models.dto.auth.AccessTokenType;
+import com.qaprosoft.zafira.models.dto.UploadResult;
 import com.qaprosoft.zafira.models.dto.auth.AuthTokenType;
-import com.qaprosoft.zafira.models.dto.auth.CredentialsType;
 import com.qaprosoft.zafira.models.dto.auth.RefreshTokenType;
 import com.qaprosoft.zafira.models.dto.auth.TenantType;
 import com.qaprosoft.zafira.models.dto.user.UserType;
 import com.qaprosoft.zafira.util.http.HttpClient;
+import org.apache.commons.lang3.StringUtils;
 
-@SuppressWarnings("rawtypes")
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+
+import static com.qaprosoft.zafira.client.ClientDefaults.USER;
+import static com.qaprosoft.zafira.util.AsyncUtil.get;
+
 public class BasicClientImpl implements BasicClient {
 
     private static final String ERR_MSG_PING = "Unable to send ping";
@@ -71,15 +69,17 @@ public class BasicClientImpl implements BasicClient {
     private static final String ERR_MSG_CREATE_TEST_CASES_BATCH = "Unable to create test cases";
     private static final String ERR_MSG_FIND_TEST_RUN_RESULTS = "Unable to find test run results";
     private static final String ERR_MSG_ABORT_TEST_RUN = "Unable to abort test run";
-    private static final String ERR_MSG_GET_TOOL_SETTINGS = "Unable to get tool settings";
     private static final String ERR_MSG_GET_PROJECT_BY_NAME = "Unable to get project by name";
     private static final String ERR_MSG_GET_TENANT = "Unable to get tenant";
+    private static final String ERR_MSG_SEND_LOGS = "Unable to send logs";
+    private static final String ERR_MSG_SEND_SCREENSHOT = "Unable to send screenshot";
 
     private CompletableFuture<TenantType> tenantType;
 
     private final String serviceURL;
 
     private String authToken;
+    private Long userId;
     private String project;
 
     public BasicClientImpl(String serviceURL) {
@@ -87,13 +87,14 @@ public class BasicClientImpl implements BasicClient {
     }
 
     @Override
-    public void setAuthToken(String authToken) {
-        this.authToken = authToken;
+    public void setAuthData(AuthTokenType authTokenType) {
+        this.authToken = authTokenType.getAuthTokenType() + " " + authTokenType.getAuthToken();
+        this.userId = authTokenType.getUserId();
     }
 
     @Override
     public boolean isAvailable() {
-		HttpClient.Response response = HttpClient.uri(Path.STATUS_PATH, serviceURL)
+		HttpClient.Response<?> response = HttpClient.uri(Path.STATUS_PATH, serviceURL)
                                                  .onFailure(ERR_MSG_PING)
                                                  .get(String.class);
         return response.getStatus() == 200;
@@ -101,7 +102,7 @@ public class BasicClientImpl implements BasicClient {
 
     @Override
     public synchronized HttpClient.Response<UserType> getUserProfile() {
-        return HttpClient.uri(Path.PROFILE_PATH, serviceURL)
+        return HttpClient.uri(Path.PROFILE_PATH, serviceURL, userId)
                          .withAuthorization(authToken, project)
                          .onFailure(ERR_MSG_AUTHORIZE_USER)
                          .get(UserType.class);
@@ -111,26 +112,10 @@ public class BasicClientImpl implements BasicClient {
     public synchronized HttpClient.Response<UserType> getUserProfile(String username) {
         Map<String, String> requestParameters = new HashMap<>();
         requestParameters.put("username", username);
-        return HttpClient.uri(Path.PROFILE_PATH, requestParameters, serviceURL)
+        return HttpClient.uri(Path.USERS_PATH, requestParameters, serviceURL)
                          .withAuthorization(authToken, project)
                          .onFailure(ERR_MSG_AUTHORIZE_USER)
                          .get(UserType.class);
-    }
-
-    @Override
-    public synchronized HttpClient.Response<AuthTokenType> login(String username, String password) {
-        CredentialsType entity = new CredentialsType(username, password);
-        return HttpClient.uri(Path.LOGIN_PATH, serviceURL)
-                         .onFailure(ERR_MSG_LOGIN)
-                         .post(AuthTokenType.class, entity);
-    }
-
-    @Override
-    public synchronized HttpClient.Response<AccessTokenType> generateAccessToken() {
-        return HttpClient.uri(Path.ACCESS_PATH, serviceURL)
-                         .withAuthorization(authToken, project)
-                         .onFailure(ERR_MSG_GENERATE_ACCESS_TOKEN)
-                         .get(AccessTokenType.class);
     }
 
     @Override
@@ -292,7 +277,7 @@ public class BasicClientImpl implements BasicClient {
     public boolean abortTestRun(long id) {
         Map<String, String> requestParameters = new HashMap<>();
         requestParameters.put("id", String.valueOf(id));
-        HttpClient.Response response = HttpClient.uri(Path.TEST_RUNS_ABORT_PATH, requestParameters, serviceURL)
+        HttpClient.Response<?> response = HttpClient.uri(Path.TEST_RUNS_ABORT_PATH, requestParameters, serviceURL)
                                                  .withAuthorization(authToken, project)
                                                  .onFailure(ERR_MSG_ABORT_TEST_RUN)
                                                  .post(Void.class, null);
@@ -305,24 +290,6 @@ public class BasicClientImpl implements BasicClient {
                          .withAuthorization(authToken, project)
                          .onFailure(ERR_MSG_GET_PROJECT_BY_NAME)
                          .get(ProjectType.class);
-    }
-
-    @SuppressWarnings({ "unchecked" })
-    @Override
-    public synchronized HttpClient.Response<List<HashMap<String, String>>> getToolSettings(String tool, boolean decrypt) {
-        Map<String, String> requestParameters = new HashMap<>();
-        requestParameters.put("decrypt", String.valueOf(decrypt));
-        HttpClient.Response<List> varResponse = HttpClient.uri(Path.SETTINGS_TOOL_PATH, requestParameters, serviceURL, tool)
-                                                          .withAuthorization(authToken, project)
-                                                          .onFailure(ERR_MSG_GET_TOOL_SETTINGS)
-                                                          .get(List.class);
-
-        HttpClient.Response<List<HashMap<String, String>>> response = new HttpClient.Response();
-        response.setStatus(varResponse.getStatus());
-        if(varResponse.getObject() != null) {
-            response.setObject((List<HashMap<String, String>>) varResponse.getObject());
-        }
-        return response;
     }
 
     @Override
@@ -348,6 +315,24 @@ public class BasicClientImpl implements BasicClient {
             response = getUserProfile(USER);
         }
         return response.getObject();
+    }
+
+    @Override
+    public void sendLogs(Collection<Log> logs, Long testRunId) {
+        HttpClient.uri(Path.LOGS_PATH, serviceURL, testRunId)
+                  .withAuthorization(authToken, project)
+                  .onFailure(ERR_MSG_SEND_LOGS)
+                  .post(Void.class, logs);
+    }
+
+    @Override
+    public HttpClient.Response<UploadResult> sendScreenshot(byte[] screenshot, Long testRunId, Long testId, Long capturedAt) {
+        return HttpClient.uri(Path.SCREENSHOTS_PATH, serviceURL, testRunId, testId)
+                         .type("image/png")
+                         .header("x-zbr-screenshot-captured-at", capturedAt.toString())
+                         .withAuthorization(authToken, project)
+                         .onFailure(ERR_MSG_SEND_SCREENSHOT)
+                         .post(UploadResult.class, screenshot);
     }
 
     @Override

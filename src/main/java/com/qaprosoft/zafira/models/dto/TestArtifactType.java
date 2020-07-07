@@ -15,18 +15,19 @@
  *******************************************************************************/
 package com.qaprosoft.zafira.models.dto;
 
-import java.util.Objects;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Objects;
+
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @JsonInclude(Include.NON_NULL)
 public class TestArtifactType extends AbstractType {
 
@@ -34,17 +35,6 @@ public class TestArtifactType extends AbstractType {
     private String link;
     private Long testId;
     private Integer expiresIn;
-
-    public TestArtifactType(String name, String link) {
-        this.name = name;
-        this.link = link;
-    }
-
-    public TestArtifactType(Long testId, String name, String link) {
-        this.name = name;
-        this.link = link;
-        this.testId = testId;
-    }
 
     public TestArtifactType(String name, String link, Integer expiresIn) {
         this.name = name;
@@ -56,7 +46,8 @@ public class TestArtifactType extends AbstractType {
     public boolean equals(Object obj) {
         boolean equals = false;
         if (obj instanceof TestArtifactType) {
-            equals = this.name == ((TestArtifactType) obj).getName();
+            String name = ((TestArtifactType) obj).getName();
+            equals = this.name.equals(name);
         }
         return equals;
     }

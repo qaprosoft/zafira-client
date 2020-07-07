@@ -18,11 +18,10 @@ package com.qaprosoft.zafira.client;
 public enum Path {
 
     STATUS_PATH("/api/status"),
-    PROFILE_PATH("/api/users/profile"),
-    LOGIN_PATH("/api/auth/login"),
-    ACCESS_PATH("/api/auth/access"),
+    PROFILE_PATH("/api/iam/v1/users/%d"),
     REFRESH_TOKEN_PATH("/api/iam/v1/auth/refresh"),
-    USERS_PATH("/api/users"),
+    USERS_PATH("/api/iam/v1/users"),
+    TENANT_TYPE_PATH("/api/auth/tenant"),
     JOBS_PATH("/api/jobs"),
     TESTS_PATH("/api/tests"),
     TEST_FINISH_PATH("/api/tests/%d/finish"),
@@ -39,11 +38,12 @@ public enum Path {
     TEST_RUNS_RESULTS_PATH("/api/tests/runs/%d/results"),
     TEST_RUNS_ABORT_PATH("/api/tests/runs/abort"),
     TEST_RUN_BY_ID_PATH("/api/tests/runs/%d"),
-    SETTINGS_TOOL_PATH("/api/settings/tool/%s"),
     AMAZON_SESSION_CREDENTIALS_PATH("/api/settings/amazon/creds"),
-    TENANT_TYPE_PATH("/api/auth/tenant"),
-    PROJECTS_PATH("/api/projects/%s");;
-    
+    PROJECTS_PATH("/api/projects/%s"),
+
+    LOGS_PATH("/v1/test-runs/%d/logs"),
+    SCREENSHOTS_PATH("/v1/test-runs/%d/tests/%d/screenshots");
+
     private final String relativePath;
 
     Path(String relativePath) {

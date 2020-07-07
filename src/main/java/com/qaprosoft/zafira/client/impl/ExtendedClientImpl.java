@@ -15,16 +15,6 @@
  *******************************************************************************/
 package com.qaprosoft.zafira.client.impl;
 
-import static com.qaprosoft.zafira.client.ClientDefaults.USER;
-
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.qaprosoft.zafira.client.BasicClient;
 import com.qaprosoft.zafira.client.ExtendedClient;
 import com.qaprosoft.zafira.config.CiConfig;
@@ -39,6 +29,15 @@ import com.qaprosoft.zafira.models.dto.TestSuiteType;
 import com.qaprosoft.zafira.models.dto.TestType;
 import com.qaprosoft.zafira.models.dto.user.UserType;
 import com.qaprosoft.zafira.util.http.HttpClient;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+
+import static com.qaprosoft.zafira.client.ClientDefaults.USER;
 
 public class ExtendedClientImpl implements ExtendedClient {
 
@@ -76,17 +75,17 @@ public class ExtendedClientImpl implements ExtendedClient {
     @Override
     public TestCaseType registerTestCase(Long suiteId, Long primaryOwnerId, Long secondaryOwnerId, String testClass, String testMethod) {
         TestCaseType testCase = new TestCaseType(testClass, testMethod, "", suiteId, primaryOwnerId, secondaryOwnerId);
-        String testCaseDetails = "testClass: %s, testMethod: %s, info: %s, testSuiteId: %d, primaryOwnerId: %d, secondaryOwnerId: %d";
-        LOGGER.debug("Test Case details for registration:"
-                + String.format(testCaseDetails, testClass, testMethod, "", suiteId, primaryOwnerId, secondaryOwnerId));
+        String testCaseDetails = String.format("testClass: %s, testMethod: %s, testSuiteId: %d, primaryOwnerId: %d, secondaryOwnerId: %d",
+                testClass, testMethod, suiteId, primaryOwnerId, secondaryOwnerId);
+        LOGGER.debug("Test Case details for registration:" + testCaseDetails);
         HttpClient.Response<TestCaseType> response = client.createTestCase(testCase);
         testCase = response.getObject();
         if (testCase == null) {
             throw new RuntimeException("Unable to register test case '"
-                    + String.format(testCaseDetails, testClass, testMethod, "", suiteId, primaryOwnerId) + "' for zafira service: " + client.getServiceUrl());
+                    + String.format(testCaseDetails, testClass, testMethod, suiteId, primaryOwnerId)
+                    + "' for zafira service: " + client.getServiceUrl());
         } else {
-            LOGGER.debug("Registered test case details:"
-                    + String.format(testCaseDetails, testClass, testMethod, "", suiteId, primaryOwnerId, secondaryOwnerId));
+            LOGGER.debug("Registered test case details:" + testCaseDetails);
         }
         return testCase;
     }

@@ -65,7 +65,6 @@ public class BasicClientImpl implements BasicClient {
     private static final String ERR_MSG_FIND_TEST_RUN_RESULTS = "Unable to find test run results";
     private static final String ERR_MSG_ABORT_TEST_RUN = "Unable to abort test run";
     private static final String ERR_MSG_GET_PROJECT_BY_NAME = "Unable to get project by name";
-    private static final String ERR_MSG_GET_TENANT = "Unable to get tenant";
     private static final String ERR_MSG_SEND_LOGS = "Unable to send logs";
     private static final String ERR_MSG_SEND_SCREENSHOT = "Unable to send screenshot";
 
@@ -95,7 +94,7 @@ public class BasicClientImpl implements BasicClient {
 
     @Override
     public synchronized HttpClient.Response<UserType> getUserProfile() {
-        return HttpClient.uri(Path.PROFILE_PATH, serviceURL, authTokenType.getUserId())
+        return HttpClient.uri(Path.PROFILE_PATH, retrieveHost(), authTokenType.getUserId())
                          .withAuthorization(authToken, project)
                          .onFailure(ERR_MSG_AUTHORIZE_USER)
                          .get(UserType.class);
@@ -105,7 +104,7 @@ public class BasicClientImpl implements BasicClient {
     public synchronized HttpClient.Response<UserType> getUserProfile(String username) {
         Map<String, String> requestParameters = new HashMap<>();
         requestParameters.put("username", username);
-        return HttpClient.uri(Path.USERS_PATH, requestParameters, serviceURL)
+        return HttpClient.uri(Path.USERS_PATH, requestParameters, retrieveHost())
                          .withAuthorization(authToken, project)
                          .onFailure(ERR_MSG_AUTHORIZE_USER)
                          .get(UserType.class);
@@ -114,10 +113,15 @@ public class BasicClientImpl implements BasicClient {
     @Override
     public synchronized HttpClient.Response<AuthTokenType> refreshToken(String token) {
         RefreshTokenType entity = new RefreshTokenType(token);
-        return HttpClient.uri(Path.REFRESH_TOKEN_PATH, serviceURL)
+        return HttpClient.uri(Path.REFRESH_TOKEN_PATH, retrieveHost())
                          .withAuthorization(authToken, project)
                          .onFailure(ERR_MSG_REFRESH_TOKEN)
                          .post(AuthTokenType.class, entity);
+    }
+
+    private String retrieveHost() {
+        return serviceURL.replace("/api/reporting", "")
+                         .replace("/reporting-service", "");
     }
 
     @Override

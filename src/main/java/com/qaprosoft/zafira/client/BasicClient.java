@@ -27,7 +27,6 @@ import com.qaprosoft.zafira.models.dto.TestSuiteType;
 import com.qaprosoft.zafira.models.dto.TestType;
 import com.qaprosoft.zafira.models.dto.UploadResult;
 import com.qaprosoft.zafira.models.dto.auth.AuthTokenType;
-import com.qaprosoft.zafira.models.dto.auth.TenantType;
 import com.qaprosoft.zafira.models.dto.user.UserType;
 import com.qaprosoft.zafira.util.http.HttpClient;
 
@@ -122,10 +121,8 @@ public interface BasicClient {
 
     String getServiceUrl();
 
-    String getRealServiceUrl();
-
-    TenantType getTenantType();
-
     String getAuthToken();
+
+    AuthTokenType getAuthTokenType();
 
 }

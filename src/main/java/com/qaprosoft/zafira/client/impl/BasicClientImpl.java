@@ -29,7 +29,6 @@ import com.qaprosoft.zafira.models.dto.TestType;
 import com.qaprosoft.zafira.models.dto.UploadResult;
 import com.qaprosoft.zafira.models.dto.auth.AuthTokenType;
 import com.qaprosoft.zafira.models.dto.auth.RefreshTokenType;
-import com.qaprosoft.zafira.models.dto.auth.TenantType;
 import com.qaprosoft.zafira.models.dto.user.UserType;
 import com.qaprosoft.zafira.util.http.HttpClient;
 import org.apache.commons.lang3.StringUtils;
@@ -38,17 +37,13 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 
 import static com.qaprosoft.zafira.client.ClientDefaults.USER;
-import static com.qaprosoft.zafira.util.AsyncUtil.get;
 
 public class BasicClientImpl implements BasicClient {
 
     private static final String ERR_MSG_PING = "Unable to send ping";
     private static final String ERR_MSG_AUTHORIZE_USER = "Unable to authorize user";
-    private static final String ERR_MSG_LOGIN = "Unable to login";
-    private static final String ERR_MSG_GENERATE_ACCESS_TOKEN = "Unable to generate access token";
     private static final String ERR_MSG_CREATE_USER = "Unable to create user";
     private static final String ERR_MSG_REFRESH_TOKEN = "Unable to refresh authorization token";
     private static final String ERR_MSG_CREATE_JOB = "Unable to create job";
@@ -74,12 +69,10 @@ public class BasicClientImpl implements BasicClient {
     private static final String ERR_MSG_SEND_LOGS = "Unable to send logs";
     private static final String ERR_MSG_SEND_SCREENSHOT = "Unable to send screenshot";
 
-    private CompletableFuture<TenantType> tenantType;
-
     private final String serviceURL;
 
     private String authToken;
-    private Long userId;
+    private AuthTokenType authTokenType;
     private String project;
 
     public BasicClientImpl(String serviceURL) {
@@ -88,8 +81,8 @@ public class BasicClientImpl implements BasicClient {
 
     @Override
     public void setAuthData(AuthTokenType authTokenType) {
+        this.authTokenType = authTokenType;
         this.authToken = authTokenType.getAuthTokenType() + " " + authTokenType.getAuthToken();
-        this.userId = authTokenType.getUserId();
     }
 
     @Override
@@ -102,7 +95,7 @@ public class BasicClientImpl implements BasicClient {
 
     @Override
     public synchronized HttpClient.Response<UserType> getUserProfile() {
-        return HttpClient.uri(Path.PROFILE_PATH, serviceURL, userId)
+        return HttpClient.uri(Path.PROFILE_PATH, serviceURL, authTokenType.getUserId())
                          .withAuthorization(authToken, project)
                          .onFailure(ERR_MSG_AUTHORIZE_USER)
                          .get(UserType.class);
@@ -341,30 +334,12 @@ public class BasicClientImpl implements BasicClient {
     }
 
     @Override
-    public String getRealServiceUrl() {
-        return getTenantType().getServiceUrl();
-    }
-
-    @Override
-    public TenantType getTenantType() {
-        return get(this.tenantType, this::initTenant);
-    }
-
-    @Override
     public String getAuthToken() {
         return authToken;
     }
 
-    private CompletableFuture<TenantType> initTenant() {
-        this.tenantType = CompletableFuture.supplyAsync(() -> getTenant().getObject());
-        return tenantType;
+    @Override
+    public AuthTokenType getAuthTokenType() {
+        return authTokenType;
     }
-
-    private HttpClient.Response<TenantType> getTenant() {
-        return HttpClient.uri(Path.TENANT_TYPE_PATH, serviceURL)
-                         .withAuthorization(authToken)
-                         .onFailure(ERR_MSG_GET_TENANT)
-                         .get(TenantType.class);
-    }
-
 }

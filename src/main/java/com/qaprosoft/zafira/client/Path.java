@@ -21,7 +21,6 @@ public enum Path {
     PROFILE_PATH("/api/iam/v1/users/%d"),
     REFRESH_TOKEN_PATH("/api/iam/v1/auth/refresh"),
     USERS_PATH("/api/iam/v1/users"),
-    TENANT_TYPE_PATH("/api/auth/tenant"),
     JOBS_PATH("/api/jobs"),
     TESTS_PATH("/api/tests"),
     TEST_FINISH_PATH("/api/tests/%d/finish"),

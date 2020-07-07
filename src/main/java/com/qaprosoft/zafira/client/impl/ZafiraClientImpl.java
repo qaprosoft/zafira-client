@@ -34,7 +34,6 @@ import com.qaprosoft.zafira.models.dto.TestSuiteType;
 import com.qaprosoft.zafira.models.dto.TestType;
 import com.qaprosoft.zafira.models.dto.UploadResult;
 import com.qaprosoft.zafira.models.dto.auth.AuthTokenType;
-import com.qaprosoft.zafira.models.dto.auth.TenantType;
 import com.qaprosoft.zafira.models.dto.aws.SessionCredentials;
 import com.qaprosoft.zafira.models.dto.user.UserType;
 import com.qaprosoft.zafira.util.http.HttpClient;
@@ -211,16 +210,6 @@ public class ZafiraClientImpl implements ZafiraClient {
     }
 
     @Override
-    public String getRealServiceUrl() {
-        return basicClient.getRealServiceUrl();
-    }
-
-    @Override
-    public TenantType getTenantType() {
-        return basicClient.getTenantType();
-    }
-
-    @Override
     public String getAuthToken() {
         return basicClient.getAuthToken();
     }
@@ -298,5 +287,10 @@ public class ZafiraClientImpl implements ZafiraClient {
     @Override
     public BasicClient getClient() {
         return basicClient;
+    }
+
+    @Override
+    public AuthTokenType getAuthTokenType() {
+        return basicClient.getAuthTokenType();
     }
 }

@@ -27,12 +27,9 @@ import com.qaprosoft.zafira.models.dto.TestRunType;
 import com.qaprosoft.zafira.models.dto.TestSuiteType;
 import com.qaprosoft.zafira.models.dto.TestType;
 import com.qaprosoft.zafira.models.dto.UploadResult;
-import com.qaprosoft.zafira.models.dto.auth.AccessTokenType;
 import com.qaprosoft.zafira.models.dto.auth.AuthTokenType;
-import com.qaprosoft.zafira.models.dto.auth.CredentialsType;
 import com.qaprosoft.zafira.models.dto.auth.RefreshTokenType;
-import com.qaprosoft.zafira.models.dto.auth.TenantType;
-import com.qaprosoft.zafira.models.dto.user.UserType;
+import com.qaprosoft.zafira.models.dto.UserType;
 import com.qaprosoft.zafira.util.http.HttpClient;
 import org.apache.commons.lang3.StringUtils;
 
@@ -40,17 +37,13 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 
 import static com.qaprosoft.zafira.client.ClientDefaults.USER;
-import static com.qaprosoft.zafira.util.AsyncUtil.get;
 
 public class BasicClientImpl implements BasicClient {
 
     private static final String ERR_MSG_PING = "Unable to send ping";
     private static final String ERR_MSG_AUTHORIZE_USER = "Unable to authorize user";
-    private static final String ERR_MSG_LOGIN = "Unable to login";
-    private static final String ERR_MSG_GENERATE_ACCESS_TOKEN = "Unable to generate access token";
     private static final String ERR_MSG_CREATE_USER = "Unable to create user";
     private static final String ERR_MSG_REFRESH_TOKEN = "Unable to refresh authorization token";
     private static final String ERR_MSG_CREATE_JOB = "Unable to create job";
@@ -72,15 +65,13 @@ public class BasicClientImpl implements BasicClient {
     private static final String ERR_MSG_FIND_TEST_RUN_RESULTS = "Unable to find test run results";
     private static final String ERR_MSG_ABORT_TEST_RUN = "Unable to abort test run";
     private static final String ERR_MSG_GET_PROJECT_BY_NAME = "Unable to get project by name";
-    private static final String ERR_MSG_GET_TENANT = "Unable to get tenant";
     private static final String ERR_MSG_SEND_LOGS = "Unable to send logs";
     private static final String ERR_MSG_SEND_SCREENSHOT = "Unable to send screenshot";
-
-    private CompletableFuture<TenantType> tenantType;
 
     private final String serviceURL;
 
     private String authToken;
+    private AuthTokenType authTokenType;
     private String project;
 
     public BasicClientImpl(String serviceURL) {
@@ -88,8 +79,9 @@ public class BasicClientImpl implements BasicClient {
     }
 
     @Override
-    public void setAuthToken(String authToken) {
-        this.authToken = authToken;
+    public void setAuthData(AuthTokenType authTokenType) {
+        this.authTokenType = authTokenType;
+        this.authToken = authTokenType.getAuthTokenType() + " " + authTokenType.getAuthToken();
     }
 
     @Override
@@ -102,7 +94,7 @@ public class BasicClientImpl implements BasicClient {
 
     @Override
     public synchronized HttpClient.Response<UserType> getUserProfile() {
-        return HttpClient.uri(Path.PROFILE_PATH, serviceURL)
+        return HttpClient.uri(Path.PROFILE_PATH, retrieveHost(), authTokenType.getUserId())
                          .withAuthorization(authToken, project)
                          .onFailure(ERR_MSG_AUTHORIZE_USER)
                          .get(UserType.class);
@@ -112,43 +104,24 @@ public class BasicClientImpl implements BasicClient {
     public synchronized HttpClient.Response<UserType> getUserProfile(String username) {
         Map<String, String> requestParameters = new HashMap<>();
         requestParameters.put("username", username);
-        return HttpClient.uri(Path.PROFILE_PATH, requestParameters, serviceURL)
+        return HttpClient.uri(Path.USERS_PATH, requestParameters, retrieveHost())
                          .withAuthorization(authToken, project)
                          .onFailure(ERR_MSG_AUTHORIZE_USER)
                          .get(UserType.class);
     }
 
     @Override
-    public synchronized HttpClient.Response<AuthTokenType> login(String username, String password) {
-        CredentialsType entity = new CredentialsType(username, password);
-        return HttpClient.uri(Path.LOGIN_PATH, serviceURL)
-                         .onFailure(ERR_MSG_LOGIN)
-                         .post(AuthTokenType.class, entity);
-    }
-
-    @Override
-    public synchronized HttpClient.Response<AccessTokenType> generateAccessToken() {
-        return HttpClient.uri(Path.ACCESS_PATH, serviceURL)
-                         .withAuthorization(authToken, project)
-                         .onFailure(ERR_MSG_GENERATE_ACCESS_TOKEN)
-                         .get(AccessTokenType.class);
-    }
-
-    @Override
-    public synchronized HttpClient.Response<UserType> createUser(UserType user) {
-        return HttpClient.uri(Path.USERS_PATH, serviceURL)
-                         .withAuthorization(authToken, project)
-                         .onFailure(ERR_MSG_CREATE_USER)
-                         .put(UserType.class, user);
-    }
-
-    @Override
     public synchronized HttpClient.Response<AuthTokenType> refreshToken(String token) {
         RefreshTokenType entity = new RefreshTokenType(token);
-        return HttpClient.uri(Path.REFRESH_TOKEN_PATH, serviceURL)
+        return HttpClient.uri(Path.REFRESH_TOKEN_PATH, retrieveHost())
                          .withAuthorization(authToken, project)
                          .onFailure(ERR_MSG_REFRESH_TOKEN)
                          .post(AuthTokenType.class, entity);
+    }
+
+    private String retrieveHost() {
+        return serviceURL.replace("/api/reporting", "")
+                         .replace("/reporting-service", "");
     }
 
     @Override
@@ -357,30 +330,12 @@ public class BasicClientImpl implements BasicClient {
     }
 
     @Override
-    public String getRealServiceUrl() {
-        return getTenantType().getServiceUrl();
-    }
-
-    @Override
-    public TenantType getTenantType() {
-        return get(this.tenantType, this::initTenant);
-    }
-
-    @Override
     public String getAuthToken() {
         return authToken;
     }
 
-    private CompletableFuture<TenantType> initTenant() {
-        this.tenantType = CompletableFuture.supplyAsync(() -> getTenant().getObject());
-        return tenantType;
+    @Override
+    public AuthTokenType getAuthTokenType() {
+        return authTokenType;
     }
-
-    private HttpClient.Response<TenantType> getTenant() {
-        return HttpClient.uri(Path.TENANT_TYPE_PATH, serviceURL)
-                         .withAuthorization(authToken)
-                         .onFailure(ERR_MSG_GET_TENANT)
-                         .get(TenantType.class);
-    }
-
 }

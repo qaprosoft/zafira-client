@@ -63,7 +63,7 @@ public enum ZafiraSingleton {
 
         INIT_FUTURE.thenAccept(auth -> {
             if (auth != null && auth.getStatus() == 200) {
-                zafiraClient.setAuthToken(auth.getObject().getType() + " " + auth.getObject().getAccessToken());
+                zafiraClient.setAuthData(auth.getObject());
             }
         });
     }

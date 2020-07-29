@@ -30,10 +30,10 @@ import lombok.Setter;
 @JsonInclude(Include.NON_NULL)
 public class AuthTokenType {
 
-    private String type;
-    private String accessToken;
+    private Long userId;
+    private String authTokenType;
+    private String authToken;
     private String refreshToken;
-    private int expiresIn;
-    private String tenant;
+    private String tenantName;
 
 }

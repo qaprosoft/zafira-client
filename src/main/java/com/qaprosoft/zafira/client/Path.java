@@ -18,11 +18,9 @@ package com.qaprosoft.zafira.client;
 public enum Path {
 
     STATUS_PATH("/api/status"),
-    PROFILE_PATH("/api/users/profile"),
-    LOGIN_PATH("/api/auth/login"),
-    ACCESS_PATH("/api/auth/access"),
-    REFRESH_TOKEN_PATH("/api/auth/refresh"),
-    USERS_PATH("/api/users"),
+    PROFILE_PATH("/api/iam/v1/users/%d"),
+    REFRESH_TOKEN_PATH("/api/iam/v1/auth/refresh"),
+    USERS_PATH("/api/iam/v1/users"),
     JOBS_PATH("/api/jobs"),
     TESTS_PATH("/api/tests"),
     TEST_FINISH_PATH("/api/tests/%d/finish"),
@@ -39,7 +37,6 @@ public enum Path {
     TEST_RUNS_RESULTS_PATH("/api/tests/runs/%d/results"),
     TEST_RUNS_ABORT_PATH("/api/tests/runs/abort"),
     TEST_RUN_BY_ID_PATH("/api/tests/runs/%d"),
-    TENANT_TYPE_PATH("/api/auth/tenant"),
     AMAZON_SESSION_CREDENTIALS_PATH("/api/settings/amazon/creds"),
     PROJECTS_PATH("/api/projects/%s"),
 

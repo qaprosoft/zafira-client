@@ -17,7 +17,7 @@ package com.qaprosoft.zafira.listener.service.impl;
 
 import com.qaprosoft.zafira.client.ZafiraClient;
 import com.qaprosoft.zafira.listener.service.UserTypeService;
-import com.qaprosoft.zafira.models.dto.user.UserType;
+import com.qaprosoft.zafira.models.dto.UserType;
 
 public class UserTypeServiceImpl implements UserTypeService {
 

@@ -33,11 +33,9 @@ import com.qaprosoft.zafira.models.dto.TestRunType;
 import com.qaprosoft.zafira.models.dto.TestSuiteType;
 import com.qaprosoft.zafira.models.dto.TestType;
 import com.qaprosoft.zafira.models.dto.UploadResult;
-import com.qaprosoft.zafira.models.dto.auth.AccessTokenType;
 import com.qaprosoft.zafira.models.dto.auth.AuthTokenType;
-import com.qaprosoft.zafira.models.dto.auth.TenantType;
 import com.qaprosoft.zafira.models.dto.aws.SessionCredentials;
-import com.qaprosoft.zafira.models.dto.user.UserType;
+import com.qaprosoft.zafira.models.dto.UserType;
 import com.qaprosoft.zafira.util.http.HttpClient;
 
 import java.util.Collection;
@@ -57,8 +55,8 @@ public class ZafiraClientImpl implements ZafiraClient {
     }
 
     @Override
-    public void setAuthToken(String authToken) {
-        basicClient.setAuthToken(authToken);
+    public void setAuthData(AuthTokenType authTokenType) {
+        basicClient.setAuthData(authTokenType);
     }
 
     @Override
@@ -74,21 +72,6 @@ public class ZafiraClientImpl implements ZafiraClient {
     @Override
     public HttpClient.Response<UserType> getUserProfile(String username) {
         return basicClient.getUserProfile(username);
-    }
-
-    @Override
-    public HttpClient.Response<AuthTokenType> login(String username, String password) {
-        return basicClient.login(username, password);
-    }
-
-    @Override
-    public HttpClient.Response<AccessTokenType> generateAccessToken() {
-        return basicClient.generateAccessToken();
-    }
-
-    @Override
-    public HttpClient.Response<UserType> createUser(UserType user) {
-        return basicClient.createUser(user);
     }
 
     @Override
@@ -222,23 +205,8 @@ public class ZafiraClientImpl implements ZafiraClient {
     }
 
     @Override
-    public String getRealServiceUrl() {
-        return basicClient.getRealServiceUrl();
-    }
-
-    @Override
-    public TenantType getTenantType() {
-        return basicClient.getTenantType();
-    }
-
-    @Override
     public String getAuthToken() {
         return basicClient.getAuthToken();
-    }
-
-    @Override
-    public UserType registerUser(String userName, String email, String firstName, String lastName) {
-        return extendedClient.registerUser(userName, email, firstName, lastName);
     }
 
     @Override
@@ -309,5 +277,10 @@ public class ZafiraClientImpl implements ZafiraClient {
     @Override
     public BasicClient getClient() {
         return basicClient;
+    }
+
+    @Override
+    public AuthTokenType getAuthTokenType() {
+        return basicClient.getAuthTokenType();
     }
 }

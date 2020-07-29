@@ -26,10 +26,8 @@ import com.qaprosoft.zafira.models.dto.TestRunType;
 import com.qaprosoft.zafira.models.dto.TestSuiteType;
 import com.qaprosoft.zafira.models.dto.TestType;
 import com.qaprosoft.zafira.models.dto.UploadResult;
-import com.qaprosoft.zafira.models.dto.auth.AccessTokenType;
 import com.qaprosoft.zafira.models.dto.auth.AuthTokenType;
-import com.qaprosoft.zafira.models.dto.auth.TenantType;
-import com.qaprosoft.zafira.models.dto.user.UserType;
+import com.qaprosoft.zafira.models.dto.UserType;
 import com.qaprosoft.zafira.util.http.HttpClient;
 
 import java.util.Collection;
@@ -37,19 +35,13 @@ import java.util.List;
 
 public interface BasicClient {
 
-    void setAuthToken(String authToken);
+    void setAuthData(AuthTokenType authToken);
 
     boolean isAvailable();
 
     HttpClient.Response<UserType> getUserProfile();
 
     HttpClient.Response<UserType> getUserProfile(String username);
-
-    HttpClient.Response<AuthTokenType> login(String username, String password);
-
-    HttpClient.Response<AccessTokenType> generateAccessToken();
-
-    HttpClient.Response<UserType> createUser(UserType user);
 
     HttpClient.Response<AuthTokenType> refreshToken(String token);
 
@@ -127,10 +119,8 @@ public interface BasicClient {
 
     String getServiceUrl();
 
-    String getRealServiceUrl();
-
-    TenantType getTenantType();
-
     String getAuthToken();
+
+    AuthTokenType getAuthTokenType();
 
 }

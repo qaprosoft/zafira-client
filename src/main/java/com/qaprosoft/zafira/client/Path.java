@@ -53,8 +53,8 @@ public enum Path {
         return relativePath;
     }
 
-    public String build(String serviceUrl, Object... parameters) {
-        return serviceUrl + String.format(relativePath, parameters);
+    public String build(Object... parameters) {
+        return String.format(relativePath, parameters);
     }
     
 }

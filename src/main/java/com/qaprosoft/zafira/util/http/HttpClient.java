@@ -34,8 +34,6 @@ public class HttpClient {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpClient.class);
 
-    private static final String REPORTING_API_PATH = "/api/reporting";
-
     private static final Integer CONNECT_TIMEOUT = 60000;
     private static final Integer READ_TIMEOUT = 60000;
 
@@ -53,7 +51,7 @@ public class HttpClient {
 
     public static Executor uri(Path path, Map<String, String> queryParameters, String serviceUrl, Object... parameters) {
         serviceUrl = formatServiceUrl(serviceUrl);
-        String url = serviceUrl + REPORTING_API_PATH + path.build(parameters);
+        String url = serviceUrl + path.build(parameters);
         return uri(url, queryParameters);
     }
 

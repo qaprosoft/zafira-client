@@ -17,33 +17,32 @@ package com.qaprosoft.zafira.client;
 
 public enum Path {
 
-    STATUS_PATH("/api/status"),
-    PROFILE_PATH("/api/users/profile"),
-    LOGIN_PATH("/api/auth/login"),
-    ACCESS_PATH("/api/auth/access"),
-    REFRESH_TOKEN_PATH("/api/auth/refresh"),
-    USERS_PATH("/api/users"),
-    JOBS_PATH("/api/jobs"),
-    TESTS_PATH("/api/tests"),
-    TEST_FINISH_PATH("/api/tests/%d/finish"),
-    TEST_BY_ID_PATH("/api/tests/%d"),
-    TEST_WORK_ITEMS_PATH("/api/tests/%d/workitems"),
-    TEST_WORK_ITEM_PATH("/api/tests/%d/workitem"),
-    TEST_WORK_ITEM_BY_TYPE_PATH("/api/tests/%d/workitem/%s"),
-    TEST_ARTIFACTS_PATH("/api/tests/%d/artifacts"),
-    TEST_SUITES_PATH("/api/tests/suites"),
-    TEST_CASES_PATH("/api/tests/cases"),
-    TEST_CASES_BATCH_PATH("/api/tests/cases/batch"),
-    TEST_RUNS_PATH("/api/tests/runs"),
-    TEST_RUNS_FINISH_PATH("/api/tests/runs/%d/finish"),
-    TEST_RUNS_RESULTS_PATH("/api/tests/runs/%d/results"),
-    TEST_RUNS_ABORT_PATH("/api/tests/runs/abort"),
-    TEST_RUN_BY_ID_PATH("/api/tests/runs/%d"),
-    SETTINGS_TOOL_PATH("/api/settings/tool/%s"),
-    AMAZON_SESSION_CREDENTIALS_PATH("/api/settings/amazon/creds"),
-    TENANT_TYPE_PATH("/api/auth/tenant"),
-    PROJECTS_PATH("/api/projects/%s");;
-    
+    STATUS_PATH("/api/reporting/api/status"),
+    PROFILE_PATH("/api/iam/v1/users/%d"),
+    REFRESH_TOKEN_PATH("/api/iam/v1/auth/refresh"),
+    USERS_PATH("/api/iam/v1/users"),
+    JOBS_PATH("/api/reporting/api/jobs"),
+    TESTS_PATH("/api/reporting/api/tests"),
+    TEST_FINISH_PATH("/api/reporting/api/tests/%d/finish"),
+    TEST_BY_ID_PATH("/api/reporting/api/tests/%d"),
+    TEST_WORK_ITEMS_PATH("/api/reporting/api/tests/%d/workitems"),
+    TEST_WORK_ITEM_PATH("/api/reporting/api/tests/%d/workitem"),
+    TEST_WORK_ITEM_BY_TYPE_PATH("/api/reporting/api/tests/%d/workitem/%s"),
+    TEST_ARTIFACTS_PATH("/api/reporting/api/tests/%d/artifacts"),
+    TEST_SUITES_PATH("/api/reporting/api/tests/suites"),
+    TEST_CASES_PATH("/api/reporting/api/tests/cases"),
+    TEST_CASES_BATCH_PATH("/api/reporting/api/tests/cases/batch"),
+    TEST_RUNS_PATH("/api/reporting/api/tests/runs"),
+    TEST_RUNS_FINISH_PATH("/api/reporting/api/tests/runs/%d/finish"),
+    TEST_RUNS_RESULTS_PATH("/api/reporting/api/tests/runs/%d/results"),
+    TEST_RUNS_ABORT_PATH("/api/reporting/api/tests/runs/abort"),
+    TEST_RUN_BY_ID_PATH("/api/reporting/api/tests/runs/%d"),
+    AMAZON_SESSION_CREDENTIALS_PATH("/api/reporting/api/settings/amazon/creds"),
+    PROJECTS_PATH("/api/reporting/api/projects/%s"),
+
+    LOGS_PATH("/api/reporting/v1/test-runs/%d/logs"),
+    SCREENSHOTS_PATH("/api/reporting/v1/test-runs/%d/tests/%d/screenshots");
+
     private final String relativePath;
 
     Path(String relativePath) {
@@ -54,8 +53,8 @@ public enum Path {
         return relativePath;
     }
 
-    public String build(String serviceUrl, Object... parameters) {
-        return serviceUrl + String.format(relativePath, parameters);
+    public String build(Object... parameters) {
+        return String.format(relativePath, parameters);
     }
     
 }

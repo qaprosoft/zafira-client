@@ -13,10 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package com.qaprosoft.zafira.log.event;
+package com.qaprosoft.zafira.models.dto;
 
-public interface EventPublisher {
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-    boolean publishEvent(String routingKey, String correlationId, String appId, String eventType, String payload);
+@Getter
+@Setter
+@NoArgsConstructor
+@JsonInclude(Include.NON_NULL)
+public class UserType extends AbstractType {
+
+    private String username;
 
 }

@@ -15,27 +15,11 @@
  *******************************************************************************/
 package com.qaprosoft.zafira.log.log4j;
 
-import java.io.IOException;
-import java.util.concurrent.TimeoutException;
-
+import com.qaprosoft.zafira.log.FlushingLogsBuffer;
 import org.apache.log4j.AppenderSkeleton;
-import org.apache.log4j.spi.ErrorCode;
 import org.apache.log4j.spi.LoggingEvent;
 
-import com.qaprosoft.zafira.log.BaseAppenderTask;
-import com.qaprosoft.zafira.log.LogAppenderService;
-import com.qaprosoft.zafira.log.impl.LogAppenderServiceImpl;
-
 public class LogAppender extends AppenderSkeleton {
-
-    private final LogAppenderService logAppenderService;
-
-    private int history = 1000;
-
-    public LogAppender() {
-        this.logAppenderService = LogAppenderServiceImpl.getInstance();
-        Runtime.getRuntime().addShutdownHook(new Thread(this::onShutdownHook));
-    }
 
     /**
      * Submits LoggingEvent for publishing if it reaches severity threshold.
@@ -44,43 +28,11 @@ public class LogAppender extends AppenderSkeleton {
      */
     @Override
     protected void append(LoggingEvent loggingEvent) {
-        if (isAsSevereAsThreshold(loggingEvent.getLevel())) {
-            BaseAppenderTask<LoggingEvent> task = new AppenderTask(loggingEvent, layout);
-            logAppenderService.append(task);
-        }
-    }
-
-    /**
-     * Creates the connection, channel to RabbitMQ. Declares exchange and queue
-     *
-     * @see AppenderSkeleton
-     */
-    @Override
-    public void activateOptions() {
-        super.activateOptions();
-        try {
-            logAppenderService.connectZafira();
-        }  catch (IOException | TimeoutException e) {
-            errorHandler.error(e.getMessage());
-        } catch (Exception e) {
-            // TODO: add logging
-        }
+        FlushingLogsBuffer.put(loggingEvent);
     }
 
     @Override
     public void close() {
-    }
-
-    /**
-     * Closes the channel and connection to RabbitMQ when shutting down the appender
-     * Use it instead of {@link #close()} `cause it uses GC which is unstable in mandatory cases
-     */
-    private void onShutdownHook() {
-        try {
-            logAppenderService.onClose();
-        } catch (IOException | TimeoutException e) {
-            errorHandler.error(e.getMessage(), e, ErrorCode.CLOSE_FAILURE);
-        }
     }
 
     /**
@@ -90,15 +42,7 @@ public class LogAppender extends AppenderSkeleton {
      */
     @Override
     public boolean requiresLayout() {
-        return true;
-    }
-
-    public int getHistory() {
-        return history;
-    }
-
-    public void setHistory(int history) {
-        this.history = history;
+        return false;
     }
 
 }

@@ -1,4 +1,4 @@
-package com.qaprosoft.zafira.util.upload;
+package com.qaprosoft.zafira.util;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicSessionCredentials;
@@ -7,15 +7,13 @@ import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.internal.Mimetypes;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.qaprosoft.zafira.client.BasicClient;
 import com.qaprosoft.zafira.client.ZafiraClient;
 import com.qaprosoft.zafira.client.ZafiraSingleton;
-import com.qaprosoft.zafira.models.dto.auth.TenantType;
+import com.qaprosoft.zafira.models.dto.auth.AuthTokenType;
 import com.qaprosoft.zafira.models.dto.aws.SessionCredentials;
-import com.qaprosoft.zafira.util.AsyncUtil;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -58,11 +56,11 @@ final class AwsService {
     static String uploadFile(File file, Integer expiresIn, String keyPrefix) throws Exception {
         String filePath = null;
         if (isEnabled()) {
-            TenantType tenantType = client.getTenantType();
-            if (tenantType != null && !StringUtils.isBlank(tenantType.getTenant())) {
+            AuthTokenType authTokenType = client.getAuthTokenType();
+            if (authTokenType != null && !StringUtils.isBlank(authTokenType.getTenantName())) {
                 String fileName = RandomStringUtils.randomAlphanumeric(20) + "." + FilenameUtils.getExtension(file.getName());
                 String relativeKey = keyPrefix + fileName;
-                String key = tenantType.getTenant() + relativeKey;
+                String key = authTokenType.getTenantName() + relativeKey;
 
                 try (SdkBufferedInputStream stream = new SdkBufferedInputStream(new FileInputStream(file), (int) (file.length() + 100))) {
                     String type = Mimetypes.getInstance().getMimetype(file.getName());
@@ -73,11 +71,8 @@ final class AwsService {
 
                     PutObjectRequest putRequest = new PutObjectRequest(amazonS3SessionCredentials.getBucket(), key, stream, metadata);
                     getAmazonClient().putObject(putRequest);
-                    CannedAccessControlList controlList = tenantType.isUseArtifactsProxy() ? CannedAccessControlList.Private
-                            : CannedAccessControlList.PublicRead;
-                    getAmazonClient().setObjectAcl(amazonS3SessionCredentials.getBucket(), key, controlList);
 
-                    filePath = tenantType.isUseArtifactsProxy() ? client.getRealServiceUrl() + relativeKey : getFilePath(key);
+                    filePath = getFilePath(key);
 
                 } catch (Exception e) {
                     LOGGER.error("Can't save file to Amazon S3", e);

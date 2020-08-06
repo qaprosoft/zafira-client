@@ -33,7 +33,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
 import com.qaprosoft.zafira.listener.adapter.TestContextAdapter;
@@ -77,8 +76,9 @@ import com.qaprosoft.zafira.models.dto.TestRunType;
 import com.qaprosoft.zafira.models.dto.TestSuiteType;
 import com.qaprosoft.zafira.models.dto.TestType;
 import com.qaprosoft.zafira.models.dto.config.ConfigurationType;
-import com.qaprosoft.zafira.models.dto.user.UserType;
+import com.qaprosoft.zafira.models.dto.UserType;
 import com.qaprosoft.zafira.util.ConfigurationUtil;
+import com.qaprosoft.zafira.util.TestArtifactHolder;
 
 /**
  * Registers events to Zafira via adapters
@@ -105,20 +105,17 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
 
     private IConfigurator configurator;
     private CiConfig ci;
-    private ZafiraClient zc;
 
-    private UserType user;
     private JobType parentJob;
-    private JobType job;
     private TestSuiteType suite;
     private static TestRunType run;
-    private Map<String, TestType> registeredTests = new HashMap<>();
-    private Set<String> classesToRerun = new HashSet<>();
+    private final Map<String, TestType> registeredTests = new HashMap<>();
+    private final Set<String> classesToRerun = new HashSet<>();
     
-    private Set<String> testsWithKnownIssues = new HashSet<>();
+    private final Set<String> testsWithKnownIssues = new HashSet<>();
 
-    private static ThreadLocal<String> threadCiTestId = new ThreadLocal<>();
-    private static ThreadLocal<TestType> threadTest = new ThreadLocal<>();
+    private final static ThreadLocal<String> threadCiTestId = new ThreadLocal<>();
+    private final static ThreadLocal<TestType> threadTest = new ThreadLocal<>();
 
     private TestRunTypeService testRunTypeService;
     private TestSuiteTypeService testSuiteTypeService;
@@ -157,7 +154,7 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
             }
 
             // Register user who initiated test run
-            this.user = userTypeService.getUserProfile();
+            UserType user = userTypeService.getUserProfile();
 
             // Register test suite along with suite owner
             String owner = configurator.getOwner(adapter);
@@ -165,7 +162,7 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
             this.suite = testSuiteTypeService.register(adapter.getSuiteName(), adapter.getSuiteFileName(), suiteOwner.getId());
 
             // Register job that triggers test run
-            this.job = jobTypeService.register(ci.getCiUrl(), suiteOwner.getId());
+            JobType job = jobTypeService.register(ci.getCiUrl(), suiteOwner.getId());
 
             // Register upstream job if required
             if (UPSTREAMTRIGGER.equals(ci.getCiBuildCause())) {
@@ -441,7 +438,7 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
             ZAFIRA_CONFIGURATOR = (String) ZafiraConfiguration.CONFIGURATOR.get(config, adapter);
 
             if (ZAFIRA_ENABLED) {
-                zc = ZafiraSingleton.INSTANCE.getClient();
+                ZafiraClient zc = ZafiraSingleton.INSTANCE.getClient();
                 if(zc != null) {
                     ZAFIRA_ENABLED = zc.isAvailable();
 
@@ -569,7 +566,7 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
         }
     }
 
-    private TestType populateTestResult(TestResultAdapter adapter, Status status, String message) throws JAXBException {
+    private TestType populateTestResult(TestResultAdapter adapter, Status status, String message) {
         long threadId = Thread.currentThread().getId();
         TestType test = threadTest.get();// testByThread.get(threadId);
         final Long finishTime = new Date().getTime();
@@ -586,6 +583,7 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
 
         Set<TestArtifactType> testArtifacts = configurator.getArtifacts(adapter);
         testArtifacts.addAll(AsyncOperationHolder.getTestArtifacts());
+        testArtifacts.addAll(TestArtifactHolder.getAndClear());
         test.setArtifacts(testArtifacts);
         configurator.clearArtifacts();
 
@@ -607,7 +605,7 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
         return test;
     }
 
-    private void finishTest(TestResultAdapter adapter, Status status) throws JAXBException {
+    private void finishTest(TestResultAdapter adapter, Status status) {
         String fullStackTrace = getFullStackTrace(adapter);
         TestType finishedTest = populateTestResult(adapter, status, fullStackTrace);
         finishedTest = testTypeService.finishTest(finishedTest);

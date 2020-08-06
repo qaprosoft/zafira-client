@@ -15,9 +15,6 @@
  *******************************************************************************/
 package com.qaprosoft.zafira.client;
 
-import java.util.List;
-import java.util.Set;
-
 import com.qaprosoft.zafira.config.CiConfig;
 import com.qaprosoft.zafira.models.db.Initiator;
 import com.qaprosoft.zafira.models.db.Status;
@@ -28,15 +25,11 @@ import com.qaprosoft.zafira.models.dto.TestCaseType;
 import com.qaprosoft.zafira.models.dto.TestRunType;
 import com.qaprosoft.zafira.models.dto.TestSuiteType;
 import com.qaprosoft.zafira.models.dto.TestType;
-import com.qaprosoft.zafira.models.dto.user.UserType;
+
+import java.util.List;
+import java.util.Set;
 
 public interface ExtendedClient {
-
-    /**
-     * Registers user in Zafira, it may be a new one or existing returned by service.
-     * @return registered user
-     */
-    UserType registerUser(String userName, String email, String firstName, String lastName);
 
     /**
      * Registers test case in Zafira, it may be a new one or existing returned by service.

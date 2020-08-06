@@ -15,15 +15,14 @@
  *******************************************************************************/
 package com.qaprosoft.zafira.listener.adapter.impl;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
+import com.qaprosoft.zafira.listener.adapter.MethodAdapter;
+import com.qaprosoft.zafira.listener.adapter.SuiteAdapter;
 import org.apache.commons.lang3.ArrayUtils;
 import org.testng.ISuite;
 import org.testng.ITestNGMethod;
 
-import com.qaprosoft.zafira.listener.adapter.MethodAdapter;
-import com.qaprosoft.zafira.listener.adapter.SuiteAdapter;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class SuiteAdapterImpl implements SuiteAdapter {
 
@@ -62,10 +61,9 @@ public class SuiteAdapterImpl implements SuiteAdapter {
     @Override
     public String[] getSuiteDependsOnMethods() {
         suiteNotNull();
-        String[] allDependentMethods = suite.getAllMethods().stream()
-                                            .map(ITestNGMethod::getMethodsDependedUpon)
-                                            .reduce(ArrayUtils.EMPTY_STRING_ARRAY, ArrayUtils::addAll);
-        return allDependentMethods;
+        return suite.getAllMethods().stream()
+                    .map(ITestNGMethod::getMethodsDependedUpon)
+                    .reduce(ArrayUtils.EMPTY_STRING_ARRAY, ArrayUtils::addAll);
     }
 
     @Override

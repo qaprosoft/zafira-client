@@ -15,22 +15,20 @@
  *******************************************************************************/
 package com.qaprosoft.zafira.util.http;
 
-import java.util.Map;
-import java.util.function.Function;
-
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.qaprosoft.zafira.client.Path;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
+import java.util.Map;
+import java.util.function.Function;
 
 public class HttpClient {
 
@@ -39,7 +37,7 @@ public class HttpClient {
     private static final Integer CONNECT_TIMEOUT = 60000;
     private static final Integer READ_TIMEOUT = 60000;
 
-    private static Client client;
+    private static final Client client;
 
     static {
         client = Client.create(new DefaultClientConfig(GensonProvider.class));
@@ -48,13 +46,21 @@ public class HttpClient {
     }
 
     public static Executor uri(Path path, String serviceUrl, Object... parameters) {
-        String url = path.build(serviceUrl, parameters);
-        return uri(url, null);
+        return uri(path, null, serviceUrl, parameters);
     }
 
     public static Executor uri(Path path, Map<String, String> queryParameters, String serviceUrl, Object... parameters) {
-        String url = path.build(serviceUrl, parameters);
+        serviceUrl = formatServiceUrl(serviceUrl);
+        String url = serviceUrl + path.build(parameters);
         return uri(url, queryParameters);
+    }
+
+    private static String formatServiceUrl(String serviceUrl) {
+        if (serviceUrl.endsWith("/")) {
+            String formatted =  serviceUrl.substring(0, serviceUrl.length() - 1);
+            return formatServiceUrl(formatted);
+        }
+        return serviceUrl;
     }
 
     private static Executor uri(String url, Map<String, String> queryParameters) {
@@ -69,7 +75,7 @@ public class HttpClient {
 
     public static class Executor {
 
-        private WebResource.Builder builder;
+        private final WebResource.Builder builder;
         private String errorMessage;
 
         public Executor(WebResource webResource) {
@@ -121,13 +127,19 @@ public class HttpClient {
             }
         }
 
+        public Executor header(String name, String value) {
+            builder.header(name, value);
+            return this;
+        }
+
         private <R> Response<R> execute(Class<R> responseClass, Function<WebResource.Builder, ClientResponse> methodBuilder) {
             Response<R> rs = new Response<>();
             try {
                 ClientResponse response = methodBuilder.apply(builder);
                 int status = response.getStatus();
                 rs.setStatus(status);
-                boolean deserializeResponseBody = responseClass != null && response.hasEntity() && !responseClass.isAssignableFrom(Void.class) && status == 200;
+                boolean successStatus = String.valueOf(response.getStatus()).matches("(2..)");
+                boolean deserializeResponseBody = responseClass != null && response.hasEntity() && !responseClass.isAssignableFrom(Void.class) && successStatus;
                 if (deserializeResponseBody) {
                     rs.setObject(response.getEntity(responseClass));
                 }

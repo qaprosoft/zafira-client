@@ -15,18 +15,17 @@
  *******************************************************************************/
 package com.qaprosoft.zafira.models.dto;
 
-import javax.validation.constraints.NotNull;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.qaprosoft.zafira.models.db.Initiator;
 import com.qaprosoft.zafira.models.db.Status;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
@@ -59,7 +58,7 @@ public class TestRunType extends AbstractType {
     private boolean reviewed;
 
     /**
-     * @deprecated use {@link #builder()} instead
+     * @deprecated use builder() instead
      */
     @Deprecated
     public TestRunType(
@@ -89,7 +88,7 @@ public class TestRunType extends AbstractType {
     }
 
     /**
-     * @deprecated use {@link #builder()} instead
+     * @deprecated use builder() instead
      */
     @Deprecated
     public TestRunType(
@@ -121,7 +120,7 @@ public class TestRunType extends AbstractType {
     }
 
     /**
-     * @deprecated use {@link #builder()} instead
+     * @deprecated use builder() instead
      */
     @Deprecated
     public TestRunType(

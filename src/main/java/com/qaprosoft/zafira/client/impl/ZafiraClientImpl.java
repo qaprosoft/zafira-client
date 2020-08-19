@@ -17,7 +17,6 @@ package com.qaprosoft.zafira.client.impl;
 
 import com.qaprosoft.zafira.client.BasicClient;
 import com.qaprosoft.zafira.client.ExtendedClient;
-import com.qaprosoft.zafira.client.IntegrationClient;
 import com.qaprosoft.zafira.client.ZafiraClient;
 import com.qaprosoft.zafira.config.CiConfig;
 import com.qaprosoft.zafira.log.Log;
@@ -34,10 +33,10 @@ import com.qaprosoft.zafira.models.dto.TestSuiteType;
 import com.qaprosoft.zafira.models.dto.TestType;
 import com.qaprosoft.zafira.models.dto.UploadResult;
 import com.qaprosoft.zafira.models.dto.auth.AuthTokenType;
-import com.qaprosoft.zafira.models.dto.aws.SessionCredentials;
 import com.qaprosoft.zafira.models.dto.UserType;
 import com.qaprosoft.zafira.util.http.HttpClient;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -46,11 +45,9 @@ public class ZafiraClientImpl implements ZafiraClient {
 
     private final BasicClient basicClient;
     private final ExtendedClient extendedClient;
-    private final IntegrationClient integrationClient;
 
     public ZafiraClientImpl(String serviceUrl) {
         this.basicClient = new BasicClientImpl(serviceUrl);
-        this.integrationClient = new IntegrationClientImpl(this.basicClient);
         this.extendedClient = new ExtendedClientImpl(this.basicClient);
     }
 
@@ -200,6 +197,11 @@ public class ZafiraClientImpl implements ZafiraClient {
     }
 
     @Override
+    public HttpClient.Response<UploadResult> sendArtifact(File artifact, Long testRunId, Long testId, String name) {
+        return basicClient.sendArtifact(artifact, testRunId, testId, name);
+    }
+
+    @Override
     public String getServiceUrl() {
         return basicClient.getServiceUrl();
     }
@@ -267,11 +269,6 @@ public class ZafiraClientImpl implements ZafiraClient {
     @Override
     public TestType registerTestRestart(TestType test) {
         return extendedClient.registerTestRestart(test);
-    }
-
-    @Override
-    public HttpClient.Response<SessionCredentials> getAmazonSessionCredentials() {
-        return integrationClient.getAmazonSessionCredentials();
     }
 
     @Override

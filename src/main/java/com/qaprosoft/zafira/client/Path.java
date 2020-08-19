@@ -37,11 +37,11 @@ public enum Path {
     TEST_RUNS_RESULTS_PATH("/api/reporting/api/tests/runs/%d/results"),
     TEST_RUNS_ABORT_PATH("/api/reporting/api/tests/runs/abort"),
     TEST_RUN_BY_ID_PATH("/api/reporting/api/tests/runs/%d"),
-    AMAZON_SESSION_CREDENTIALS_PATH("/api/reporting/api/settings/amazon/creds"),
     PROJECTS_PATH("/api/reporting/api/projects/%s"),
 
     LOGS_PATH("/api/reporting/v1/test-runs/%d/logs"),
-    SCREENSHOTS_PATH("/api/reporting/v1/test-runs/%d/tests/%d/screenshots");
+    SCREENSHOTS_PATH("/api/reporting/v1/test-runs/%d/tests/%d/screenshots"),
+    ARTIFACTS_PATH("/api/reporting/v1/test-runs/%d/tests/%d/artifacts");
 
     private final String relativePath;
 

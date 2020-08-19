@@ -27,12 +27,18 @@ import com.qaprosoft.zafira.models.dto.TestRunType;
 import com.qaprosoft.zafira.models.dto.TestSuiteType;
 import com.qaprosoft.zafira.models.dto.TestType;
 import com.qaprosoft.zafira.models.dto.UploadResult;
+import com.qaprosoft.zafira.models.dto.UserType;
 import com.qaprosoft.zafira.models.dto.auth.AuthTokenType;
 import com.qaprosoft.zafira.models.dto.auth.RefreshTokenType;
-import com.qaprosoft.zafira.models.dto.UserType;
 import com.qaprosoft.zafira.util.http.HttpClient;
+import com.sun.jersey.core.header.FormDataContentDisposition;
+import com.sun.jersey.multipart.FormDataMultiPart;
+import com.sun.jersey.multipart.MultiPart;
+import com.sun.jersey.multipart.file.FileDataBodyPart;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.ws.rs.core.MediaType;
+import java.io.File;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -67,6 +73,7 @@ public class BasicClientImpl implements BasicClient {
     private static final String ERR_MSG_GET_PROJECT_BY_NAME = "Unable to get project by name";
     private static final String ERR_MSG_SEND_LOGS = "Unable to send logs";
     private static final String ERR_MSG_SEND_SCREENSHOT = "Unable to send screenshot";
+    private static final String ERR_MSG_SEND_ARTIFACT = "Unable to send artifact";
 
     private final String serviceURL;
 
@@ -322,6 +329,30 @@ public class BasicClientImpl implements BasicClient {
                          .withAuthorization(authToken, project)
                          .onFailure(ERR_MSG_SEND_SCREENSHOT)
                          .post(UploadResult.class, screenshot);
+    }
+
+    @Override
+    public HttpClient.Response<UploadResult> sendArtifact(File artifact, Long testRunId, Long testId, String name) {
+        MultiPart multiPart = buildArtifactMultipart(artifact);
+        multiPart.setMediaType(MediaType.MULTIPART_FORM_DATA_TYPE);
+        return HttpClient.uri(Path.ARTIFACTS_PATH, serviceURL, testRunId, testId)
+                         .type("multipart/form-data")
+                         .header("x-zbr-artifact-name", name)
+                         .withAuthorization(authToken, project)
+                         .onFailure(ERR_MSG_SEND_ARTIFACT)
+                         .post(UploadResult.class, multiPart);
+    }
+
+    private MultiPart buildArtifactMultipart(File artifact) {
+        FormDataContentDisposition disposition = FormDataContentDisposition
+                .name("file")
+                .fileName(artifact.getName())
+                .build();
+        FileDataBodyPart fileDataBodyPart = new FileDataBodyPart("file", artifact, MediaType.APPLICATION_OCTET_STREAM_TYPE);
+        fileDataBodyPart.setContentDisposition(disposition);
+        MultiPart multiPart = new FormDataMultiPart().bodyPart(fileDataBodyPart);
+        multiPart.setMediaType(MediaType.MULTIPART_FORM_DATA_TYPE);
+        return multiPart;
     }
 
     @Override

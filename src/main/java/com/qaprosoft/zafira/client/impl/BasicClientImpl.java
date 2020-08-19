@@ -337,7 +337,6 @@ public class BasicClientImpl implements BasicClient {
         multiPart.setMediaType(MediaType.MULTIPART_FORM_DATA_TYPE);
         return HttpClient.uri(Path.ARTIFACTS_PATH, serviceURL, testRunId, testId)
                          .type("multipart/form-data")
-                         .header("x-zbr-artifact-name", name)
                          .withAuthorization(authToken, project)
                          .onFailure(ERR_MSG_SEND_ARTIFACT)
                          .post(UploadResult.class, multiPart);

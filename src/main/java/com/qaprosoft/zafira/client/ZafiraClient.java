@@ -15,7 +15,7 @@
  *******************************************************************************/
 package com.qaprosoft.zafira.client;
 
-public interface ZafiraClient extends BasicClient, ExtendedClient, IntegrationClient {
+public interface ZafiraClient extends BasicClient, ExtendedClient {
 
     BasicClient getClient();
 

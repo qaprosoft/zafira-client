@@ -34,12 +34,10 @@ public class TestArtifactType extends AbstractType {
     private String name;
     private String link;
     private Long testId;
-    private Integer expiresIn;
 
-    public TestArtifactType(String name, String link, Integer expiresIn) {
+    public TestArtifactType(String name, String link) {
         this.name = name;
         this.link = link;
-        this.expiresIn = expiresIn;
     }
 
     @Override

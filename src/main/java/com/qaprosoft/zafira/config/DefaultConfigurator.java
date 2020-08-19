@@ -15,7 +15,12 @@
  *******************************************************************************/
 package com.qaprosoft.zafira.config;
 
-import static com.qaprosoft.zafira.client.ClientDefaults.USER;
+import com.qaprosoft.zafira.listener.adapter.SuiteAdapter;
+import com.qaprosoft.zafira.listener.adapter.TestResultAdapter;
+import com.qaprosoft.zafira.models.db.workitem.BaseWorkItem;
+import com.qaprosoft.zafira.models.dto.TagType;
+import com.qaprosoft.zafira.models.dto.config.ConfigurationType;
+import org.testng.ITestResult;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -23,14 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.testng.ITestResult;
-
-import com.qaprosoft.zafira.listener.adapter.SuiteAdapter;
-import com.qaprosoft.zafira.listener.adapter.TestResultAdapter;
-import com.qaprosoft.zafira.models.db.workitem.BaseWorkItem;
-import com.qaprosoft.zafira.models.dto.TagType;
-import com.qaprosoft.zafira.models.dto.TestArtifactType;
-import com.qaprosoft.zafira.models.dto.config.ConfigurationType;
+import static com.qaprosoft.zafira.client.ClientDefaults.USER;
 
 /**
  * Default implementation of Zafira {@link IConfigurator} used for more deep integration with test frameworks.
@@ -93,15 +91,6 @@ public class DefaultConfigurator implements IConfigurator {
     @Override
     public Map<String, Long> getTestMetrics(TestResultAdapter adapter) {
         return null;
-    }
-
-    @Override
-    public Set<TestArtifactType> getArtifacts(TestResultAdapter adapter) {
-        return new HashSet<>();
-    }
-
-    @Override
-    public void clearArtifacts() {
     }
 
     @Override

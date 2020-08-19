@@ -24,8 +24,7 @@ public enum ZafiraConfiguration implements Configuration {
     ACCESS_TOKEN("zafira_access_token", StringUtils.EMPTY, String.class),
     PROJECT("zafira_project", StringUtils.EMPTY, String.class, true),
     RERUN_FAILURES("zafira_rerun_failures", false, Boolean.class),
-    CONFIGURATOR("zafira_configurator", "com.qaprosoft.zafira.config.DefaultConfigurator", String.class, true),
-    ARTIFACT_EXPIRATION_SECONDS("artifacts_expiration_seconds", 2592000, Integer.class, true);
+    CONFIGURATOR("zafira_configurator", "com.qaprosoft.zafira.config.DefaultConfigurator", String.class, true);
 
     private final String configName;
     private final Object defaultValue;

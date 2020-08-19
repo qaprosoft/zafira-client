@@ -30,6 +30,7 @@ import com.qaprosoft.zafira.models.dto.auth.AuthTokenType;
 import com.qaprosoft.zafira.models.dto.UserType;
 import com.qaprosoft.zafira.util.http.HttpClient;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.List;
 
@@ -116,6 +117,8 @@ public interface BasicClient {
     void sendLogs(Collection<Log> logs, Long testRunId);
 
     HttpClient.Response<UploadResult> sendScreenshot(byte[] screenshot, Long testRunId, Long testId, Long capturedAt);
+
+    HttpClient.Response<UploadResult> sendArtifact(File artifact, Long testRunId, Long testId, String name);
 
     String getServiceUrl();
 

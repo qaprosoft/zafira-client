@@ -54,13 +54,13 @@ public enum ZafiraSingleton {
                 boolean enabled = (Boolean) ZafiraConfiguration.ENABLED.get(config);
                 String url = (String) ZafiraConfiguration.SERVICE_URL.get(config);
                 String token = (String) ZafiraConfiguration.ACCESS_TOKEN.get(config);
-                LoggerFactory.getLogger(ZafiraSingleton.class).debug("Reporting enabled: " + enabled);
-                LoggerFactory.getLogger(ZafiraSingleton.class).debug("Reporting url: " + url);
-                LoggerFactory.getLogger(ZafiraSingleton.class).debug("Reporting token: " + token);
+                LoggerFactory.getLogger(ZafiraSingleton.class).info("Reporting enabled: " + enabled);
+                LoggerFactory.getLogger(ZafiraSingleton.class).info("Reporting url: " + url);
+                LoggerFactory.getLogger(ZafiraSingleton.class).info("Reporting token: " + token);
 
                 zafiraClient = new ZafiraClientImpl(url);
                 boolean isAvailable = zafiraClient.isAvailable();
-                LoggerFactory.getLogger(ZafiraSingleton.class).debug("Reporting isAvailable: " + isAvailable);
+                LoggerFactory.getLogger(ZafiraSingleton.class).info("Reporting isAvailable: " + isAvailable);
                 if (enabled && isAvailable) {
                     result = zafiraClient.refreshToken(token);
                 }
@@ -73,7 +73,7 @@ public enum ZafiraSingleton {
 
         INIT_FUTURE.thenAccept(auth -> {
             if (auth != null && auth.getStatus() == 200) {
-                LoggerFactory.getLogger(ZafiraSingleton.class).debug("Auth token: " + auth.getObject().getAuthToken());
+                LoggerFactory.getLogger(ZafiraSingleton.class).info("Auth token: " + auth.getObject().getAuthToken());
                 zafiraClient.setAuthData(auth.getObject());
             }
         });

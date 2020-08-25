@@ -22,17 +22,21 @@ import com.qaprosoft.zafira.util.AsyncUtil;
 import com.qaprosoft.zafira.util.ConfigurationUtil;
 import com.qaprosoft.zafira.util.http.HttpClient;
 import org.apache.commons.configuration2.CombinedConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.CompletableFuture;
 
 /**
  * ZafiraSingleton - singleton wrapper around {@link ZafiraClientImpl}.
- * 
+ *
  * @author Alexey Khursevich (hursevich@gmail.com)
  */
 public enum ZafiraSingleton {
 
     INSTANCE;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ZafiraSingleton.class);
 
     private final CompletableFuture<HttpClient.Response<AuthTokenType>> INIT_FUTURE;
 
@@ -50,12 +54,18 @@ public enum ZafiraSingleton {
                 boolean enabled = (Boolean) ZafiraConfiguration.ENABLED.get(config);
                 String url = (String) ZafiraConfiguration.SERVICE_URL.get(config);
                 String token = (String) ZafiraConfiguration.ACCESS_TOKEN.get(config);
+                LoggerFactory.getLogger(ZafiraSingleton.class).debug("Reporting enabled: " + enabled);
+                LoggerFactory.getLogger(ZafiraSingleton.class).debug("Reporting url: " + url);
+                LoggerFactory.getLogger(ZafiraSingleton.class).debug("Reporting token: " + token);
 
                 zafiraClient = new ZafiraClientImpl(url);
-                if (enabled && zafiraClient.isAvailable()) {
+                boolean isAvailable = zafiraClient.isAvailable();
+                LoggerFactory.getLogger(ZafiraSingleton.class).debug("Reporting isAvailable: " + isAvailable);
+                if (enabled && isAvailable) {
                     result = zafiraClient.refreshToken(token);
                 }
             } catch (Exception e) {
+                LoggerFactory.getLogger(ZafiraSingleton.class).error("Error initializing zafira client", e);
                 throw new RuntimeException(e.getMessage(), e);
             }
             return result;
@@ -63,6 +73,7 @@ public enum ZafiraSingleton {
 
         INIT_FUTURE.thenAccept(auth -> {
             if (auth != null && auth.getStatus() == 200) {
+                LoggerFactory.getLogger(ZafiraSingleton.class).debug("Auth token: " + auth.getObject().getAuthToken());
                 zafiraClient.setAuthData(auth.getObject());
             }
         });
@@ -79,13 +90,15 @@ public enum ZafiraSingleton {
      * @return Zafira integration status
      */
     public boolean isRunning() {
-        HttpClient.Response<AuthTokenType> response;
+        boolean status = false;
         try {
-            response = AsyncUtil.getAsync(INIT_FUTURE, "Cannot connect to zafira");
+            HttpClient.Response<AuthTokenType> response = AsyncUtil.getAsync(INIT_FUTURE, "Cannot connect to zafira");
+            LOGGER.info("Initialization response status code: " + response.getStatus());
+            status = response.getStatus() == 200;
         } catch (Exception e) {
-            return false;
+            LOGGER.error("Error obtaining value from initialization future", e);
         }
-        return response != null && response.getStatus() == 200;
+        return status;
     }
 
 }

@@ -449,6 +449,8 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
                     this.jobTypeService = new JobTypeServiceImpl(zc);
                     this.testTypeService = new TestTypeServiceImpl(zc);
                     this.testCaseTypeService = new TestCaseTypeServiceImpl(zc);
+                } else {
+                    LOGGER.info("Zafira services were not initialized due to absent ZafiraClient");
                 }
                 LOGGER.info("Zafira is " + (ZAFIRA_ENABLED ? "available" : "unavailable"));
             }

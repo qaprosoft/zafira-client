@@ -39,7 +39,7 @@ public class UploadUtil {
      */
     public static void uploadScreenshot(byte[] screenshot, String name, Long capturedAtMillis, boolean asArtifact) {
         Long capturedAt = capturedAtMillis != null ? capturedAtMillis : Instant.now().toEpochMilli();
-        BiConsumer<Long, Long> screenshotUploader = (testId, testRunId) -> {
+        BiConsumer<Long, Long> screenshotUploader = (testRunId, testId) -> {
             HttpClient.Response<UploadResult> response = API_CLIENT.sendScreenshot(screenshot, testRunId, testId, capturedAt);
             boolean successStatus = String.valueOf(response.getStatus()).matches("(2..)");
             if (asArtifact && successStatus) {
@@ -61,7 +61,7 @@ public class UploadUtil {
     }
 
     public static void uploadArtifact(File artifact, String name) {
-        BiConsumer<Long, Long> artifactUploader = (testId, testRunId) -> {
+        BiConsumer<Long, Long> artifactUploader = (testRunId, testId) -> {
             HttpClient.Response<UploadResult> response = API_CLIENT.sendArtifact(artifact, testRunId, testId, name);
             boolean successStatus = String.valueOf(response.getStatus()).matches("(2..)");
             if (!successStatus) {

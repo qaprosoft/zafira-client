@@ -15,6 +15,31 @@
  *******************************************************************************/
 package com.qaprosoft.zafira.listener;
 
+import static com.qaprosoft.zafira.client.ClientDefaults.USER;
+import static com.qaprosoft.zafira.config.CiConfig.BuildCase.UPSTREAMTRIGGER;
+import static com.qaprosoft.zafira.models.db.Status.FAILED;
+import static com.qaprosoft.zafira.models.db.Status.SKIPPED;
+
+import java.io.StringWriter;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+
+import org.apache.commons.configuration2.CombinedConfiguration;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.qaprosoft.zafira.client.ZafiraClient;
 import com.qaprosoft.zafira.client.ZafiraSingleton;
 import com.qaprosoft.zafira.config.CiConfig;
@@ -53,29 +78,6 @@ import com.qaprosoft.zafira.models.dto.UserType;
 import com.qaprosoft.zafira.models.dto.config.ConfigurationType;
 import com.qaprosoft.zafira.util.ConfigurationUtil;
 import com.qaprosoft.zafira.util.TestArtifactHolder;
-import org.apache.commons.configuration2.CombinedConfiguration;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
-import java.io.StringWriter;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
-
-import static com.qaprosoft.zafira.client.ClientDefaults.USER;
-import static com.qaprosoft.zafira.config.CiConfig.BuildCase.UPSTREAMTRIGGER;
-import static com.qaprosoft.zafira.models.db.Status.FAILED;
-import static com.qaprosoft.zafira.models.db.Status.SKIPPED;
 
 /**
  * Registers events to Zafira via adapters
@@ -266,7 +268,7 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
                  * https://github.com/qaprosoft/carina/issues/701
                  * https://github.com/qaprosoft/carina/issues/707
                  */
-                startedTest.setTags(configurator.getTestTags(adapter));
+                startedTest.setLabels(configurator.getTestTags(adapter));
                 startedTest = testTypeService.registerTestRestart(startedTest);
             }
 
@@ -579,7 +581,7 @@ public class ZafiraEventRegistrar implements TestLifecycleAware {
         Set<TestArtifactType> testArtifacts = TestArtifactHolder.getAndClear();
         test.setArtifacts(testArtifacts);
 
-        test.setTags(configurator.getTestTags(adapter));
+        test.setLabels(configurator.getTestTags(adapter));
 
         String testDetails = "testId: %d; testCaseId: %d; testRunId: %d; name: %s; thread: %s; status: %s, finishTime: %s \n message: %s";
         String logMessage = String.format(testDetails, test.getId(), test.getTestCaseId(), test.getTestRunId(), test.getName(), threadId, status,

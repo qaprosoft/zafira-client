@@ -28,9 +28,9 @@ import lombok.Setter;
 @NoArgsConstructor
 public class TagType extends AbstractType {
 
-    @NotEmpty(message = "Name required")
+    @NotEmpty(message = "Key required")
     @Size(max = 50)
-    private String name;
+    private String key;
 
     @NotEmpty(message = "Value required")
     @Size(max = 255)
@@ -38,7 +38,7 @@ public class TagType extends AbstractType {
 
     @Override
     public int hashCode() {
-        return (this.name + this.value).hashCode();
+        return (this.key + this.value).hashCode();
     }
 
     @Override

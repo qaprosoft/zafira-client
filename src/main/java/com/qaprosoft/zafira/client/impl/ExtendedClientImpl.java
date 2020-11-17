@@ -15,6 +15,14 @@
  *******************************************************************************/
 package com.qaprosoft.zafira.client.impl;
 
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.qaprosoft.zafira.client.BasicClient;
 import com.qaprosoft.zafira.client.ExtendedClient;
 import com.qaprosoft.zafira.config.CiConfig;
@@ -28,13 +36,6 @@ import com.qaprosoft.zafira.models.dto.TestRunType;
 import com.qaprosoft.zafira.models.dto.TestSuiteType;
 import com.qaprosoft.zafira.models.dto.TestType;
 import com.qaprosoft.zafira.util.http.HttpClient;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
 
 public class ExtendedClientImpl implements ExtendedClient {
 
@@ -273,7 +274,7 @@ public class ExtendedClientImpl implements ExtendedClient {
         test.setCiTestId(ciTestId);
         test.setTestGroup(group);
         if (tags != null) {
-            test.setTags(tags);
+            test.setLabels(tags);
         }
         if (dependsOnMethods != null) {
             StringBuilder sb = new StringBuilder();

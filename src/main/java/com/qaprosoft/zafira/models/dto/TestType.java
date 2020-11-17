@@ -62,7 +62,7 @@ public class TestType extends AbstractType {
     private Set<TestArtifactType> artifacts = new HashSet<>();
     private String ciTestId;
     @Valid
-    private Set<TagType> tags;
+    private Set<TagType> labels;
 
     public TestType(String name, Status status, String testArgs, Long testRunId, Long testCaseId, Long startTime,
                     List<String> workItems, int retry, String configXML) {

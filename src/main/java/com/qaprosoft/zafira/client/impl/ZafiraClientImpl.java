@@ -122,11 +122,6 @@ public class ZafiraClientImpl implements ZafiraClient {
     }
 
     @Override
-    public void deleteTest(long id) {
-        basicClient.deleteTest(id);
-    }
-
-    @Override
     public HttpClient.Response<TestType> createTestWorkItems(long testId, List<String> workItems) {
         return basicClient.createTestWorkItems(testId, workItems);
     }
@@ -149,11 +144,6 @@ public class ZafiraClientImpl implements ZafiraClient {
     @Override
     public HttpClient.Response<TestCaseType> createTestCase(TestCaseType testCase) {
         return basicClient.createTestCase(testCase);
-    }
-
-    @Override
-    public HttpClient.Response<TestCaseType[]> createTestCases(TestCaseType[] testCases) {
-        return basicClient.createTestCases(testCases);
     }
 
     @Override

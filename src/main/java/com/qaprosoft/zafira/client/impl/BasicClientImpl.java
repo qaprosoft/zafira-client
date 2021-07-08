@@ -50,7 +50,6 @@ public class BasicClientImpl implements BasicClient {
 
     private static final String ERR_MSG_PING = "Unable to send ping";
     private static final String ERR_MSG_AUTHORIZE_USER = "Unable to authorize user";
-    private static final String ERR_MSG_CREATE_USER = "Unable to create user";
     private static final String ERR_MSG_REFRESH_TOKEN = "Unable to refresh authorization token";
     private static final String ERR_MSG_CREATE_JOB = "Unable to create job";
     private static final String ERR_MSG_CREATE_TEST_SUITE = "Unable to create test suite";
@@ -61,13 +60,11 @@ public class BasicClientImpl implements BasicClient {
     private static final String ERR_MSG_FIND_TEST_RUN_BY_CI_RUN_ID = "Unable find test run by CI run id";
     private static final String ERR_MSG_START_TEST = "Unable to start test";
     private static final String ERR_MSG_FINISH_TEST = "Unable to finish test";
-    private static final String ERR_MSG_DELETE_TEST = "Unable to delete test";
     private static final String ERR_MSG_CREATE_TEST_WORK_ITEMS = "Unable to create test work items";
     private static final String ERR_MSG_CREATE_TEST_WORK_ITEM = "Unable to create test work item";
     private static final String ERR_MSG_GET_TEST_WORK_ITEMS = "Unable to get test work items";
     private static final String ERR_MSG_ADD_TEST_ARTIFACT = "Unable to add test artifact";
     private static final String ERR_MSG_CREATE_TEST_CASE = "Unable to create test case";
-    private static final String ERR_MSG_CREATE_TEST_CASES_BATCH = "Unable to create test cases";
     private static final String ERR_MSG_FIND_TEST_RUN_RESULTS = "Unable to find test run results";
     private static final String ERR_MSG_ABORT_TEST_RUN = "Unable to abort test run";
     private static final String ERR_MSG_GET_PROJECT_BY_NAME = "Unable to get project by name";
@@ -206,14 +203,6 @@ public class BasicClientImpl implements BasicClient {
     }
 
     @Override
-    public void deleteTest(long id) {
-        HttpClient.uri(Path.TEST_BY_ID_PATH, serviceURL, id)
-                  .withAuthorization(authToken, project)
-                  .onFailure(ERR_MSG_DELETE_TEST)
-                  .delete(Void.class);
-    }
-
-    @Override
     public HttpClient.Response<TestType> createTestWorkItems(long testId, List<String> workItems) {
         return HttpClient.uri(Path.TEST_WORK_ITEMS_PATH, serviceURL, testId)
                          .withAuthorization(authToken, project)
@@ -251,14 +240,6 @@ public class BasicClientImpl implements BasicClient {
                          .withAuthorization(authToken, project)
                          .onFailure(ERR_MSG_CREATE_TEST_CASE)
                          .post(TestCaseType.class, testCase);
-    }
-
-    @Override
-    public HttpClient.Response<TestCaseType[]> createTestCases(TestCaseType[] testCases) {
-        return HttpClient.uri(Path.TEST_CASES_BATCH_PATH, serviceURL)
-                         .withAuthorization(authToken, project)
-                         .onFailure(ERR_MSG_CREATE_TEST_CASES_BATCH)
-                         .post(TestCaseType[].class, testCases);
     }
 
     @Override

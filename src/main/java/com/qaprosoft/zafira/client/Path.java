@@ -24,7 +24,6 @@ public enum Path {
     JOBS_PATH("/api/reporting/api/jobs"),
     TESTS_PATH("/api/reporting/api/tests"),
     TEST_FINISH_PATH("/api/reporting/api/tests/%d/finish"),
-    TEST_BY_ID_PATH("/api/reporting/api/tests/%d"),
     TEST_WORK_ITEMS_PATH("/api/reporting/api/tests/%d/workitems"),
     TEST_WORK_ITEM_PATH("/api/reporting/api/tests/%d/workitem"),
     TEST_WORK_ITEM_BY_TYPE_PATH("/api/reporting/api/tests/%d/workitem/%s"),

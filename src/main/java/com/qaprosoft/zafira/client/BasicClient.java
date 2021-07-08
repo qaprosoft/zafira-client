@@ -64,8 +64,6 @@ public interface BasicClient {
 
     HttpClient.Response<TestType> finishTest(TestType test);
 
-    void deleteTest(long id);
-
     HttpClient.Response<TestType> createTestWorkItems(long testId, List<String> workItems);
 
     HttpClient.Response<WorkItem> createOrUpdateTestWorkItem(long testId, WorkItem workItem);
@@ -79,8 +77,6 @@ public interface BasicClient {
     void addTestArtifact(TestArtifactType artifact);
 
     HttpClient.Response<TestCaseType> createTestCase(TestCaseType testCase);
-
-    HttpClient.Response<TestCaseType[]> createTestCases(TestCaseType[] testCases);
 
     HttpClient.Response<TestType[]> getTestRunResults(long id);
 
